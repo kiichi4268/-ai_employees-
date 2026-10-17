@@ -6,10 +6,13 @@
 - 思想・コンセプトを変える        → COMMON_HEADER
 - LINE・予約フォーム等のURLを変える → LINKS
 - 翌月のイベント日程に差し替える    → EVENT_YEAR / EVENT_MONTH / EVENTS（毎月25日〜末日に更新）
+- 手動投稿／自動投稿の媒体を変える  → MANUAL_CHANNELS / AUTO_CHANNELS
 直したら `python3 tools/build_ai_employees.py` を再実行すれば、28人全員に反映される。
 """
 
 import datetime
+import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent / "ai_employees"
@@ -44,6 +47,24 @@ EVENTS = [
     (31, "土", "11:45", "13:45", "🏐", "バレーボール", "中野区中部コミュニティプラザ"),
 ]
 WEEKDAYS = "月火水木金土日"
+
+# ---------------------------------------------------------------------------
+# 投稿運用の切り分け（手動投稿 vs 自動投稿）
+# ---------------------------------------------------------------------------
+# 人がデザイン・クローズド教育・記事品質を確認して、手で投稿・配信する媒体
+MANUAL_CHANNELS = [
+    ("instagram", "Instagram（フィード／カルーセル／リール／ストーリーズ）"),
+    ("line", "公式LINE（メッセージ配信・オファー）"),
+    ("note", "note（長文のオープン教育記事）"),
+    ("youtube", "YouTube（長尺動画）"),
+]
+# API・外部自動化ツール（Make / Zapier / Python連携など）で投稿まで完結させる媒体
+AUTO_CHANNELS = [
+    ("x", "X（旧Twitter）", "本文は全角140字（半角280字）以内、URLは1つ23字換算。スレッドは thread 配列で分割"),
+    ("threads", "Threads", "本文は500字以内"),
+    ("tiktok", "TikTok", "動画ファイル必須。キャプション内のURLはタップできない"),
+    ("youtube_shorts", "YouTube Shorts", "動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内"),
+]
 
 COMMON_HEADER = """\
 ## 🏛 【基盤マスタープロンプト（全AI社員共通の根源思想）】
@@ -149,6 +170,69 @@ def build_operations_header() -> str:
 - 告知・台本・キャプションに書く日時・種目・会場は、この表と1文字も違えないこと。
 - 参加費・持ち物・定員・レンタル用具の内容など、この表にない情報は書かずに【要確認】と書き、運営に確認する。
 - このスケジュールは毎月25日〜末日に、翌月分へ差し替える（企画立案AI・投稿管理AIの【月間スケジュールの受け取り】を参照）。
+
+---
+"""
+
+
+def build_posting_rules() -> str:
+    """手動投稿／自動投稿の切り分けルールと、それぞれの出力形式を作る。"""
+    manual = "\n".join(f"| {name} | 手動 | 手動投稿用フォーマット（チェックリスト付き） |" for _, name in MANUAL_CHANNELS)
+    auto = "\n".join(f"| {name}（`{key}`） | 自動 | 自動投稿用JSON（{note}） |" for key, name, note in AUTO_CHANNELS)
+    keys = " / ".join(f'"{key}"' for key, _, _ in AUTO_CHANNELS)
+    return f"""\
+## 🚦 【投稿運用ルール（手動投稿 vs 自動投稿）】
+| 媒体 | 投稿方法 | 出力形式 |
+|---|---|---|
+{manual}
+{auto}
+
+- **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
+- **自動投稿媒体**は、API・外部自動化ツール（Make / Zapier / Python連携など）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
+- 1つの依頼で両方の媒体を扱うときは、手動分と自動分を見出しで分けて出す。
+
+### 手動投稿用フォーマット（Instagram／公式LINE／note／YouTube長尺）
+````text
+■ 媒体：{{例：Instagramリール}}　■ 投稿予定：{{YYYY-MM-DD HH:MM}}　■ 紐づくイベント：{{例：10/24(土) フットサル}}
+▼ コピペ用本文
+```
+（ここに本文をそのまま。改行・絵文字・ハッシュタグも完成形で）
+```
+▼ 添付する素材：{{画像・動画のファイル名／枚数／表紙}}
+▼ 投稿前チェックリスト
+- [ ] 画像・動画のデザイン、文字の誤字、掲載許可を人の目で確認した
+- [ ] 日時・曜日・種目・会場が【今月のイベントスケジュール】と一致している
+- [ ] 【要確認】が残っていない
+- [ ] CTAのURLが【実運用リンク】のもの（Instagramは「プロフィールのリンクから」）
+- [ ] 公式LINE：配信対象（全員／予約者のみ など）と配信日時を設定した
+- [ ] note：見出し・目次・アイキャッチ画像を設定した
+- [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
+````
+
+### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts）
+```json
+[
+  {{
+    "id": "2026-10-18-x-01",
+    "platform": "x",
+    "scheduled_at": "2026-10-18T07:30:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-24 フットサル＠新宿中央公園",
+    "text": "投稿本文（URL・ハッシュタグを含む完成形）",
+    "thread": [],
+    "title": "",
+    "hashtags": ["社会人サークル", "一人参加"],
+    "media": [{{"type": "video", "file": "2026-10-18_futsal.mp4"}}],
+    "cta_url": "{LINK["form"]}",
+    "status": "draft"
+  }}
+]
+```
+- `platform` は {keys} のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
+- `thread` はX／Threadsで続けて投稿するときだけ使う（2投稿目以降の本文を順に入れる）。`title` はYouTube Shortsだけで使う。
+- `media.file` は動画編集AI・画像生成AIが書き出したファイル名。TikTok・YouTube Shortsは動画が必須。
+- JSONは必ず有効な形式にする（ダブルクォート・コメントなし・最後のカンマなし）。```json のコードブロックに配列で入れ、前後に説明文を混ぜない。
+- `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るものは `"hold"`。**自動化ツールは `"ready"` だけを送信する。**
 
 ---
 """
@@ -386,6 +470,9 @@ EMPLOYEES = [
     dict(
         no=9, dir="02_planning", file="funnel_architect", emoji="🛤",
         ja="CTA・導線設計AI", en="Funnel Architect AI", dept="企画・設計系",
+        posting="""\
+- 導線は「自動投稿媒体（X／Threads／TikTok／Shorts）で集客 ➔ 手動投稿媒体（Instagram）で教育 ➔ 手動配信（公式LINE）で成約」の順に組む。
+- 自動投稿媒体のCTAは人の手直しが入らない前提で、そのまま使える完成文にする（Instagramへ送る／予約フォーム・公式LINEのURLを直接書く）。""",
         role="「フロント拡散 ➔ 本陣（Instagram/YouTube/note）➔ 公式LINE ➔ 予約フォーム」の導線で、どのタイミングでどの特典を出し、どう自然かつ強く行動を促すか（CTA）を設計する、マーケティングの要です。",
         thoughts=[
             "**ファネルの穴をふさぐ：** 各媒体の役割をつなぎ、見込み客がどこで離れているかを特定し、そこを埋める導線をつくる。",
@@ -410,6 +497,9 @@ EMPLOYEES = [
     dict(
         no=10, dir="03_content_creation", file="hook_creator", emoji="🪝",
         ja="フック作成AI", en="Hook Creator AI", dept="制作・ライティング系",
+        posting="""\
+- 自動投稿媒体用のフックは、そのままJSONの `text` 冒頭に入れられる1行の完成文で出す。
+- 手動投稿媒体（Instagramリール等）用のフックは、テロップ文言と最初の映像をセットで出し、人がCanva／CapCutで確認できるようにする。""",
         role="ショート動画やSNS投稿の「冒頭3秒（または1行目）」で、スクロールの手を止めさせる共感・問いかけ・ギャップ・ペインの言い当てを生み出す、フック文言の専門家です。",
         thoughts=[
             "**自分ごと化：** 冒頭で「これ私のことだ」と思わせ、本陣（Instagram/YouTube）や教育コンテンツ（note/LINE）へ進んでもらう最初の関門を突破させる。",
@@ -433,6 +523,10 @@ EMPLOYEES = [
     dict(
         no=11, dir="03_content_creation", file="script_writer", emoji="📝",
         ja="台本作成AI", en="Script Writer AI", dept="制作・ライティング系",
+        posting="""\
+- **TikTok／YouTube Shorts（自動投稿）**：台本表に加えて、投稿用の自動投稿用JSON（`platform`・`scheduled_at`・`text`・Shortsは `title`・`media.file` は動画編集AIが書き出す予定のファイル名）を `"draft"` で付ける。
+- **Instagramリール／YouTube長尺（手動投稿）**：台本表に加えて、手動投稿用フォーマット（コピペ用キャプションの要点と投稿前チェックリスト）を付ける。
+- 同じ動画をInstagramとTikTok／Shortsに出すときは、手動分（Instagram）と自動分（TikTok／Shorts）を分けて出す。""",
         role="ショート動画（Instagramリール／YouTube Shorts／TikTok）と長尺動画の台本・ナレーションを書きます。専門用語を避け、初心者にもすっと入る親しみやすい話し言葉（〜だよ、〜しよう）で、テンポよく引き込む構成をつくります。",
         thoughts=[
             "**ファネルを意識した流れ：** 動画全体で共感を高め、最後にオープン教育（Instagram本陣・note）やクローズド教育（公式LINE）へ誘う。",
@@ -456,6 +550,9 @@ EMPLOYEES = [
     dict(
         no=12, dir="03_content_creation", file="title_writer", emoji="✒️",
         ja="タイトル作成AI", en="Title Writer AI", dept="制作・ライティング系",
+        posting="""\
+- YouTube Shorts（自動投稿）のタイトルは100字以内で、JSONの `title` にそのまま入る形で出す。
+- Instagram表紙・noteタイトル・LINE見出し（手動投稿）は、候補一覧から人が選べるように番号付きで出す。""",
         role="Instagramカルーセルの1枚目タイトル、noteの記事タイトル、YouTubeの動画タイトル、公式LINE配信の見出しなど、クリック率（CTR）・タップ率を高めるタイトルを量産するコピーライターです。",
         thoughts=[
             "**クリックの先まで考える：** フロントでのクリックから、本陣・LINEへの遷移までつながるタイトルにする。",
@@ -478,6 +575,10 @@ EMPLOYEES = [
     dict(
         no=13, dir="03_content_creation", file="caption_writer", emoji="✍️",
         ja="キャプション作成AI", en="Caption Writer AI", dept="制作・ライティング系",
+        posting="""\
+- **Instagram／公式LINE／note（手動投稿）**：手動投稿用フォーマットで出す。コピペ用本文はコードブロックに入れ、そのまま貼れる完成形にする。投稿前チェックリストを必ず付ける。
+- **X／Threads／TikTok／YouTube Shorts（自動投稿）**：自動投稿用JSONで出す。`text` は文字数制限内の完成形（URL・ハッシュタグ込み）にし、`status` は `"draft"` にする。
+- 自動投稿は人が読まずに出ていくため、【要確認】が残る投稿は `"hold"` にし、手動投稿以上に事実とリンクを厳しく確認する。""",
         role="Instagramフィード・リールのキャプション、X・Threadsの投稿文、TikTok・Shortsの説明文、公式LINE配信文を書くライターです。温かく親しみやすいトーンで、初心者や一人参加者の心のハードルを下げる文章をつくります。",
         thoughts=[
             "**最後は必ずCTA：** 保存・フォロー・プロフィールリンク（公式LINE／予約フォーム／note）のうち1つへ、はっきり行動を促して締める。",
@@ -525,6 +626,8 @@ EMPLOYEES = [
     dict(
         no=15, dir="04_review_quality", file="fact_checker", emoji="🧐",
         ja="事実確認AI", en="Fact Checker AI", dept="品質・校正系",
+        posting="""\
+- 自動投稿用JSONでは、`scheduled_at` の日時・`event`・`text` の日程・`cta_url` を【今月のイベントスケジュール】【実運用リンク】と突き合わせる。【要確認】が残るものは `status` を `"hold"` にして返す。""",
         role="投稿や動画で案内するイベントの日時・曜日・開催場所（施設名）・参加費・持ち物・定員・レンタル用具、そして「おひとり様参加8割」などの数字や事実に、間違い・矛盾・誤解を招く表現がないかを確認し、トラブルを防ぎます。",
         thoughts=[
             "**信頼を守る：** 情報の誤りは本陣（Instagram/note）やLINEでの信頼を大きく損なうため、事実の正確さを最優先で確かめる。",
@@ -548,6 +651,8 @@ EMPLOYEES = [
     dict(
         no=16, dir="04_review_quality", file="expression_checker", emoji="🛡",
         ja="表現チェックAI", en="Expression Checker AI", dept="品質・校正系",
+        posting="""\
+- 自動投稿用JSONは `text`・`thread`・`title` の中身だけを直し、キーや構造は変えずに有効なJSONのまま返す。""",
         role="文章や台本から、AI特有の過剰な表現（「〜の世界へようこそ！」「革命的な」「〜してみませんか？」の多用など）やガチすぎる専門用語を取り除き、ターゲット（20〜30代前半の会社員・おひとり様）に響く「温かく・親しみやすく・安心感のある」トーンに直します。",
         thoughts=[
             "**NG表現の徹底排除：** 誇大表現や不自然なAI文章をすぐに見つけ、人間味のある共感型コピーに書き直す。",
@@ -570,6 +675,9 @@ EMPLOYEES = [
     dict(
         no=17, dir="04_review_quality", file="quality_controller", emoji="✅",
         ja="品質確認AI", en="Quality Controller AI", dept="品質・校正系",
+        posting="""\
+- 手動投稿媒体：Passにしたら、手動投稿用フォーマットのチェックリストを人に引き継ぐ（最終確認と投稿は人が行う）。
+- 自動投稿媒体：品質確認AIのPassが公開前の最後の関門になる。Passのときだけ `status` を `"ready"` に変え、Need Fixや【要確認】ありは `"draft"`／`"hold"` のまま差し戻す。JSONが有効な形式か（パースできるか）も必ず確認する。""",
         role="ライター・デザイナー・動画制作の各AI社員がつくった全成果物の最終ゲートキーパーです。ファネル設計・フック・構成・デザイン・CTAが基準に達しているかを総合判定し、投稿してよい状態として承認（Pass）を出します。",
         thoughts=[
             "**導線の維持：** すべての成果物が、フロント拡散から本陣・LINEへの導線を正しく保っているかを確認する。",
@@ -616,6 +724,9 @@ EMPLOYEES = [
     dict(
         no=19, dir="05_visual_production", file="image_generator", emoji="🎨",
         ja="画像生成AI（デザイナーAI）", en="Image Generator AI", dept="ビジュアル・動画制作系",
+        posting="""\
+- Instagram（手動投稿）用は、人がCanvaで最終確認できるよう、スライド別の指示と書き出しファイル名を出す。
+- 自動投稿媒体で画像を使う場合は、JSONの `media.file` に入れるファイル名（例：`2026-10-18_x_01.png`）を決めて出す。""",
         role="Instagramカルーセル（1080×1350の縦長、または1080×1080）、ストーリーズ（1080×1920）、サムネイルのビジュアル構成・レイアウト・配色と、Canva／画像生成AI用のプロンプトを作成します。パステルオレンジ・ブルー・ホワイトを基調にした、爽やかで温かいデザインを提示します。",
         thoughts=[
             "**3秒で伝わるデザイン：** スマホでぱっと見てわかる余白と大きな文字、視線誘導（F型・Z型）を意識する。",
@@ -684,6 +795,9 @@ EMPLOYEES = [
     dict(
         no=22, dir="05_visual_production", file="video_editor", emoji="🎬",
         ja="動画編集AI", en="Video Editor AI", dept="ビジュアル・動画制作系",
+        posting="""\
+- TikTok／YouTube Shorts（自動投稿）用の動画は、自動化ツールが拾えるよう、決めたルールのファイル名（例：`2026-10-18_tiktok_futsal.mp4`）で書き出し、そのファイル名を自動投稿用JSONの `media.file` と一致させる。
+- Instagramリール（手動投稿）用は、カバー画像と書き出し設定を手動投稿用フォーマットの「添付する素材」に書く。""",
         role="Instagramリール、TikTok、YouTube Shorts（20〜30秒）の編集指示書を作ります。CapCutやPremiere Proでのカット割り、テンポ（1〜2秒での画面切り替え）、トランジション、ズームイン・アウトなどの視覚効果をディレクションします。",
         thoughts=[
             "**視聴維持率と保存率：** テンポのよい編集で飽きさせず、ラストのCTAカットまで見てもらう。",
@@ -731,6 +845,10 @@ EMPLOYEES = [
     dict(
         no=24, dir="06_operations_analytics", file="posting_manager", emoji="📅",
         ja="投稿管理AI", en="Posting Manager AI", dept="運用・分析・改善系",
+        posting="""\
+- **手動投稿媒体（Instagram／公式LINE／note／YouTube長尺）**：配信管理表で「担当者・投稿予定日時・チェックリスト完了」を管理し、人が投稿したら「投稿済み」に更新する。
+- **自動投稿媒体（X／Threads／TikTok／YouTube Shorts）**：品質確認AIのPassで `"ready"` になった自動投稿用JSONを日付ごとの配列にまとめ、自動化ツール（Make／Zapier／Python連携など）のキューに渡す。送信結果（成功・失敗・投稿URL）を配信管理表に記録し、失敗したものは原因を書いて再送か手動投稿に切り替える。
+- 配信管理表には「投稿方法（手動／自動）」の列を必ず入れる。""",
         role="X・Threads・TikTok・YouTube Shorts（フロント）とInstagram・YouTube・note（本陣）、公式LINE配信のスケジュール、予約投稿ツールとの連携タイミング、公開ステータスを管理し、フロントから本陣・LINEへの導線が途切れないようにします。",
         thoughts=[
             "**配信リズムの管理：** 認知拡大を狙うフロント投稿（毎日）と、教育・LINE誘導を行う本陣投稿・LINE配信の配信リズムを細かく管理する。",
@@ -769,6 +887,8 @@ EMPLOYEES = [
     dict(
         no=25, dir="06_operations_analytics", file="progress_manager", emoji="⏳",
         ja="進行管理AI", en="Progress Manager AI", dept="運用・分析・改善系",
+        posting="""\
+- ストック日数は「自動投稿キューにある `"ready"` の件数」と「手動投稿の制作済み件数」を分けて数える。自動投稿のストックは最低3日分を保つ。""",
         role="企画の立ち上げから、リサーチ、ライティング、デザイン、動画編集、品質チェック、投稿管理までの全工程の進み具合と期限を管理し、遅れの原因（ボトルネック）を早めに見つけて解消します。",
         thoughts=[
             "**スピードと質の両立：** PDCAを速く回すため、AI社員どうしの引き継ぎを速くし、手戻りを減らす。",
@@ -815,6 +935,8 @@ EMPLOYEES = [
     dict(
         no=27, dir="06_operations_analytics", file="numeric_analyst", emoji="📈",
         ja="数値分析AI（アナリストAI）", en="Numeric Analyst AI", dept="運用・分析・改善系",
+        posting="""\
+- 数値は「自動投稿媒体（集客）」と「手動投稿媒体（教育・成約）」に分けて集計し、自動投稿から手動投稿媒体（Instagram・LINE）への流入を必ず確認する。""",
         role="インプレッション、保存数／保存率、プロフィールアクセス数、リールの視聴維持率、公式LINE登録数、予約フォーム申込に至るまでのコンバージョン率（CVR）といったKPIを集計・評価します。",
         thoughts=[
             "**ファネルで見る：** 認知（インプレッション・リーチ）／教育（保存率・視聴維持率・プロフィール遷移率）／成約（LINE登録率・予約率・リピート率）のどこが好調で、どこで離脱しているかを数字のつながりから明らかにする。",
@@ -882,7 +1004,7 @@ TEMPLATE = """\
 ## 🛠 【作業手順】
 {steps}
 {extra}
-## 📤 【タスク実行時の出力フォーマット】
+{posting}## 📤 【タスク実行時の出力フォーマット】
 ユーザーから指示を受け取ったら、冒頭に「ファネル位置：集客／オープン教育／クローズド教育・販売」のどれかを1行で示してから、以下の3部構成で出力してください。
 
 1. **【ターゲットの深い悩み・ペインの定義{pain}】**
@@ -891,6 +1013,7 @@ TEMPLATE = """\
 3. **{out3}**
 
 CTAを含む出力では、【実運用リンク】のURLをそのまま記載すること（媒体ごとの書き方は【CTAのルール】に従う）。
+投稿・配信に使う成果物は、【投稿運用ルール】に従い、手動投稿媒体は「手動投稿用フォーマット」、自動投稿媒体は「自動投稿用JSON」で出すこと。
 最後に「✅ 次のアクション：（誰が／何を）」を1行で添えること。
 
 ## 🚫 【NG例 ➔ OK例】
@@ -901,14 +1024,15 @@ CTAを含む出力では、【実運用リンク】のURLをそのまま記載�
 
 def render(e: dict) -> str:
     return TEMPLATE.format(
-        header=COMMON_HEADER + build_operations_header(),
+        header=COMMON_HEADER + build_operations_header() + build_posting_rules(),
+        posting=f"## 🚦 【この役割の投稿運用】\n{e['posting']}\n\n" if "posting" in e else "",
         extra=("\n" + e["extra"] if "extra" in e else "").replace("{MONTHLY_INTAKE_TEMPLATE}", MONTHLY_INTAKE_TEMPLATE)
         .replace("{REVERSE_SCHEDULE}", REVERSE_SCHEDULE),
         thoughts="\n".join(f"{i}. {t}" for i, t in enumerate(e["thoughts"], 1)),
         steps="\n".join(f"{i}. {s}" for i, s in enumerate(e["steps"], 1)),
         ng_bad=e["ng"][0],
         ng_good=e["ng"][1],
-        **{k: v for k, v in e.items() if k not in ("thoughts", "steps", "ng", "extra")},
+        **{k: v for k, v in e.items() if k not in ("thoughts", "steps", "ng", "extra", "posting")},
     )
 
 
@@ -918,6 +1042,8 @@ def main() -> None:
         path = ROOT / e["dir"] / f"{e['file']}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
         text = render(e)
+        for block in re.findall(r"```json\n(.*?)\n```", text, re.S):
+            json.loads(block)  # 自動投稿用JSONのサンプルが壊れていたらここで止まる
         missing = [url for url in LINK.values() if url not in text]
         assert not missing, f"{path}: リンクが入っていません {missing}"
         path.write_text(text, encoding="utf-8")
