@@ -41,10 +41,18 @@ LINK = {key: url for key, _, url, _ in LINKS}
 EVENT_YEAR = 2026
 EVENT_MONTH = 10
 EVENTS = [
-    # (日, 曜日, 開始, 終了, 絵文字, 種目, 会場)
-    (22, "木", "18:00", "21:00", "🏸", "バドミントン", "まもり山"),
-    (24, "土", "14:00", "16:00", "⚽", "フットサル", "新宿中央公園"),
-    (31, "土", "11:45", "13:45", "🏐", "バレーボール", "中野区中部コミュニティプラザ"),
+    dict(id="2026-10-22-badminton", day=22, wd="木", start="18:00", end="21:00",
+         emoji="🏸", sport="バドミントン", venue="まもり山",
+         fee="1,500円（税込）", items="動きやすい服装、室内シューズ、タオル、飲み物",
+         capacity=15, rental="ラケット無料レンタルあり（ラケットは手ぶらでOK）"),
+    dict(id="2026-10-24-futsal", day=24, wd="土", start="14:00", end="16:00",
+         emoji="⚽", sport="フットサル", venue="新宿中央公園",
+         fee="1,800円（税込）", items="動きやすい服装、運動靴（スパイク不可）、タオル、飲み物",
+         capacity=20, rental="ボール・ビブス完備（シューズのみご持参）"),
+    dict(id="2026-10-31-volleyball", day=31, wd="土", start="11:45", end="13:45",
+         emoji="🏐", sport="バレーボール", venue="中野区中部コミュニティプラザ",
+         fee="1,500円（税込）", items="動きやすい服装、室内シューズ、タオル、飲み物",
+         capacity=18, rental="なし（体育館シューズのみご持参）"),
 ]
 WEEKDAYS = "月火水木金土日"
 
@@ -144,11 +152,12 @@ def build_operations_header() -> str:
     """実運用リンクと今月のイベントスケジュールのセクションを作る。"""
     link_rows = "\n".join(f"| {name} | {url} | {use} |" for _, name, url, use in LINKS)
     event_rows = []
-    for day, wd, start, end, emoji, sport, venue in EVENTS:
-        actual = WEEKDAYS[datetime.date(EVENT_YEAR, EVENT_MONTH, day).weekday()]
-        assert wd == actual, f"{EVENT_MONTH}/{day} は{actual}曜日です（{wd}と記載）"
+    for ev in EVENTS:
+        actual = WEEKDAYS[datetime.date(EVENT_YEAR, EVENT_MONTH, ev["day"]).weekday()]
+        assert ev["wd"] == actual, f"{EVENT_MONTH}/{ev['day']} は{actual}曜日です（{ev['wd']}と記載）"
         event_rows.append(
-            f"| {EVENT_MONTH}/{day}({wd}) | {start}-{end} | {emoji} {sport} | {venue} |")
+            f"| {EVENT_MONTH}/{ev['day']}({ev['wd']}) | {ev['start']}-{ev['end']} | {ev['emoji']} {ev['sport']} "
+            f"| {ev['venue']} | {ev['fee']} | {ev['items']} | {ev['capacity']}名 | {ev['rental']} |")
     event_rows = "\n".join(event_rows)
     return f"""\
 ## 🔗 【実運用リンク（CTAで必ず使うURL）】
@@ -163,12 +172,13 @@ def build_operations_header() -> str:
 - 「日程が決まった人」には予約フォーム、「まだ迷っている人」には公式LINE、を出し分ける。
 
 ## 📆 【今月のイベントスケジュール（{EVENT_YEAR}年{EVENT_MONTH}月）】
-| 日付 | 時間 | 種目 | 会場 |
-|---|---|---|---|
+| 日付 | 時間 | 種目 | 会場 | 参加費 | 持ち物 | 定員 | レンタル |
+|---|---|---|---|---|---|---|---|
 {event_rows}
 
-- 告知・台本・キャプションに書く日時・種目・会場は、この表と1文字も違えないこと。
-- 参加費・持ち物・定員・レンタル用具の内容など、この表にない情報は書かずに【要確認】と書き、運営に確認する。
+- 告知・台本・キャプションに書く日時・種目・会場・参加費・持ち物・定員・レンタルは、この表と1文字も違えないこと。
+- 「用具レンタルあり」はレンタルがあるイベント（表の「レンタル」欄）にだけ書く。レンタルがないイベントで「手ぶらでOK」とは書かない。
+- 残り枠の数・申込締切・更衣室の有無など、この表にない情報は書かずに【要確認】と書き、運営に確認する。
 - このスケジュールは毎月25日〜末日に、翌月分へ差し替える（企画立案AI・投稿管理AIの【月間スケジュールの受け取り】を参照）。
 
 ---
@@ -224,7 +234,8 @@ def build_posting_rules() -> str:
     "hashtags": ["社会人サークル", "一人参加"],
     "media": [{{"type": "video", "file": "2026-10-18_futsal.mp4"}}],
     "cta_url": "{LINK["form"]}",
-    "status": "draft"
+    "status": "draft",
+    "hold_reason": ""
   }}
 ]
 ```
@@ -232,7 +243,7 @@ def build_posting_rules() -> str:
 - `thread` はX／Threadsで続けて投稿するときだけ使う（2投稿目以降の本文を順に入れる）。`title` はYouTube Shortsだけで使う。
 - `media.file` は動画編集AI・画像生成AIが書き出したファイル名。TikTok・YouTube Shortsは動画が必須。
 - JSONは必ず有効な形式にする（ダブルクォート・コメントなし・最後のカンマなし）。```json のコードブロックに配列で入れ、前後に説明文を混ぜない。
-- `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るものは `"hold"`。**自動化ツールは `"ready"` だけを送信する。**
+- `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るもの、動画が未書き出しのもの、開催後の様子を確認してから出すものは `"hold"` にし、`hold_reason` に理由を書く。**自動化ツールは `"ready"` だけを送信する。**
 
 ---
 """
