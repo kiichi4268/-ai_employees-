@@ -1,0 +1,46 @@
+# 🤖 Macachette Sports × 沢田流SNS自動化AI組織（28人体制）
+
+本リポジトリは、「フロント拡散媒体（X, Threads, TikTok, YouTube Shorts）」から「本陣（Instagram, note）」および「クローズド教育（公式LINE）」へと自動で集客・教育・収益化を循環させるための28人のAI社員プロンプト群です。
+
+---
+
+## 🛠 フォルダ構造とAI社員一覧
+
+```text
+.
+├── README.md                           # 本手順書
+└── ai_employees/                       # 28人のAI社員定義ファイル
+    ├── 01_research/                    # 【リサーチ・分析系】
+    │   ├── market_research.md          # 1. 市場調査AI
+    │   ├── competitor_research.md      # 2. 競合調査AI
+    │   ├── post_collection.md          # 3. 投稿収集AI
+    │   ├── trend_research.md           # 4. トレンド調査AI
+    │   └── audience_analysis.md        # 5. 視聴者分析AI
+    ├── 02_planning/                    # 【企画・設計系】
+    │   ├── idea_generation.md          # 6. 企画立案AI
+    │   ├── theme_selection.md          # 7. テーマ選定AI
+    │   ├── structure_design.md         # 8. 構成設計AI
+    │   └── funnel_architect.md         # 9. CTA・導線設計AI
+    ├── 03_content_creation/            # 【制作・ライティング系】
+    │   ├── hook_creator.md             # 10. フック作成AI
+    │   ├── script_writer.md            # 11. 台本作成AI
+    │   ├── title_writer.md             # 12. タイトル作成AI
+    │   └── caption_writer.md           # 13. キャプション作成AI
+    ├── 04_review_quality/              # 【品質・校正系】
+    │   ├── script_reviewer.md          # 14. 台本レビューAI
+    │   ├── fact_checker.md             # 15. 事実確認AI
+    │   ├── expression_checker.md       # 16. 表現チェックAI
+    │   └── quality_controller.md       # 17. 品質確認AI
+    ├── 05_visual_production/           # 【ビジュアル・動画制作系】
+    │   ├── material_collector.md       # 18. 素材収集AI
+    │   ├── image_generator.md          # 19. 画像生成AI
+    │   ├── infographic_creator.md      # 20. 図解作成AI
+    │   ├── subtitle_creator.md         # 21. 字幕作成AI
+    │   ├── video_editor.md             # 22. 動画編集AI
+    │   └── audio_adjuster.md           # 23. 音声調整AI
+    └── 06_operations_analytics/        # 【運用・分析・改善系】
+        ├── posting_manager.md          # 24. 投稿管理AI
+        ├── progress_manager.md         # 25. 進行管理AI
+        ├── comment_analyzer.md         # 26. コメント分析AI
+        ├── numeric_analyst.md          # 27. 数値分析AI
+        └── improvement_proposal.md     # 28. 改善提案AI
