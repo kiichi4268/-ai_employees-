@@ -77,27 +77,36 @@
 ## 🔗 【実運用リンク（CTAで必ず使うURL）】
 | 名称 | URL | 使いどころ |
 |---|---|---|
-| 公式LINE登録 | https://lin.ee/txwrLQ9 | クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り） |
+| 公式LINE登録 | https://lin.ee/VwtzoAm | クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り） |
 | 予約フォーム | https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform | 販売（申込）。LINE配信・イベント告知・リマインドで「日程が決まっている人」に出す |
 | note（オープン教育） | https://note.com/gifted_canna4865 | 初参加の流れ・参加者の声など、長文で不安を解消したい人向け |
 | Instagram（本陣） | https://www.instagram.com/macachette_sports | フロント拡散（X / Threads / TikTok / Shorts）から「雰囲気を見てね」で送る先 |
 | アプリ（App Store） | https://itunes.apple.com/app/id1544827472 | アプリでの参加・連絡を案内するときだけ使う |
 
+## 🔌 【連携先（自動投稿・通知の接続先。投稿本文のCTAには使わない）】
+| 連携先 | URL | API・設定 | メモ |
+|---|---|---|---|
+| WordPress（ブログ） | https://sportsbackstage1.wordpress.com | https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts | WordPress.com のサイト。初期記事 https://sportsbackstage1.wordpress.com/2026/09/04/hello-world/ は公開前に削除する |
+| ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | https://api.chatwork.com/v2/rooms/363171715/messages | ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す |
+| Pinterest | https://jp.pinterest.com/ | ― | ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | プロフィール設定ページ。公開チャンネルURL（https://www.twitch.tv/<ユーザー名>）が決まるまで投稿のCTAには使わない |
+
 **CTAのルール**
 - CTAに入れるURLは上の表のものだけ。URLを作ったり、短縮したり、別のURLに置き換えたりしない。
 - **X / Threads / 公式LINE配信 / note**：本文にURLをそのまま書く（タップできる）。
-- **Instagram / TikTok**：キャプション内のURLはタップできないため、「プロフィールのリンクから」と書き、プロフィールに公式LINE（https://lin.ee/txwrLQ9）を置く前提で案内する。
+- **Instagram / TikTok**：キャプション内のURLはタップできないため、「プロフィールのリンクから」と書き、プロフィールに公式LINE（https://lin.ee/VwtzoAm）を置く前提で案内する。
 - 「日程が決まった人」には予約フォーム、「まだ迷っている人」には公式LINE、を出し分ける。
 
 ## 📆 【今月のイベントスケジュール（2026年10月）】
-| 日付 | 時間 | 種目 | 会場 |
-|---|---|---|---|
-| 10/22(木) | 18:00-21:00 | 🏸 バドミントン | まもり山 |
-| 10/24(土) | 14:00-16:00 | ⚽ フットサル | 新宿中央公園 |
-| 10/31(土) | 11:45-13:45 | 🏐 バレーボール | 中野区中部コミュニティプラザ |
+| 日付 | 時間 | 種目 | 会場 | 参加費 | 持ち物 | 定員 | レンタル |
+|---|---|---|---|---|---|---|---|
+| 10/22(木) | 18:00-21:00 | 🏸 バドミントン | まもり山 | 1,500円（税込） | 動きやすい服装、室内シューズ、タオル、飲み物 | 15名 | ラケット無料レンタルあり（ラケットは手ぶらでOK） |
+| 10/24(土) | 14:00-16:00 | ⚽ フットサル | 新宿中央公園 | 1,800円（税込） | 動きやすい服装、運動靴（スパイク不可）、タオル、飲み物 | 20名 | ボール・ビブス完備（シューズのみご持参） |
+| 10/31(土) | 11:45-13:45 | 🏐 バレーボール | 中野区中部コミュニティプラザ | 1,500円（税込） | 動きやすい服装、室内シューズ、タオル、飲み物 | 18名 | なし（体育館シューズのみご持参） |
 
-- 告知・台本・キャプションに書く日時・種目・会場は、この表と1文字も違えないこと。
-- 参加費・持ち物・定員・レンタル用具の内容など、この表にない情報は書かずに【要確認】と書き、運営に確認する。
+- 告知・台本・キャプションに書く日時・種目・会場・参加費・持ち物・定員・レンタルは、この表と1文字も違えないこと。
+- 「用具レンタルあり」はレンタルがあるイベント（表の「レンタル」欄）にだけ書く。レンタルがないイベントで「手ぶらでOK」とは書かない。
+- 残り枠の数・申込締切・更衣室の有無など、この表にない情報は書かずに【要確認】と書き、運営に確認する。
 - このスケジュールは毎月25日〜末日に、翌月分へ差し替える（企画立案AI・投稿管理AIの【月間スケジュールの受け取り】を参照）。
 
 ---
@@ -112,6 +121,8 @@
 | Threads（`threads`） | 自動 | 自動投稿用JSON（本文は500字以内） |
 | TikTok（`tiktok`） | 自動 | 自動投稿用JSON（動画ファイル必須。キャプション内のURLはタップできない） |
 | YouTube Shorts（`youtube_shorts`） | 自動 | 自動投稿用JSON（動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内） |
+| Pinterest（`pinterest`） | 自動 | 自動投稿用JSON（動画または画像必須。title は100字以内、説明文は500字以内。リンク先は link に入れる（説明文のURLはタップできない）） |
+| WordPress（ブログ）（`wordpress`） | 自動 | 自動投稿用JSON（WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す） |
 
 - **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
 - **自動投稿媒体**は、API・外部自動化ツール（Make / Zapier / Python連携など）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
@@ -135,7 +146,7 @@
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 
-### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts）
+### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts／Pinterest）
 ```json
 [
   {
@@ -150,15 +161,83 @@
     "hashtags": ["社会人サークル", "一人参加"],
     "media": [{"type": "video", "file": "2026-10-18_futsal.mp4"}],
     "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "draft"
+    "status": "draft",
+    "hold_reason": ""
   }
 ]
 ```
-- `platform` は "x" / "threads" / "tiktok" / "youtube_shorts" のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
+- `platform` は "x" / "threads" / "tiktok" / "youtube_shorts" / "pinterest" のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
 - `thread` はX／Threadsで続けて投稿するときだけ使う（2投稿目以降の本文を順に入れる）。`title` はYouTube Shortsだけで使う。
 - `media.file` は動画編集AI・画像生成AIが書き出したファイル名。TikTok・YouTube Shortsは動画が必須。
 - JSONは必ず有効な形式にする（ダブルクォート・コメントなし・最後のカンマなし）。```json のコードブロックに配列で入れ、前後に説明文を混ぜない。
-- `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るものは `"hold"`。**自動化ツールは `"ready"` だけを送信する。**
+- `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るもの、動画が未書き出しのもの、開催後の様子を確認してから出すものは `"hold"` にし、`hold_reason` に理由を書く。**自動化ツールは `"ready"` だけを送信する。**
+- Pinterest は `link` にリンク先（【実運用リンク】のURL）と、`board` にボード名を入れる。
+
+### 動画・画像の自動生成パラメータ（`video_specs`：TikTok／YouTube Shorts／Pinterest）
+動画・画像を CapCut／Remotion／Canva などの自動生成ツールで作るため、動画・画像を使う投稿には `video_specs` を付ける。
+```json
+{
+  "video_specs": {
+    "tool": "capcut",
+    "aspect_ratio": "9:16",
+    "duration_sec": 25,
+    "telops": [
+      {"start": 0, "end": 3, "text": "一人で行くの、こわい？", "position": "center", "size": "L", "highlight": []},
+      {"start": 3, "end": 8, "text": "参加者の8割が一人参加", "position": "center", "size": "L", "highlight": ["8割"]}
+    ],
+    "backgrounds": [
+      {"start": 0, "end": 3, "description": "会場の入口の前で立ち止まる後ろ姿", "asset": "2026-10-20_V03_s1.mp4", "source": "撮影"},
+      {"start": 3, "end": 8, "description": "「8割」の数字を大きく", "asset": "2026-10-20_V03_s2.mp4", "source": "撮影"}
+    ],
+    "voiceover": {"text": "一人でスポーツ会に行くの、こわくない？大丈夫。来てる人の8割は一人参加だよ。", "voice": "明るく温かい声・ややゆっくり", "speed": 1.0},
+    "bgm": {"mood": "明るいアコースティックポップ", "bpm": 110}
+  }
+}
+```
+- `telops` と `backgrounds` は秒数（`start` 以上 `end` 未満）で書き、0秒から `duration_sec` まで隙間なく並べる。テロップは1枚15字前後・2行以内。
+- `voiceover.text` は、ナレーションを読み上げ順につなげた文章にする（音声合成にそのまま渡す）。
+- `backgrounds.asset` は自動生成ツールが読み込む素材のファイル名。撮影素材は `source: "撮影"`、フリー素材・生成素材は `source: "素材"` にする。参加者が写る素材は掲載許可が必要。
+- 動画・画像の書き出しが終わったら、自動生成ツール（または人）が `media_status.json` にそのファイルを `"ready": true` として書き込む。これが `video_ready=True` の印になる。
+
+### 素材連携の完了と `ready` への自動昇格
+- 動画・画像を使う投稿は、素材がそろうまで `"hold"` にする（`hold_reason`：「動画 ○○.mp4 の書き出し・確認後に ready にする」）。
+- `media.file` の素材が `video_ready=True` になった（`media_status.json` に `"ready": true` が入った、または素材フォルダにファイルが置かれた）ら、`tools/build_content.py` が再生成のときに自動で `"ready"` に上げる。
+- ただし、【要確認】【開催後に記入】が残るものや、開催レポートなど別の保留理由（`hold_reason`）があるものは、素材がそろっても `"hold"` のままにする。
+- 検証（文字数・リンク・事実・`video_specs`）でエラーが1つでも出たら、生成そのものが止まる。直すまでは、どの投稿も `"ready"` にならない。
+
+### WordPress投稿用JSON（ブログ記事：WordPress REST API／Make連携）
+```json
+[
+  {
+    "id": "2026-10-20-wordpress-01",
+    "platform": "wordpress",
+    "site": "https://sportsbackstage1.wordpress.com",
+    "endpoint": "https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts",
+    "scheduled_at": "2026-10-20T21:00:00+09:00",
+    "funnel_stage": "オープン教育",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "title": "一人参加でも大丈夫？東京の社会人スポーツ会「Macachette Sports」",
+    "slug": "hajimete-macachette-sports",
+    "content_html": "<h2>一人で来ても浮かない理由</h2><p>参加者の約8割は一人参加です。</p><h3>受付でスタッフが声をかけます</h3><ul><li>動きやすい服装</li><li>室内シューズ</li></ul>",
+    "excerpt": "参加者の約8割が一人参加。体育以来でも大丈夫な、東京の社会人スポーツ会です。",
+    "categories": ["イベント案内"],
+    "tags": ["社会人サークル", "一人参加"],
+    "wp_status": "future",
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "draft",
+    "hold_reason": ""
+  }
+]
+```
+- `title`：検索で見つけてもらえる言葉（地域・種目・「一人参加」「初心者」など）を入れ、60字前後にする。
+- `slug`：半角英小文字・数字・ハイフンだけ（例：`hajimete-macachette-sports`）。
+- `content_html`：見出しは `<h2>`・`<h3>`、箇条書きは `<ul>`／`<ol>`、表は `<table>`、強調は `<strong>`、リンクは `<a href="…">` で書く。`<h1>` は使わない（記事タイトルがH1になる）。リンクは【実運用リンク】のURLだけ。
+- `categories`・`tags`：名前で書く。WordPressのIDへの変換は Make 側で行う（存在しない名前は作らずにエラーにする）。
+- `site`・`endpoint`：投稿先のWordPressサイトとREST APIの送信先（【連携先】の値をそのまま入れる）。
+- `wp_status`：WordPress側の公開状態。予約投稿は `"future"`、すぐ公開は `"publish"`、下書きで止めるときは `"draft"`。キューの送信可否は `status`（`ready` だけ送信）で決める。
+
+### 投稿失敗時のChatWork通知
+自動投稿ツール（Make など）でAPIエラーが起きたら、エラーログを品質確認AIに渡し、原因と「AIによる修正案」をつけてChatWorkの指定ルームへ通知する（くわしい仕様は品質確認AIの【投稿失敗時のエラーハンドリングとChatWork通知】）。
 
 ---
 
@@ -185,6 +264,7 @@
 ## 🚦 【この役割の投稿運用】
 - 導線は「自動投稿媒体（X／Threads／TikTok／Shorts）で集客 ➔ 手動投稿媒体（Instagram）で教育 ➔ 手動配信（公式LINE）で成約」の順に組む。
 - 自動投稿媒体のCTAは人の手直しが入らない前提で、そのまま使える完成文にする（Instagramへ送る／予約フォーム・公式LINEのURLを直接書く）。
+- **プロモーション統括**：WordPress（ブログ）記事は「検索で見つけた人をLINE・予約へ送る」オープン教育の入口として設計する。記事ごとに `categories`・`tags`・`slug` の方針と、本文の途中と最後に置くCTA（公式LINE・予約フォーム）を決めて、キャプション作成AIに渡す。
 
 ## 📤 【タスク実行時の出力フォーマット】
 ユーザーから指示を受け取ったら、冒頭に「ファネル位置：集客／オープン教育／クローズド教育・販売」のどれかを1行で示してから、以下の3部構成で出力してください。

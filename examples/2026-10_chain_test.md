@@ -3,7 +3,8 @@
 `ai_employees/` の定義どおりに3人のAI社員をつなげて、10月の実開催スケジュールと実運用リンクで出力した1セットです。キャプションは投稿運用ルールに従い、手動投稿媒体（Instagram・公式LINE）は手動投稿用フォーマット、自動投稿媒体（X・Threads）は自動投稿用JSONで出しています。
 実行日は **2026/10/17（土）** を想定しています。
 
-> 参加費・持ち物・定員・レンタル用具の中身はスケジュールに含まれていないため、定義のルールどおり【要確認】のままにしています。投稿前に運営が埋めて、事実確認AIを通してください。
+> これはイベント詳細（参加費・持ち物・定員・レンタル）が確定する前に行った連係テストの記録です。当時は情報がなかったため【要確認】のままにしています。
+> **確定後の本番用コンテンツ（10/18〜10/31）は `content/2026-10/` にあります。投稿にはそちらを使ってください。**
 
 ---
 
@@ -144,7 +145,7 @@
 - [ ] 日時・曜日・種目・会場が【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】が残っていない
 - [ ] CTAのURLが【実運用リンク】のもの（Instagramは「プロフィールのリンクから」）
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 ※参加費・持ち物の【要確認】を運営が埋めるまで投稿しません。
@@ -202,7 +203,7 @@ https://note.com/gifted_canna4865
     "scheduled_at": "2026-10-18T12:00:00+09:00",
     "funnel_stage": "集客",
     "event": "2026-10-24 フットサル＠新宿中央公園",
-    "text": "体育以来のフットサル、正直こわくない？\n\n大丈夫だよ。来てる人の8割は一人参加。\nうまさより「楽しい」が大事な会だよ。\n\n⚽ 10/24(土) 14:00-16:00＠新宿中央公園\n申込はこちら👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform\n\n一人で行くの迷ってる人は、当日の流れをまとめた初参加ガイドをLINEで渡してるよ\nhttps://lin.ee/txwrLQ9",
+    "text": "体育以来のフットサル、正直こわくない？\n\n大丈夫だよ。来てる人の8割は一人参加。\nうまさより「楽しい」が大事な会だよ。\n\n⚽ 10/24(土) 14:00-16:00＠新宿中央公園\n申込はこちら👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform\n\n一人で行くの迷ってる人は、当日の流れをまとめた初参加ガイドをLINEで渡してるよ\nhttps://lin.ee/VwtzoAm",
     "thread": [],
     "title": "",
     "hashtags": ["社会人サークル", "一人参加"],
@@ -215,7 +216,7 @@ https://note.com/gifted_canna4865
 ※ 本文に【要確認】がないため、表現チェックAI ➔ 事実確認AI ➔ 品質確認AIでPassになれば `"ready"` に変わり、自動化ツールが送信します。
 
 ### 3. 【次の本陣媒体（Instagram/YouTube/note/LINE）への遷移フック文】
-- X / Threads ➔ 公式LINE：「一人で行くの迷ってる人へ。当日の流れをまとめた初参加ガイドをLINEで渡してるよ → https://lin.ee/txwrLQ9」
+- X / Threads ➔ 公式LINE：「一人で行くの迷ってる人へ。当日の流れをまとめた初参加ガイドをLINEで渡してるよ → https://lin.ee/VwtzoAm」
 - Instagram ➔ 公式LINE：「プロフィールのリンクから公式LINEに登録すると、初参加ガイドが届くよ」
 
 ✅ 次のアクション：表現チェックAI ➔ 事実確認AI（【要確認】の項目を運営に確認して埋める）➔ 品質確認AI ➔ 投稿管理AI（自動：X・ThreadsのJSONをPass後に `ready` にしてキューへ／手動：10/18 21:00 Instagram、10/19 20:00 LINE配信を担当者に割り当て）。
@@ -226,7 +227,7 @@ https://note.com/gifted_canna4865
 
 | 確認項目 | 結果 |
 |---|---|
-| 公式LINE `https://lin.ee/txwrLQ9` がCTAに入っている | ✅（企画の遷移フック・Threads JSON・Instagramのプロフィール設定） |
+| 公式LINE `https://lin.ee/VwtzoAm` がCTAに入っている | ✅（企画の遷移フック・Threads JSON・Instagramのプロフィール設定） |
 | 予約フォームのURLが正しく入っている | ✅（X・Threads JSONの `text`／`cta_url`・LINE配信） |
 | note `https://note.com/gifted_canna4865` | ✅（LINE配信） |
 | Instagram `https://www.instagram.com/macachette_sports` | ✅（企画の遷移フック・X JSONの `thread`） |

@@ -18,11 +18,21 @@
 ### 実運用リンク（全AI社員のCTAに埋め込み済み）
 | 名称 | URL | 使いどころ |
 |---|---|---|
-| 公式LINE登録 | https://lin.ee/txwrLQ9 | すべての投稿の最終CTA（初参加ガイド・先行案内） |
+| 公式LINE登録 | https://lin.ee/VwtzoAm | すべての投稿の最終CTA（初参加ガイド・先行案内） |
 | 予約フォーム | https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform | 日程が決まった人への申込導線（LINE配信・告知・リマインド） |
 | note（オープン教育） | https://note.com/gifted_canna4865 | 長文で不安を解消したい人向け |
 | Instagram（本陣） | https://www.instagram.com/macachette_sports | フロント拡散からの送り先 |
 | アプリ（App Store） | https://itunes.apple.com/app/id1544827472 | アプリでの参加・連絡を案内するときだけ |
+
+### 連携先（自動投稿・通知の接続先。投稿本文のCTAには使わない）
+| 連携先 | URL | API・設定 | メモ |
+|---|---|---|---|
+| WordPress（ブログ） | https://sportsbackstage1.wordpress.com | `POST https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts` | WordPress.com のサイト。初期記事 `/2026/09/04/hello-world/` は公開前に削除する |
+| ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | `POST https://api.chatwork.com/v2/rooms/363171715/messages` | ルームID `363171715`（環境変数 `CHATWORK_ROOM_ID` で上書き可）。APIトークンは `CHATWORK_API_TOKEN` だけで渡す |
+| Pinterest | https://jp.pinterest.com/ | Make の Pinterest 接続 | ボードは接続時に選ぶ |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 公開チャンネルURL（`https://www.twitch.tv/<ユーザー名>`）が決まるまで投稿のCTAには使わない |
+
+連携先は `tools/build_ai_employees.py` の `INTEGRATIONS` で管理しています。APIトークン・パスワードは書かず、`.env`（`.env.example` をコピー。git には入りません）か Make の接続設定で管理します。
 
 - X / Threads / LINE配信 / note は本文にURLを直接書きます。Instagram / TikTok はキャプション内のURLがタップできないため「プロフィールのリンクから」で案内し、プロフィールに公式LINEのURLを置きます。
 
@@ -30,17 +40,19 @@
 | 投稿方法 | 媒体 | 誰が投稿するか | AI社員の出力形式 |
 |---|---|---|---|
 | 手動投稿 | Instagram（フィード／カルーセル／リール／ストーリーズ）・公式LINE（配信・オファー）・note・YouTube（長尺） | 人がデザイン・クローズド教育・記事品質を確認して投稿・配信 | 手動投稿用フォーマット（コピペ用本文＋投稿前チェックリスト） |
-| 自動投稿 | X・Threads・TikTok・YouTube Shorts | API・外部自動化ツール（Make／Zapier／Python連携など）が投稿まで完結 | 自動投稿用JSON（ツールがそのまま読み取って送信できる形式） |
+| 自動投稿 | X・Threads・TikTok・YouTube Shorts・Pinterest | API・外部自動化ツール（Make／Zapier／Python連携など）が投稿まで完結 | 自動投稿用JSON（ツールがそのまま読み取って送信できる形式。動画・画像には `video_specs` 付き） |
+| 自動投稿 | WordPress（ブログ） | WordPress REST API／Make連携で予約公開 | WordPress投稿用JSON（`title`・`content_html`・`categories`・`tags`・`slug`） |
 
 - 自動投稿用JSONの `status` は `"draft"`（作成時）➔ `"ready"`（品質確認AIがPassしたものだけ）➔ 自動化ツールが送信。【要確認】が残るものは `"hold"` のまま止まります。**自動化ツールは `"ready"` だけを送信する設定にしてください。**
-- 2つのフォーマットの中身は、各AI社員ファイルの【投稿運用ルール】にあります。
+- 各フォーマットの中身は、各AI社員ファイルの【投稿運用ルール】にあります。
+- WordPress記事は、ブログ記事作成をキャプション作成AI、カテゴリ・タグ・CTAの方針（プロモーション統括）をCTA・導線設計AIが担当します。
 
 ### 今月のイベントスケジュール（2026年10月）
-| 日付 | 時間 | 種目 | 会場 |
-|---|---|---|---|
-| 10/22(木) | 18:00-21:00 | 🏸 バドミントン | まもり山 |
-| 10/24(土) | 14:00-16:00 | ⚽ フットサル | 新宿中央公園 |
-| 10/31(土) | 11:45-13:45 | 🏐 バレーボール | 中野区中部コミュニティプラザ |
+| 日付 | 時間 | 種目 | 会場 | 参加費 | 持ち物 | 定員 | レンタル |
+|---|---|---|---|---|---|---|---|
+| 10/22(木) | 18:00-21:00 | 🏸 バドミントン | まもり山 | 1,500円（税込） | 動きやすい服装、室内シューズ、タオル、飲み物 | 15名 | ラケット無料レンタルあり（ラケットは手ぶらでOK） |
+| 10/24(土) | 14:00-16:00 | ⚽ フットサル | 新宿中央公園 | 1,800円（税込） | 動きやすい服装、運動靴（スパイク不可）、タオル、飲み物 | 20名 | ボール・ビブス完備（シューズのみご持参） |
+| 10/31(土) | 11:45-13:45 | 🏐 バレーボール | 中野区中部コミュニティプラザ | 1,500円（税込） | 動きやすい服装、室内シューズ、タオル、飲み物 | 18名 | なし（体育館シューズのみご持参） |
 
 ### ファネル
 ```text
@@ -69,6 +81,7 @@
 > |---|---|
 > | 思想・コンセプト・ペルソナ・数字（おひとり様参加率など） | `COMMON_HEADER` |
 > | 公式LINE・予約フォームなどのURL | `LINKS` |
+> | WordPress・ChatWork・Pinterest・Twitch の接続先 | `INTEGRATIONS` |
 > | 今月のイベントスケジュール | `EVENT_YEAR` / `EVENT_MONTH` / `EVENTS` |
 > | 手動投稿／自動投稿の媒体 | `MANUAL_CHANNELS` / `AUTO_CHANNELS` |
 > | 各AI社員の役割・手順・出力フォーマット | `EMPLOYEES` |
@@ -82,8 +95,19 @@
 ```text
 .
 ├── README.md                           # 本手順書
-├── tools/build_ai_employees.py         # 28人分の .md を生成するスクリプト（共通ヘッダーの一元管理）
+├── tools/build_ai_employees.py         # 28人分の .md を生成するスクリプト（共通ヘッダー・リンク・イベント情報の一元管理）
+├── tools/build_content.py              # 月ごとの毎日投稿コンテンツを生成・検証するスクリプト
+├── tools/chatwork_notify.py            # 自動投稿の失敗をChatWorkに通知するメッセージを作る（送信も可）
+├── content/2026-10/                    # 10月（10/18〜10/31）の本番用コンテンツ
+│   ├── source.py                       #   企画・台本・キャプションの元データ（ここを編集する）
+│   ├── auto_posts.json                 #   自動投稿用JSON（X / Threads / TikTok / Shorts / Pinterest）→ 自動化ツールへ
+│   ├── wordpress_posts.json            #   WordPress投稿用JSON（ブログ記事）→ Make の WordPress シナリオへ
+│   ├── media_status.json               #   素材連携の完了状況（書き出した動画を "ready": true で書き込む）
+│   ├── manual_posts.md                 #   手動投稿用フォーマット（Instagram / LINE / note / YouTube長尺）
+│   ├── calendar.md                     #   日別の企画・台本・配信カレンダー
+│   └── qc_report.md                    #   品質確認の判定と自動検証の結果
 ├── examples/2026-10_chain_test.md     # 10月スケジュールでの連係テスト出力（企画立案 ➔ 台本 ➔ キャプション）
+├── examples/chatwork_error_logs.json  # ChatWork通知のテスト用エラーログ（6分類）
 ├── _source/                            # アップロードされた元の定義ファイル（参照用）
 └── ai_employees/                       # 28人のAI社員定義ファイル
     ├── 01_research/                    # 【リサーチ・分析系】
@@ -135,15 +159,18 @@
 2. **イベント情報（正）を1か所にまとめる**
    - 日時・曜日・会場・参加費（税込）・持ち物・定員・レンタル用具・申込URLを、Googleスプレッドシートなどで「正」の表として管理します。事実確認AIは必ずこの表と突き合わせます。
 3. **導線を用意する**
-   - Instagram（https://www.instagram.com/macachette_sports）のプロフィールに公式LINE（https://lin.ee/txwrLQ9）を設定します。TikTok・X・Threadsのプロフィールにも同じURLを置きます。
+   - Instagram（https://www.instagram.com/macachette_sports）のプロフィールに公式LINE（https://lin.ee/VwtzoAm）を設定します。TikTok・X・Threadsのプロフィールにも同じURLを置きます。
    - LINE登録特典を1つ決めます（例：「はじめての参加ガイド（当日の流れ・持ち物・服装）」「一人参加さんの不安Q&A」「次回イベントの先行案内」）。
    - 公式LINEの自動応答（友だち追加時のあいさつ）に特典と予約フォーム（https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform）を入れておきます。文面はCTA・導線設計AIに作らせます。
 4. **素材を集める**
    - 実際の会場・受付・レンタル用具・参加者の笑顔の写真と動画を撮りためます（**参加者が写るものは必ず掲載許可を取る**）。
-5. **自動投稿ツールをつなぐ**（X・Threads・TikTok・YouTube Shorts）
+5. **自動投稿ツールをつなぐ**（X・Threads・TikTok・YouTube Shorts・Pinterest・WordPress）
    - Make／Zapier／Python連携などで、自動投稿用JSONの配列を受け取り、`status` が `"ready"` のものだけを `scheduled_at` の時刻に `platform` へ送信するシナリオを作ります。
-   - 動画（TikTok・Shorts）は `media.file` のファイル名で保存先（Googleドライブなど）から取得します。
+   - 動画（TikTok・Shorts・Pinterest）は `media.file` のファイル名で保存先（Googleドライブなど）から取得します。Pinterest は `link`（リンク先）と `board`（ボード名）も渡します。
+   - WordPress は `wordpress_posts.json` を読み、`title`・`content_html`・`excerpt`・`slug`・`wp_status`・`scheduled_at`（公開日時）を、各記事の `endpoint`（`https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts`、WordPress.com の REST API）に渡します。認証は WordPress.com の OAuth2 です。Make の WordPress モジュールはサイト側にプラグインが必要なため、プラグインを入れられないプランでは Make の HTTP モジュール（OAuth2 接続）から送ります。`categories`・`tags` は名前で入っているので、Make 側でIDに変換します（存在しない名前は作らずにエラーにする）。
    - 送信結果（成功・失敗・投稿URL）を配信管理表に書き戻すようにします。
+   - **失敗したとき**は、エラーログを品質確認AI（または `tools/chatwork_notify.py`）に渡し、ChatWork に通知します（「9. 投稿失敗時のChatWork通知」）。
+   - **動画・画像の自動生成**（任意）：CapCut／Remotion／Canva などに、投稿の `video_specs`（テロップ・背景素材・読み上げテキスト・BGM）を渡して動画を作ります。書き出しが終わったら `media_status.json` に `"<ファイル名>": {"ready": true}` を書き込みます。
 6. **数値記録シートを作る**
    - 下の「7. KPI」の項目を列にしたシートを用意します（数値分析AIにそのまま貼れる形）。
 
@@ -187,6 +214,8 @@
 |---|---|---|---|---|---|
 | X / Threads | 自動 | 集客 | 毎日1〜3投稿 | 一人参加あるある・運動不足の共感・当日の小ネタ | プロフィール／Instagramへ |
 | TikTok / YouTube Shorts | 自動 | 集客 | 毎日1本 | 冒頭3秒フック＋会場の笑顔ダイジェスト（20〜30秒） | プロフィール／Instagramへ |
+| Pinterest | 自動 | 集客 | 毎日1本（ショート動画を転用） | 「一人参加」「初心者」「持ち物」など検索されやすいテーマ | ピンのリンク先（予約フォーム） |
+| WordPress（ブログ） | 自動 | オープン教育 | 月1〜2本 | 月間の日程・当日の流れ・持ち物（検索で見つけた人向け） | 予約フォーム／公式LINEへ |
 | Instagram（リール・カルーセル） | 手動 | オープン教育 | 週4〜5本 | 参加の流れ・持ち物・参加者の声・初心者Q&A（保存される情報） | 公式LINE（特典）へ |
 | Instagram（ストーリーズ） | 手動 | オープン教育 | 毎日 | 準備の様子・当日のライブ感・質問箱・リマインド | 公式LINE／予約フォームへ |
 | YouTube（長尺）／note | 手動 | オープン教育 | 週1〜月2 | 「はじめての人ガイド」「1日の様子まるごと」など深い安心材料 | 公式LINEへ |
@@ -223,7 +252,25 @@
 3. **投稿管理AIに渡す**：同じ日程と企画立案AIの割り振り表を貼ります。投稿管理AIが、フロント拡散 ➔ Instagram ➔ 公式LINE ➔ 予約フォームの1か月分の配信カレンダーを作ります。
 4. **逆算のルール**（両AI社員の定義に組み込み済み）：月初にラインナップ発表 ➔ 14〜8日前に種目別の認知 ➔ 7日前に告知 ➔ 3日前に残り枠のリマインド ➔ 前日に最終案内 ➔ 当日にストーリーズ ➔ 翌日にレポートと次回案内。開催日が近いイベントのLINE配信は1通にまとめます（週2通まで）。
 
-10月分で実際に回した出力は `examples/2026-10_chain_test.md` にあります。
+5. **1か月分のコンテンツを生成する**：企画立案AI ➔ 台本作成AI ➔ キャプション作成AI ➔ 品質確認AI の出力を `content/<年-月>/source.py` にまとめ、次を実行します。
+   ```bash
+   python3 tools/build_content.py 2026-10
+   ```
+   `auto_posts.json`・`manual_posts.md`・`calendar.md`・`qc_report.md` が書き出されます。次のどれかに当てはまると、エラーで止まって何も書き出しません。
+   - JSONとして読み込めない
+   - 文字数の上限を超えている（X：全角140字・URLは1つ23字換算／Threads：500字／TikTok：2,200字／Shorts：タイトル100字）
+   - 実運用リンクにないURLがある、またはTikTok・Shorts・Instagramの本文にURLがある
+   - 日付・曜日・時間・会場・参加費・定員がイベント情報と違う
+   - 告知の投稿が開催後になっている
+   - `ready` の投稿に【要確認】が残っている
+6. **`hold` を `ready` にする**：自動投稿のうち、次の2つは `hold` で止めてあります。
+   - **TikTok・Shorts・Pinterest（素材連携で自動昇格）**：動画ファイル（`media.file` の名前）の素材がそろうと `video_ready=True` になり、再生成のときに自動で `ready` に上がります。`video_ready=True` になる条件は次のどれか1つです。
+     - `media_status.json` に `{"2026-10-19_V02.mp4": {"ready": true}}` のように書き込まれている（自動生成ツールや Make が書き込む）
+     - `content/2026-10/media/` にそのファイルが置かれている
+     - `source.py` の VIDEOS に `video_ready=True` と書いてある
+   - **開催レポート**：素材がそろっても自動では上がりません。開催後に様子を確認し、【開催後に記入】を埋めて `source.py` の `hold_reason` を消してから再生成します。
+
+10月分の本番用コンテンツは `content/2026-10/`、詳細が確定する前の連係テストは `examples/2026-10_chain_test.md` にあります。
 
 ## 6. PDCAサイクル（週次・月次）
 
@@ -268,3 +315,98 @@
 - **手動投稿媒体（Instagram・公式LINE・note・YouTube長尺）**：品質確認AIでPassになっても、投稿・配信するのは人。手動投稿用フォーマットのチェックリストをすべて埋めてから投稿する。
 - **自動投稿媒体（X・Threads・TikTok・YouTube Shorts）**：人の目を通らずに公開されるため、品質確認AIのPassで `"ready"` になったものだけを自動化ツールが送信する。`"draft"`・`"hold"` は絶対に送信しない。送信に失敗したものは投稿管理AIが原因を記録し、再送するか手動投稿に切り替える。
 - **フォーマットを崩さない**：自動投稿用JSONは、キー名や構造を人の手で変えない（自動化ツールが読めなくなる）。直すときは `text`・`thread`・`title` の中身だけを直す。
+
+## 9. 投稿失敗時のChatWork通知
+
+自動投稿ツール（Make など）でAPIエラーが起きたら、品質確認AIが原因を分類して「AIによる修正案」をつけ、ChatWork の指定ルームに通知します。仕様の全文は `ai_employees/04_review_quality/quality_controller.md` の【投稿失敗時のエラーハンドリングとChatWork通知】にあります。
+
+**流れ**
+1. Make のエラーハンドラー（Error handler ルート）で、失敗した投稿のエラーログを作る（`post_id`・`platform`・`scheduled_at`・`attempt`・`error`・`post`）。
+2. 品質確認AIのプロンプトにエラーログを渡し、通知JSON（`room_id`・`body`・`error_class`・`retry`・`fixed_post`）を作ってもらう。AIを使わない場合は `tools/chatwork_notify.py` が分類ごとの定型の修正案で同じ形の通知を作る。
+3. ChatWork API（`POST https://api.chatwork.com/v2/rooms/{room_id}/messages`、ヘッダー `X-ChatWorkToken`、フォームの `body`）に送る。
+4. `retry.auto` が `true`（`rate_limit`・`server`）なら、`retry.after_minutes` 後に自動で再送する（最大3回）。それ以外は、通知を見た運営・投稿管理AIが対応する。
+
+**原因の分類**
+| 分類 | 例 | 自動リトライ | 次の対応 |
+|---|---|---|---|
+| `auth` | HTTP 401/403、トークン切れ | なし | Make の接続を再認証してから手動で再送 |
+| `rate_limit` | HTTP 429 | あり（15分間隔・最大3回） | 時間をあけて自動で再送 |
+| `content` | HTTP 400/422、文字数オーバー・重複投稿 | なし | AIの修正案（`fixed_post`）で直し、品質確認AIが再チェックしてから再送 |
+| `media` | 動画が見つからない・形式が合わない | なし | 素材を書き出し直して `media_status.json` を更新 |
+| `server` | HTTP 5xx・タイムアウト | あり（5分 ➔ 15分 ➔ 60分） | 自動で再送 |
+| `unknown` | 上記以外 | なし | `hold` に戻してエラーログを確認 |
+
+**スクリプトでの使い方**
+```bash
+python3 tools/chatwork_notify.py error_log.json          # 通知内容を表示するだけ（送信しない）
+cp .env.example .env   # 初回だけ。.env の CHATWORK_API_TOKEN= にトークンを入れる（git には入らない）
+python3 tools/chatwork_notify.py error_log.json --send   # ルーム 363171715 に送信
+python3 tools/chatwork_notify.py --self-test              # 6分類のテスト（examples/chatwork_error_logs.json）
+```
+
+**守ること**
+- 通知先ルームは https://www.chatwork.com/#!rid363171715（ルームID `363171715`）。別のルームに送るときは環境変数 `CHATWORK_ROOM_ID` で上書きする。
+- ChatWork の APIトークンは Make の接続設定か環境変数 `CHATWORK_API_TOKEN`（`.env`）で管理し、リポジトリ・プロンプト・JSONには書かない。エラーログに混ざったトークンやパスワードは、通知の前に伏せ字（`****`）にする（`tools/chatwork_notify.py` は自動で伏せる）。
+- `fixed_post` はそのまま再送しない。品質確認AIの再チェックでPassになってから `ready` に戻す。
+- 同じ投稿の同じエラーは1回だけ通知し、10分以内に5件以上失敗したら1通にまとめる（Make 側で設定）。
+
+## 10. 予定時刻を過ぎた投稿の扱い（運用開始日・停止明けのガイドライン）
+
+運用を始めた日や、自動投稿ツールが止まっていたあとは、`scheduled_at` を過ぎた `ready` の投稿が残ります。告知の時期がずれると「明日やるよ」が当日に出るなど、事実と食い違うおそれがあるため、**過ぎた投稿はそのまま自動で送らず**、次のルールで扱います。
+
+**自動投稿ツール（Make など）の設定**
+- `scheduled_at` を過ぎて30分以内なら、そのまま送信する。
+- 30分を超えて過ぎたものは自動では送らず、配信管理表に「期限切れ」と記録して ChatWork に1通まとめて知らせる。
+
+**期限切れになった投稿の判断（投稿管理AI・運営）**
+| 状況 | 対応 |
+|---|---|
+| その日のうちで、本文の内容がまだ正しい（「今日」「明日」などの表現が今の時点でも合っている） | **手動投稿でカバー**：`auto_posts.json` の `text` をコピーして、運営が手で投稿する。投稿後、配信管理表を「手動で投稿済み」にする |
+| 翌日以降に出しても内容が正しく、開催開始より前に出せる | **繰り延べ**：`source.py` の日時を翌日以降の空いている時間に変えて再生成する（同じ媒体の投稿と重ならない時間にする）。告知が開催開始より後になる場合は、検証でエラーになって止まる |
+| 「明日」「今日」など日付に依存していて、もう合わない／開催が終わった | **見送り**：投稿しない。配信管理表に「見送り」と理由を書く |
+
+**2026/10/18（運用開始日）の適用**
+| 投稿 | 予定 | 対応 |
+|---|---|---|
+| X `2026-10-18-x-01`（今週は2つやるよ） | 07:30（過ぎている） | 当日中は内容が正しいので、**手動投稿でカバー**（夕方までに運営がコピペで投稿）。間に合わなければ見送り（10/19 07:30 の X が同じイベントを告知するため） |
+| Threads `2026-10-18-threads-01`（今週は2つ） | 12:00（過ぎている） | 同上。**当日中に手動投稿でカバー** |
+| TikTok・YouTube Shorts・Pinterest（V01） | 12:00／18:00／20:00 | もともと `hold`（動画の書き出し待ち）。今日中に書き出せなければ見送り |
+| Instagram ストーリーズ・公式LINE・Instagram カルーセル | 19:00／20:00／21:00 | 手動投稿の予定どおり |
+
+## 11. 自動投稿ツールの稼働設定（ステップ5）のチェックリスト
+
+Make を例にした接続の順番です。上から順に設定し、最後にテスト投稿で確認します。
+
+**A. 事前準備**
+- [ ] WordPress.com の初期記事（`/2026/09/04/hello-world/`）を削除し、カテゴリ「イベント案内」とタグ（`wordpress_posts.json` の `tags`）を作っておく
+- [ ] Instagram・TikTok・X・Threads のプロフィールに公式LINE（https://lin.ee/VwtzoAm）を設定する
+- [ ] `.env.example` を `.env` にコピーし、`CHATWORK_API_TOKEN` を入れる（ChatWork の「サービス連携 ➔ APIトークン」で発行）
+- [ ] 動画・画像の保存先（Googleドライブのフォルダなど）を決め、`media.file` のファイル名で置くルールを共有する
+
+**B. Make の接続（Connections）**
+| 接続 | 使う投稿 | 確認すること |
+|---|---|---|
+| X | `platform: "x"` | 投稿権限つきで認可されているか |
+| Threads | `"threads"` | Instagram と同じ Meta アカウントで認可されているか |
+| TikTok | `"tiktok"` | 動画の直接投稿の権限があるか |
+| YouTube | `"youtube_shorts"` | 投稿先チャンネルが正しいか |
+| Pinterest | `"pinterest"` | `board` と同じ名前のボードがあるか |
+| WordPress.com（HTTP・OAuth2） | `wordpress_posts.json` | `endpoint` に送れるか（`wp_status: "draft"` でテスト） |
+| ChatWork | 失敗通知 | ルーム 363171715 にテストメッセージが届くか |
+
+**C. シナリオ（Scenarios）**
+1. **投稿キュー**（15分ごとに実行）：`auto_posts.json` と `wordpress_posts.json` を読み込む（GitHub の raw URL、またはGoogleドライブに置いたコピー）。次のすべてに当てはまるものだけを送る。
+   - `status` が `"ready"`
+   - `scheduled_at` が今から30分前〜今の間
+   - まだ送っていない（配信管理表に記録がない）
+2. **媒体ごとの送信**：Router で `platform` ごとに分け、各媒体のモジュールに `text`・`title`・`media`・`link`・`board` を渡す。WordPress は HTTP モジュールで `endpoint` に POST する。
+3. **結果の記録**：成功したら投稿URLを、失敗したらエラー内容を、配信管理表に書き戻す。
+4. **エラーハンドラー**：各送信モジュールに Error handler を付け、エラーログ（`post_id`・`platform`・`scheduled_at`・`attempt`・`error`・`post`）を作る。品質確認AIの通知仕様（または `tools/chatwork_notify.py`）で通知を作り、ChatWork に送る。`retry.auto` が `true` のときだけ `retry.after_minutes` 後に再送する。
+5. **期限切れ**：`scheduled_at` を30分以上過ぎた `ready` は送らず、「期限切れ」として記録し、ChatWork に1通まとめて知らせる（「10. 予定時刻を過ぎた投稿の扱い」）。
+6. **素材連携**（任意）：動画の書き出しが終わったら `media_status.json` に `"ready": true` を書き込み、`python3 tools/build_content.py 2026-10` を実行して JSON を作り直す。
+
+**D. 稼働前のテスト**
+- [ ] `python3 tools/build_content.py 2026-10` と `python3 tools/chatwork_notify.py --self-test` が通る
+- [ ] X・Threads にテスト投稿を1件だけ流し、送信 ➔ 配信管理表への記録まで確認する
+- [ ] わざと失敗する投稿（例：上限を超える長文）を1件流し、ChatWork のルームに通知が届くか確認する
+- [ ] WordPress に `wp_status: "draft"` で1件送り、見出し・表・リンクの表示を確認してから `"future"` に戻す
