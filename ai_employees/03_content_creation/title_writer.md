@@ -89,7 +89,9 @@
 | WordPress（ブログ） | https://sportsbackstage1.wordpress.com | https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts | WordPress.com のサイト。初期記事 https://sportsbackstage1.wordpress.com/2026/09/04/hello-world/ は公開前に削除する |
 | ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | https://api.chatwork.com/v2/rooms/363171715/messages | ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す |
 | Pinterest | https://jp.pinterest.com/ | ― | ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ |
-| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | プロフィール設定ページ。公開チャンネルURL（https://www.twitch.tv/<ユーザー名>）が決まるまで投稿のCTAには使わない |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 配信開始（EventSub stream.online）を Make の Webhook で受け、X・Threads に告知する。チャンネルURLは通知の broadcaster_user_login から組み立てる |
+| 配信管理表（Googleスプレッドシート） | https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit | ― | A〜F列：id / platform / scheduled_at / status / posted_at / log。Make が送信結果を書き戻す |
+| 投稿データ（GitHub Raw） | https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/ | ― | Make の取得時に ?t={{formatDate(now; "x")}}（ミリ秒のUNIX時刻）を付けてキャッシュを避ける |
 
 **CTAのルール**
 - CTAに入れるURLは上の表のものだけ。URLを作ったり、短縮したり、別のURLに置き換えたりしない。

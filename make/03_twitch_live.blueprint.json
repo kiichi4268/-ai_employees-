@@ -1,0 +1,142 @@
+{
+  "name": "03 Twitch 配信開始 ➔ X / Threads 告知",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": null,
+        "maxResults": 1
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "note": "Twitch EventSub（stream.online）の callback にこのURLを登録する"
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "module": "gateway:WebhookRespond",
+              "version": 1,
+              "mapper": {
+                "status": "200",
+                "body": "{{1.challenge}}",
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/plain"
+                  }
+                ]
+              },
+              "filter": {
+                "name": "EventSub の確認（challenge）",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.challenge}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": -150
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 4,
+              "module": "gateway:WebhookRespond",
+              "version": 1,
+              "mapper": {
+                "status": "204",
+                "body": "",
+                "headers": []
+              },
+              "filter": {
+                "name": "配信開始（stream.online）",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.subscription.type}}",
+                      "o": "text:equal",
+                      "b": "stream.online"
+                    }
+                  ]
+                ]
+              },
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 150
+                }
+              }
+            },
+            {
+              "id": 5,
+              "module": "google-sheets:addRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "mapper": {
+                "mode": "map",
+                "spreadsheetId": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+                "sheetId": "配信管理表",
+                "tableFirstRow": "A1:Z1",
+                "includesHeaders": true,
+                "values": {
+                  "0": "{{\"live-\" + formatDate(now; \"YYYYMMDDHHmm\")}}",
+                  "1": "x / threads",
+                  "2": "{{formatDate(now; \"YYYY-MM-DDTHH:mm:ssZ\")}}",
+                  "3": "module_missing",
+                  "4": "",
+                  "5": "ライブ配信スタート！🎥\n今Twitchで配信中だよ。気軽にのぞいてね\nhttps://www.twitch.tv/{{1.event.broadcaster_user_login}}\n\nスポーツ会の申込はこちら👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform"
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 150
+                },
+                "note": "この後に X・Threads の投稿モジュールを追加し、本文に log と同じ文面（TWITCH_LIVE_TEXT）を入れる"
+              }
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "instant": true,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "sequential": false
+    }
+  }
+}

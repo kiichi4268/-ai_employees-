@@ -10,6 +10,7 @@ content/<年-月>/source.py（企画・台本・キャプションの元デー�
   - manual_posts.md  手動投稿用フォーマット（Instagram / 公式LINE / note / YouTube長尺）
   - calendar.md      日別の企画・台本・配信カレンダー
   - qc_report.md     品質確認AIの判定と自動検証の結果
+  - sheet_rows.json  配信管理表の行番号の対応（id ➔ 行番号）。一度決まった行番号は変えない
 
 イベント情報・リンク・投稿媒体は tools/build_ai_employees.py の定義をそのまま使う。
 
@@ -20,6 +21,7 @@ video_ready=True になる条件（どれか1つ）：
   - source.py の VIDEOS に video_ready=True と書いてある
 """
 
+import csv
 import datetime
 import importlib.util
 import json
@@ -348,6 +350,23 @@ def build_wordpress(src, errors):
     return posts
 
 
+def assign_sheet_rows(folder, posts):
+    """配信管理表の行番号を id ごとに固定する（2行目から。既存の id は同じ行のまま、新しい id は末尾に足す）。"""
+    path = folder / "sheet_rows.json"
+    rows = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    for p in sorted(posts, key=lambda p: (p["scheduled_at"], p["id"])):
+        if p["id"] not in rows:
+            rows[p["id"]] = max(rows.values(), default=1) + 1
+    path.write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return rows
+
+
+def sheet_values(posts):
+    """配信管理表（A〜F列）に入れる値。行番号順に並べる。"""
+    return [[p["id"], p["platform"], p["scheduled_at"], p["status"], "", p["hold_reason"]]
+            for p in sorted(posts, key=lambda p: p["sheet_row"])]
+
+
 def public(post):
     return {k: v for k, v in post.items() if not k.startswith("_")}
 
@@ -481,6 +500,11 @@ def main():
     manual = build_manual(src, errors)
     payload = json.dumps([public(p) for p in auto], ensure_ascii=False, indent=2)
     wp_payload = json.dumps(wordpress, ensure_ascii=False, indent=2)
+    rows = assign_sheet_rows(folder, auto + wordpress)
+    for p in auto + wordpress:
+        p["sheet_row"] = rows[p["id"]]
+    payload = json.dumps([public(p) for p in auto], ensure_ascii=False, indent=2)
+    wp_payload = json.dumps(wordpress, ensure_ascii=False, indent=2)
     json.loads(payload)
     json.loads(wp_payload)
     if errors:
@@ -489,6 +513,11 @@ def main():
 
     (folder / "auto_posts.json").write_text(payload + "\n", encoding="utf-8")
     (folder / "wordpress_posts.json").write_text(wp_payload + "\n", encoding="utf-8")
+    with (folder / "sheet_seed.csv").open("w", encoding="utf-8", newline="") as f:
+        csv.writer(f).writerows([base.SHEET_COLUMNS] + sheet_values(auto + wordpress))
+    (folder / "sheet_seed.json").write_text(
+        json.dumps({"columns": base.SHEET_COLUMNS, "values": sheet_values(auto + wordpress)},
+                   ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     (folder / "manual_posts.md").write_text(render_manual(manual), encoding="utf-8")
     (folder / "calendar.md").write_text(render_calendar(src, auto + wordpress, manual), encoding="utf-8")
     (folder / "qc_report.md").write_text(render_qc(auto, wordpress, manual, promoted), encoding="utf-8")
