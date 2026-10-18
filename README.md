@@ -30,10 +30,12 @@
 | 投稿方法 | 媒体 | 誰が投稿するか | AI社員の出力形式 |
 |---|---|---|---|
 | 手動投稿 | Instagram（フィード／カルーセル／リール／ストーリーズ）・公式LINE（配信・オファー）・note・YouTube（長尺） | 人がデザイン・クローズド教育・記事品質を確認して投稿・配信 | 手動投稿用フォーマット（コピペ用本文＋投稿前チェックリスト） |
-| 自動投稿 | X・Threads・TikTok・YouTube Shorts | API・外部自動化ツール（Make／Zapier／Python連携など）が投稿まで完結 | 自動投稿用JSON（ツールがそのまま読み取って送信できる形式） |
+| 自動投稿 | X・Threads・TikTok・YouTube Shorts・Pinterest | API・外部自動化ツール（Make／Zapier／Python連携など）が投稿まで完結 | 自動投稿用JSON（ツールがそのまま読み取って送信できる形式。動画・画像には `video_specs` 付き） |
+| 自動投稿 | WordPress（ブログ） | WordPress REST API／Make連携で予約公開 | WordPress投稿用JSON（`title`・`content_html`・`categories`・`tags`・`slug`） |
 
 - 自動投稿用JSONの `status` は `"draft"`（作成時）➔ `"ready"`（品質確認AIがPassしたものだけ）➔ 自動化ツールが送信。【要確認】が残るものは `"hold"` のまま止まります。**自動化ツールは `"ready"` だけを送信する設定にしてください。**
-- 2つのフォーマットの中身は、各AI社員ファイルの【投稿運用ルール】にあります。
+- 各フォーマットの中身は、各AI社員ファイルの【投稿運用ルール】にあります。
+- WordPress記事は、ブログ記事作成をキャプション作成AI、カテゴリ・タグ・CTAの方針（プロモーション統括）をCTA・導線設計AIが担当します。
 
 ### 今月のイベントスケジュール（2026年10月）
 | 日付 | 時間 | 種目 | 会場 | 参加費 | 持ち物 | 定員 | レンタル |
@@ -84,13 +86,17 @@
 ├── README.md                           # 本手順書
 ├── tools/build_ai_employees.py         # 28人分の .md を生成するスクリプト（共通ヘッダー・リンク・イベント情報の一元管理）
 ├── tools/build_content.py              # 月ごとの毎日投稿コンテンツを生成・検証するスクリプト
+├── tools/chatwork_notify.py            # 自動投稿の失敗をChatWorkに通知するメッセージを作る（送信も可）
 ├── content/2026-10/                    # 10月（10/18〜10/31）の本番用コンテンツ
 │   ├── source.py                       #   企画・台本・キャプションの元データ（ここを編集する）
-│   ├── auto_posts.json                 #   自動投稿用JSON（X / Threads / TikTok / Shorts）→ 自動化ツールへ
+│   ├── auto_posts.json                 #   自動投稿用JSON（X / Threads / TikTok / Shorts / Pinterest）→ 自動化ツールへ
+│   ├── wordpress_posts.json            #   WordPress投稿用JSON（ブログ記事）→ Make の WordPress シナリオへ
+│   ├── media_status.json               #   素材連携の完了状況（書き出した動画を "ready": true で書き込む）
 │   ├── manual_posts.md                 #   手動投稿用フォーマット（Instagram / LINE / note / YouTube長尺）
 │   ├── calendar.md                     #   日別の企画・台本・配信カレンダー
 │   └── qc_report.md                    #   品質確認の判定と自動検証の結果
 ├── examples/2026-10_chain_test.md     # 10月スケジュールでの連係テスト出力（企画立案 ➔ 台本 ➔ キャプション）
+├── examples/chatwork_error_logs.json  # ChatWork通知のテスト用エラーログ（6分類）
 ├── _source/                            # アップロードされた元の定義ファイル（参照用）
 └── ai_employees/                       # 28人のAI社員定義ファイル
     ├── 01_research/                    # 【リサーチ・分析系】
@@ -147,10 +153,13 @@
    - 公式LINEの自動応答（友だち追加時のあいさつ）に特典と予約フォーム（https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform）を入れておきます。文面はCTA・導線設計AIに作らせます。
 4. **素材を集める**
    - 実際の会場・受付・レンタル用具・参加者の笑顔の写真と動画を撮りためます（**参加者が写るものは必ず掲載許可を取る**）。
-5. **自動投稿ツールをつなぐ**（X・Threads・TikTok・YouTube Shorts）
+5. **自動投稿ツールをつなぐ**（X・Threads・TikTok・YouTube Shorts・Pinterest・WordPress）
    - Make／Zapier／Python連携などで、自動投稿用JSONの配列を受け取り、`status` が `"ready"` のものだけを `scheduled_at` の時刻に `platform` へ送信するシナリオを作ります。
-   - 動画（TikTok・Shorts）は `media.file` のファイル名で保存先（Googleドライブなど）から取得します。
+   - 動画（TikTok・Shorts・Pinterest）は `media.file` のファイル名で保存先（Googleドライブなど）から取得します。Pinterest は `link`（リンク先）と `board`（ボード名）も渡します。
+   - WordPress は `wordpress_posts.json` を読み、`title`・`content_html`・`excerpt`・`slug`・`wp_status`・`scheduled_at`（公開日時）を WordPress REST API（`POST /wp-json/wp/v2/posts`）または Make の WordPress モジュールに渡します。`categories`・`tags` は名前で入っているので、Make 側でIDに変換します（存在しない名前は作らずにエラーにする）。
    - 送信結果（成功・失敗・投稿URL）を配信管理表に書き戻すようにします。
+   - **失敗したとき**は、エラーログを品質確認AI（または `tools/chatwork_notify.py`）に渡し、ChatWork に通知します（「9. 投稿失敗時のChatWork通知」）。
+   - **動画・画像の自動生成**（任意）：CapCut／Remotion／Canva などに、投稿の `video_specs`（テロップ・背景素材・読み上げテキスト・BGM）を渡して動画を作ります。書き出しが終わったら `media_status.json` に `"<ファイル名>": {"ready": true}` を書き込みます。
 6. **数値記録シートを作る**
    - 下の「7. KPI」の項目を列にしたシートを用意します（数値分析AIにそのまま貼れる形）。
 
@@ -194,6 +203,8 @@
 |---|---|---|---|---|---|
 | X / Threads | 自動 | 集客 | 毎日1〜3投稿 | 一人参加あるある・運動不足の共感・当日の小ネタ | プロフィール／Instagramへ |
 | TikTok / YouTube Shorts | 自動 | 集客 | 毎日1本 | 冒頭3秒フック＋会場の笑顔ダイジェスト（20〜30秒） | プロフィール／Instagramへ |
+| Pinterest | 自動 | 集客 | 毎日1本（ショート動画を転用） | 「一人参加」「初心者」「持ち物」など検索されやすいテーマ | ピンのリンク先（予約フォーム） |
+| WordPress（ブログ） | 自動 | オープン教育 | 月1〜2本 | 月間の日程・当日の流れ・持ち物（検索で見つけた人向け） | 予約フォーム／公式LINEへ |
 | Instagram（リール・カルーセル） | 手動 | オープン教育 | 週4〜5本 | 参加の流れ・持ち物・参加者の声・初心者Q&A（保存される情報） | 公式LINE（特典）へ |
 | Instagram（ストーリーズ） | 手動 | オープン教育 | 毎日 | 準備の様子・当日のライブ感・質問箱・リマインド | 公式LINE／予約フォームへ |
 | YouTube（長尺）／note | 手動 | オープン教育 | 週1〜月2 | 「はじめての人ガイド」「1日の様子まるごと」など深い安心材料 | 公式LINEへ |
@@ -242,10 +253,11 @@
    - 告知の投稿が開催後になっている
    - `ready` の投稿に【要確認】が残っている
 6. **`hold` を `ready` にする**：自動投稿のうち、次の2つは `hold` で止めてあります。
-   - **TikTok・Shorts**：動画ファイル（`media.file` の名前）を書き出して確認したら、`ready` にします。
-   - **開催レポート**：開催後に様子を確認し、【開催後に記入】を埋めてから `ready` にします。
-
-   `source.py` で、動画は `video_ready=True` を足す、開催レポートは `hold_reason` を消す。そのあと再生成すると `ready` になります。
+   - **TikTok・Shorts・Pinterest（素材連携で自動昇格）**：動画ファイル（`media.file` の名前）の素材がそろうと `video_ready=True` になり、再生成のときに自動で `ready` に上がります。`video_ready=True` になる条件は次のどれか1つです。
+     - `media_status.json` に `{"2026-10-19_V02.mp4": {"ready": true}}` のように書き込まれている（自動生成ツールや Make が書き込む）
+     - `content/2026-10/media/` にそのファイルが置かれている
+     - `source.py` の VIDEOS に `video_ready=True` と書いてある
+   - **開催レポート**：素材がそろっても自動では上がりません。開催後に様子を確認し、【開催後に記入】を埋めて `source.py` の `hold_reason` を消してから再生成します。
 
 10月分の本番用コンテンツは `content/2026-10/`、詳細が確定する前の連係テストは `examples/2026-10_chain_test.md` にあります。
 
@@ -292,3 +304,35 @@
 - **手動投稿媒体（Instagram・公式LINE・note・YouTube長尺）**：品質確認AIでPassになっても、投稿・配信するのは人。手動投稿用フォーマットのチェックリストをすべて埋めてから投稿する。
 - **自動投稿媒体（X・Threads・TikTok・YouTube Shorts）**：人の目を通らずに公開されるため、品質確認AIのPassで `"ready"` になったものだけを自動化ツールが送信する。`"draft"`・`"hold"` は絶対に送信しない。送信に失敗したものは投稿管理AIが原因を記録し、再送するか手動投稿に切り替える。
 - **フォーマットを崩さない**：自動投稿用JSONは、キー名や構造を人の手で変えない（自動化ツールが読めなくなる）。直すときは `text`・`thread`・`title` の中身だけを直す。
+
+## 9. 投稿失敗時のChatWork通知
+
+自動投稿ツール（Make など）でAPIエラーが起きたら、品質確認AIが原因を分類して「AIによる修正案」をつけ、ChatWork の指定ルームに通知します。仕様の全文は `ai_employees/04_review_quality/quality_controller.md` の【投稿失敗時のエラーハンドリングとChatWork通知】にあります。
+
+**流れ**
+1. Make のエラーハンドラー（Error handler ルート）で、失敗した投稿のエラーログを作る（`post_id`・`platform`・`scheduled_at`・`attempt`・`error`・`post`）。
+2. 品質確認AIのプロンプトにエラーログを渡し、通知JSON（`room_id`・`body`・`error_class`・`retry`・`fixed_post`）を作ってもらう。AIを使わない場合は `tools/chatwork_notify.py` が分類ごとの定型の修正案で同じ形の通知を作る。
+3. ChatWork API（`POST https://api.chatwork.com/v2/rooms/{room_id}/messages`、ヘッダー `X-ChatWorkToken`、フォームの `body`）に送る。
+4. `retry.auto` が `true`（`rate_limit`・`server`）なら、`retry.after_minutes` 後に自動で再送する（最大3回）。それ以外は、通知を見た運営・投稿管理AIが対応する。
+
+**原因の分類**
+| 分類 | 例 | 自動リトライ | 次の対応 |
+|---|---|---|---|
+| `auth` | HTTP 401/403、トークン切れ | なし | Make の接続を再認証してから手動で再送 |
+| `rate_limit` | HTTP 429 | あり（15分間隔・最大3回） | 時間をあけて自動で再送 |
+| `content` | HTTP 400/422、文字数オーバー・重複投稿 | なし | AIの修正案（`fixed_post`）で直し、品質確認AIが再チェックしてから再送 |
+| `media` | 動画が見つからない・形式が合わない | なし | 素材を書き出し直して `media_status.json` を更新 |
+| `server` | HTTP 5xx・タイムアウト | あり（5分 ➔ 15分 ➔ 60分） | 自動で再送 |
+| `unknown` | 上記以外 | なし | `hold` に戻してエラーログを確認 |
+
+**スクリプトでの使い方**
+```bash
+python3 tools/chatwork_notify.py error_log.json          # 通知内容を表示するだけ（送信しない）
+CHATWORK_API_TOKEN=… CHATWORK_ROOM_ID=… python3 tools/chatwork_notify.py error_log.json --send
+python3 tools/chatwork_notify.py --self-test              # 6分類のテスト（examples/chatwork_error_logs.json）
+```
+
+**守ること**
+- ChatWork の APIトークン・ルームIDは Make の接続設定や環境変数で管理し、リポジトリ・プロンプト・JSONには書かない。エラーログに混ざったトークンやパスワードは、通知の前に伏せ字（`****`）にする（`tools/chatwork_notify.py` は自動で伏せる）。
+- `fixed_post` はそのまま再送しない。品質確認AIの再チェックでPassになってから `ready` に戻す。
+- 同じ投稿の同じエラーは1回だけ通知し、10分以内に5件以上失敗したら1通にまとめる（Make 側で設定）。

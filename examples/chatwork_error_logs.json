@@ -1,0 +1,71 @@
+[
+  {
+    "expect": "content",
+    "log": {
+      "post_id": "2026-10-19-x-01",
+      "platform": "x",
+      "scheduled_at": "2026-10-19T07:30:00+09:00",
+      "attempt": 1,
+      "occurred_at": "2026-10-19T07:30:05+09:00",
+      "error": {"http_status": 400, "code": "186", "message": "Tweet needs to be a bit shorter."},
+      "post": {"text": "月曜おつかれさま。\n今週木曜は、仕事帰りにバドミントンだよ🏸", "media": [], "cta_url": "https://lin.ee/txwrLQ9"},
+      "ai_fix": "1行目の「月曜おつかれさま。」を削り、全角140字以内に収める",
+      "ai_fixed_post": {"text": "今週木曜は、仕事帰りにバドミントンだよ🏸"}
+    }
+  },
+  {
+    "expect": "auth",
+    "log": {
+      "post_id": "2026-10-19-threads-01",
+      "platform": "threads",
+      "scheduled_at": "2026-10-19T12:00:00+09:00",
+      "attempt": 1,
+      "error": {"http_status": 401, "code": "190", "message": "Invalid OAuth access token abcd1234secret"},
+      "post": {"text": "（本文）", "media": []}
+    }
+  },
+  {
+    "expect": "rate_limit",
+    "log": {
+      "post_id": "2026-10-20-x-01",
+      "platform": "x",
+      "scheduled_at": "2026-10-20T07:30:00+09:00",
+      "attempt": 1,
+      "error": {"http_status": 429, "code": "88", "message": "Rate limit exceeded"},
+      "post": {"text": "（本文）", "media": []}
+    }
+  },
+  {
+    "expect": "media",
+    "log": {
+      "post_id": "2026-10-19-tiktok-01",
+      "platform": "tiktok",
+      "scheduled_at": "2026-10-19T12:00:00+09:00",
+      "attempt": 1,
+      "error": {"http_status": 400, "code": "file_not_found", "message": "video file not found"},
+      "post": {"text": "（本文）", "media": [{"type": "video", "file": "2026-10-19_V02.mp4"}]}
+    }
+  },
+  {
+    "expect": "server",
+    "log": {
+      "post_id": "2026-10-20-wordpress-01",
+      "platform": "wordpress",
+      "scheduled_at": "2026-10-20T21:00:00+09:00",
+      "attempt": 3,
+      "error": {"http_status": 503, "code": "", "message": "Service Unavailable"},
+      "post": {"text": "", "media": []}
+    }
+  },
+  {
+    "expect": "unknown",
+    "log": {
+      "post_id": "2026-10-21-pinterest-01",
+      "platform": "pinterest",
+      "scheduled_at": "2026-10-21T20:00:00+09:00",
+      "attempt": 1,
+      "error": {"http_status": 418, "code": "", "message": "Unexpected response"},
+      "post": {"text": "（本文）", "media": []}
+    }
+  }
+]

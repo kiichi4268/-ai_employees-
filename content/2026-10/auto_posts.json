@@ -52,7 +52,105 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-18_V01.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-18_V01.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "全力で体を動かしたの、いつ？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "text": "体育以来でも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/22(木) バドミントン／10/24(土) フットサル",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "仕事帰りの人が伸びをする後ろ姿",
+          "asset": "2026-10-18_V01_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "受付でスタッフが笑顔で迎える",
+          "asset": "2026-10-18_V01_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "description": "バドミントン・フットサルのダイジェスト（1〜2秒で切り替え）",
+          "asset": "2026-10-18_V01_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップを大きく",
+          "asset": "2026-10-18_V01_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "スタッフが手を振る",
+          "asset": "2026-10-18_V01_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "社会人になってから、全力で体を動かしたのっていつ？。ここに来る人の8割は一人。最初はみんな、はじめましてだよ。うまさより楽しさ。体育以来でも大丈夫。今週はバドミントンとフットサルをやるよ。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-18-youtube_shorts-01",
@@ -77,7 +175,230 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-18_V01.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-18_V01.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "全力で体を動かしたの、いつ？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "text": "体育以来でも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/22(木) バドミントン／10/24(土) フットサル",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "仕事帰りの人が伸びをする後ろ姿",
+          "asset": "2026-10-18_V01_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "受付でスタッフが笑顔で迎える",
+          "asset": "2026-10-18_V01_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "description": "バドミントン・フットサルのダイジェスト（1〜2秒で切り替え）",
+          "asset": "2026-10-18_V01_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップを大きく",
+          "asset": "2026-10-18_V01_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "スタッフが手を振る",
+          "asset": "2026-10-18_V01_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "社会人になってから、全力で体を動かしたのっていつ？。ここに来る人の8割は一人。最初はみんな、はじめましてだよ。うまさより楽しさ。体育以来でも大丈夫。今週はバドミントンとフットサルをやるよ。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-18-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-18T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-22-badminton バドミントン＠まもり山 / 2026-10-24-futsal フットサル＠新宿中央公園",
+    "text": "社会人になってから、全力で体を動かしたのっていつ？\n参加者の8割が一人参加のスポーツ会だよ。\n\n🏸 10/22(木) 18:00-21:00 バドミントン＠まもり山\n⚽ 10/24(土) 14:00-16:00 フットサル＠新宿中央公園\n\n申込はこのピンのリンクから👟\n#社会人サークル #一人参加 #運動不足解消 #東京イベント",
+    "thread": [],
+    "title": "社会人の運動不足、一人で解消できる場所あるよ",
+    "hashtags": [
+      "社会人サークル",
+      "一人参加",
+      "運動不足解消",
+      "東京イベント"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-18_V01.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-18_V01.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "全力で体を動かしたの、いつ？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "text": "体育以来でも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/22(木) バドミントン／10/24(土) フットサル",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "仕事帰りの人が伸びをする後ろ姿",
+          "asset": "2026-10-18_V01_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "受付でスタッフが笑顔で迎える",
+          "asset": "2026-10-18_V01_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "description": "バドミントン・フットサルのダイジェスト（1〜2秒で切り替え）",
+          "asset": "2026-10-18_V01_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップを大きく",
+          "asset": "2026-10-18_V01_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "スタッフが手を振る",
+          "asset": "2026-10-18_V01_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "社会人になってから、全力で体を動かしたのっていつ？。ここに来る人の8割は一人。最初はみんな、はじめましてだよ。うまさより楽しさ。体育以来でも大丈夫。今週はバドミントンとフットサルをやるよ。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-19-x-01",
@@ -132,7 +453,102 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-19_V02.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-19_V02.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "仕事帰りにバドミントン、あり？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "ラケットは無料で貸すよ",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "無料"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 15,
+          "text": "ラリーが続かなくてもOK",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "text": "服装・室内シューズ・タオル・飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "10/22(木) 18:00-21:00＠まもり山",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "スーツ姿からスポーツウェアに切り替わる演出",
+          "asset": "2026-10-19_V02_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "ラケットを手渡すスタッフ",
+          "asset": "2026-10-19_V02_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 15,
+          "description": "ゆるく打ち合って笑う場面",
+          "asset": "2026-10-19_V02_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "description": "持ち物アイコン4つ",
+          "asset": "2026-10-19_V02_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "日程テロップ＋手を振る",
+          "asset": "2026-10-19_V02_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "仕事帰りにバドミントン、ありだよ。ラケットは無料で貸すから、買わなくて大丈夫。ラリーが続かなくても、笑ってればOK。持ち物は、動きやすい服装、室内シューズ、タオル、飲み物だけ。10月22日の木曜、18時からまもり山で待ってるね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-19-youtube_shorts-01",
@@ -157,7 +573,224 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-19_V02.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-19_V02.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "仕事帰りにバドミントン、あり？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "ラケットは無料で貸すよ",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "無料"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 15,
+          "text": "ラリーが続かなくてもOK",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "text": "服装・室内シューズ・タオル・飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "10/22(木) 18:00-21:00＠まもり山",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "スーツ姿からスポーツウェアに切り替わる演出",
+          "asset": "2026-10-19_V02_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "ラケットを手渡すスタッフ",
+          "asset": "2026-10-19_V02_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 15,
+          "description": "ゆるく打ち合って笑う場面",
+          "asset": "2026-10-19_V02_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "description": "持ち物アイコン4つ",
+          "asset": "2026-10-19_V02_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "日程テロップ＋手を振る",
+          "asset": "2026-10-19_V02_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "仕事帰りにバドミントン、ありだよ。ラケットは無料で貸すから、買わなくて大丈夫。ラリーが続かなくても、笑ってればOK。持ち物は、動きやすい服装、室内シューズ、タオル、飲み物だけ。10月22日の木曜、18時からまもり山で待ってるね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-19-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-19T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-22-badminton バドミントン＠まもり山",
+    "text": "仕事帰りにバドミントン、ありだよ🏸\nラケットは無料で貸すから、買わなくて大丈夫。\n\n🏸 10/22(木) 18:00-21:00＠まもり山\n💰 1,500円（税込）\n👥 定員15名\n\n申込はこのピンのリンクから\n#バドミントン初心者 #社会人サークル #一人参加 #仕事帰り",
+    "thread": [],
+    "title": "仕事帰りにバドミントン、ありだよ｜ラケット無料レンタル",
+    "hashtags": [
+      "バドミントン初心者",
+      "社会人サークル",
+      "一人参加",
+      "仕事帰り"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-19_V02.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-19_V02.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "仕事帰りにバドミントン、あり？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "ラケットは無料で貸すよ",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "無料"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 15,
+          "text": "ラリーが続かなくてもOK",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "text": "服装・室内シューズ・タオル・飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "10/22(木) 18:00-21:00＠まもり山",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "スーツ姿からスポーツウェアに切り替わる演出",
+          "asset": "2026-10-19_V02_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "ラケットを手渡すスタッフ",
+          "asset": "2026-10-19_V02_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 15,
+          "description": "ゆるく打ち合って笑う場面",
+          "asset": "2026-10-19_V02_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "description": "持ち物アイコン4つ",
+          "asset": "2026-10-19_V02_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "日程テロップ＋手を振る",
+          "asset": "2026-10-19_V02_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "仕事帰りにバドミントン、ありだよ。ラケットは無料で貸すから、買わなくて大丈夫。ラリーが続かなくても、笑ってればOK。持ち物は、動きやすい服装、室内シューズ、タオル、飲み物だけ。10月22日の木曜、18時からまもり山で待ってるね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-20-x-01",
@@ -212,7 +845,103 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-20_V03.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-20_V03.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "一人で行くの、こわい？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "text": "受付からスタッフが声をかけるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "はじめましてでも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "当日の流れはプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "会場の入口の前で立ち止まる後ろ姿",
+          "asset": "2026-10-20_V03_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "「8割」の数字を大きく",
+          "asset": "2026-10-20_V03_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "description": "受付 ➔ 準備運動 ➔ チーム分け",
+          "asset": "2026-10-20_V03_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "笑顔で話す参加者",
+          "asset": "2026-10-20_V03_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "プロフィールを指さす",
+          "asset": "2026-10-20_V03_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "一人でスポーツ会に行くの、こわくない？。大丈夫。来てる人の8割は一人参加だよ。受付からスタッフが声をかけるから、気づいたら輪の中にいるよ。はじめまして同士だから、話しかけやすいんだ。当日の流れは、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-20-youtube_shorts-01",
@@ -237,7 +966,226 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-20_V03.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-20_V03.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "一人で行くの、こわい？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "text": "受付からスタッフが声をかけるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "はじめましてでも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "当日の流れはプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "会場の入口の前で立ち止まる後ろ姿",
+          "asset": "2026-10-20_V03_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "「8割」の数字を大きく",
+          "asset": "2026-10-20_V03_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "description": "受付 ➔ 準備運動 ➔ チーム分け",
+          "asset": "2026-10-20_V03_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "笑顔で話す参加者",
+          "asset": "2026-10-20_V03_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "プロフィールを指さす",
+          "asset": "2026-10-20_V03_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "一人でスポーツ会に行くの、こわくない？。大丈夫。来てる人の8割は一人参加だよ。受付からスタッフが声をかけるから、気づいたら輪の中にいるよ。はじめまして同士だから、話しかけやすいんだ。当日の流れは、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-20-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-20T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "",
+    "text": "一人でスポーツ会に行くの、こわい？\n大丈夫、来てる人の8割は一人参加だよ。\n\n当日の流れは、このピンのリンクから見てね\n#一人参加 #社会人サークル #運動不足解消 #東京イベント",
+    "thread": [],
+    "title": "一人でスポーツ会に行くの、こわい？8割が一人参加だよ",
+    "hashtags": [
+      "一人参加",
+      "社会人サークル",
+      "運動不足解消",
+      "東京イベント"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-20_V03.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-20_V03.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "一人で行くの、こわい？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "text": "受付からスタッフが声をかけるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "はじめましてでも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "当日の流れはプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "会場の入口の前で立ち止まる後ろ姿",
+          "asset": "2026-10-20_V03_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "「8割」の数字を大きく",
+          "asset": "2026-10-20_V03_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 16,
+          "description": "受付 ➔ 準備運動 ➔ チーム分け",
+          "asset": "2026-10-20_V03_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "笑顔で話す参加者",
+          "asset": "2026-10-20_V03_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "プロフィールを指さす",
+          "asset": "2026-10-20_V03_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "一人でスポーツ会に行くの、こわくない？。大丈夫。来てる人の8割は一人参加だよ。受付からスタッフが声をかけるから、気づいたら輪の中にいるよ。はじめまして同士だから、話しかけやすいんだ。当日の流れは、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-21-x-01",
@@ -291,7 +1239,102 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-21_V04.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-21_V04.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バドミントンの持ち物、これだけ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "text": "服装／室内シューズ／タオル／飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "text": "ラケットは無料レンタル",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "無料"
+          ]
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "10/22(木) 18:00-21:00＠まもり山",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "text": "保存して当日見返してね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カバンを開ける手元",
+          "asset": "2026-10-21_V04_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "description": "服・室内シューズ・タオル・飲み物を1つずつ置く",
+          "asset": "2026-10-21_V04_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "description": "ラケットを渡す場面",
+          "asset": "2026-10-21_V04_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "description": "日程テロップ",
+          "asset": "2026-10-21_V04_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-21_V04_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "明日のバドミントン、持ち物はこれだけ。動きやすい服装、室内シューズ、タオル、飲み物。ラケットは無料で貸すよ。10月22日の木曜、18時からだよ。保存して、当日見返してね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-21-youtube_shorts-01",
@@ -315,7 +1358,223 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-21_V04.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-21_V04.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バドミントンの持ち物、これだけ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "text": "服装／室内シューズ／タオル／飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "text": "ラケットは無料レンタル",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "無料"
+          ]
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "10/22(木) 18:00-21:00＠まもり山",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "text": "保存して当日見返してね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カバンを開ける手元",
+          "asset": "2026-10-21_V04_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "description": "服・室内シューズ・タオル・飲み物を1つずつ置く",
+          "asset": "2026-10-21_V04_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "description": "ラケットを渡す場面",
+          "asset": "2026-10-21_V04_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "description": "日程テロップ",
+          "asset": "2026-10-21_V04_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-21_V04_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "明日のバドミントン、持ち物はこれだけ。動きやすい服装、室内シューズ、タオル、飲み物。ラケットは無料で貸すよ。10月22日の木曜、18時からだよ。保存して、当日見返してね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-21-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-21T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-22-badminton バドミントン＠まもり山",
+    "text": "明日のバドミントン、持ち物はこれだけ🏸\n・動きやすい服装\n・室内シューズ\n・タオル\n・飲み物\nラケットは無料で貸すよ。\n\n🏸 10/22(木) 18:00-21:00＠まもり山\n申込はこのピンのリンクから\n#バドミントン初心者 #社会人サークル #持ち物",
+    "thread": [],
+    "title": "明日のバドミントン、持ち物はこれだけ",
+    "hashtags": [
+      "バドミントン初心者",
+      "社会人サークル",
+      "持ち物"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-21_V04.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-21_V04.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バドミントンの持ち物、これだけ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "text": "服装／室内シューズ／タオル／飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "text": "ラケットは無料レンタル",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "無料"
+          ]
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "10/22(木) 18:00-21:00＠まもり山",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "text": "保存して当日見返してね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カバンを開ける手元",
+          "asset": "2026-10-21_V04_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "description": "服・室内シューズ・タオル・飲み物を1つずつ置く",
+          "asset": "2026-10-21_V04_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "description": "ラケットを渡す場面",
+          "asset": "2026-10-21_V04_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "description": "日程テロップ",
+          "asset": "2026-10-21_V04_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-21_V04_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "明日のバドミントン、持ち物はこれだけ。動きやすい服装、室内シューズ、タオル、飲み物。ラケットは無料で貸すよ。10月22日の木曜、18時からだよ。保存して、当日見返してね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-22-x-01",
@@ -370,7 +1629,105 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-22_V05.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-22_V05.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "体育以来のフットサル、こうなる",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 3,
+          "end": 7,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 7,
+          "end": 13,
+          "text": "ボール・ビブスは用意してるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 13,
+          "end": 18,
+          "text": "気づいたら、話せてる",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "text": "10/24(土) 14:00-16:00＠新宿中央公園",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "空振りして笑う参加者のアップ",
+          "asset": "2026-10-22_V05_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 7,
+          "description": "受付でスタッフが迎える",
+          "asset": "2026-10-22_V05_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 7,
+          "end": 13,
+          "description": "パス練習 ➔ ゆるいミニゲーム",
+          "asset": "2026-10-22_V05_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 13,
+          "end": 18,
+          "description": "ゴールが決まってハイタッチ",
+          "asset": "2026-10-22_V05_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "description": "日程テロップ＋手を振る",
+          "asset": "2026-10-22_V05_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "体育以来でも、こうなるよ。来てる人の8割は一人。最初はみんな初めましてだよ。ボールとビブスは用意してるから、運動靴だけ持ってきてね。終わる頃には、自然と話せてる。10月24日の土曜、14時から新宿中央公園でやるよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-22-youtube_shorts-01",
@@ -395,7 +1752,230 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-22_V05.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-22_V05.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "体育以来のフットサル、こうなる",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 3,
+          "end": 7,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 7,
+          "end": 13,
+          "text": "ボール・ビブスは用意してるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 13,
+          "end": 18,
+          "text": "気づいたら、話せてる",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "text": "10/24(土) 14:00-16:00＠新宿中央公園",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "空振りして笑う参加者のアップ",
+          "asset": "2026-10-22_V05_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 7,
+          "description": "受付でスタッフが迎える",
+          "asset": "2026-10-22_V05_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 7,
+          "end": 13,
+          "description": "パス練習 ➔ ゆるいミニゲーム",
+          "asset": "2026-10-22_V05_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 13,
+          "end": 18,
+          "description": "ゴールが決まってハイタッチ",
+          "asset": "2026-10-22_V05_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "description": "日程テロップ＋手を振る",
+          "asset": "2026-10-22_V05_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "体育以来でも、こうなるよ。来てる人の8割は一人。最初はみんな初めましてだよ。ボールとビブスは用意してるから、運動靴だけ持ってきてね。終わる頃には、自然と話せてる。10月24日の土曜、14時から新宿中央公園でやるよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-22-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-22T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-24-futsal フットサル＠新宿中央公園",
+    "text": "体育以来のフットサル、こうなる⚽\nうまさより「楽しい」が大事な会だよ。\n\n⚽ 10/24(土) 14:00-16:00＠新宿中央公園\n💰 1,800円（税込）\n🎒 運動靴（スパイク不可）だけ持ってきてね\n\n申込はこのピンのリンクから\n#フットサル初心者 #社会人サークル #一人参加 #新宿",
+    "thread": [],
+    "title": "体育以来のフットサル、こうなる",
+    "hashtags": [
+      "フットサル初心者",
+      "社会人サークル",
+      "一人参加",
+      "新宿"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-22_V05.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-22_V05.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "体育以来のフットサル、こうなる",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 3,
+          "end": 7,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 7,
+          "end": 13,
+          "text": "ボール・ビブスは用意してるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 13,
+          "end": 18,
+          "text": "気づいたら、話せてる",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "text": "10/24(土) 14:00-16:00＠新宿中央公園",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "空振りして笑う参加者のアップ",
+          "asset": "2026-10-22_V05_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 7,
+          "description": "受付でスタッフが迎える",
+          "asset": "2026-10-22_V05_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 7,
+          "end": 13,
+          "description": "パス練習 ➔ ゆるいミニゲーム",
+          "asset": "2026-10-22_V05_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 13,
+          "end": 18,
+          "description": "ゴールが決まってハイタッチ",
+          "asset": "2026-10-22_V05_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "description": "日程テロップ＋手を振る",
+          "asset": "2026-10-22_V05_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "体育以来でも、こうなるよ。来てる人の8割は一人。最初はみんな初めましてだよ。ボールとビブスは用意してるから、運動靴だけ持ってきてね。終わる頃には、自然と話せてる。10月24日の土曜、14時から新宿中央公園でやるよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-23-x-01",
@@ -449,7 +2029,85 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする"
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "昨日のバドミントン会",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "text": "（場面ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "text": "一人で来た人も、最後は笑顔",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "次は10/24(土) フットサル",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "会場全体の明るいカット",
+          "asset": "2026-10-23_V06_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "description": "受付・準備運動・打ち合い・笑顔のダイジェスト",
+          "asset": "2026-10-23_V06_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "description": "参加者が手を振る（掲載許可済み）",
+          "asset": "2026-10-23_V06_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "次回テロップ",
+          "asset": "2026-10-23_V06_s4.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "昨日のバドミントン会、こんな感じだったよ。（当日の様子に合わせて一言ずつ）。一人で来た人も、最後は笑顔だったよ。次は10月24日の土曜、フットサルだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-23-youtube_shorts-01",
@@ -473,7 +2131,189 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする"
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "昨日のバドミントン会",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "text": "（場面ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "text": "一人で来た人も、最後は笑顔",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "次は10/24(土) フットサル",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "会場全体の明るいカット",
+          "asset": "2026-10-23_V06_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "description": "受付・準備運動・打ち合い・笑顔のダイジェスト",
+          "asset": "2026-10-23_V06_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "description": "参加者が手を振る（掲載許可済み）",
+          "asset": "2026-10-23_V06_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "次回テロップ",
+          "asset": "2026-10-23_V06_s4.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "昨日のバドミントン会、こんな感じだったよ。（当日の様子に合わせて一言ずつ）。一人で来た人も、最後は笑顔だったよ。次は10月24日の土曜、フットサルだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-23-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-23T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-22-badminton バドミントン＠まもり山 / 2026-10-24-futsal フットサル＠新宿中央公園",
+    "text": "昨日のバドミントン会、こんな感じだったよ🏸\n来てくれたみなさん、ありがとう！\n\n次は⚽ 10/24(土) 14:00-16:00 フットサル＠新宿中央公園\n申込はこのピンのリンクから\n#バドミントン #社会人サークル #一人参加",
+    "thread": [],
+    "title": "バドミントン会、こんな感じだったよ",
+    "hashtags": [
+      "バドミントン",
+      "社会人サークル",
+      "一人参加"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-23_V06.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "昨日のバドミントン会",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "text": "（場面ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "text": "一人で来た人も、最後は笑顔",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "次は10/24(土) フットサル",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "会場全体の明るいカット",
+          "asset": "2026-10-23_V06_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "description": "受付・準備運動・打ち合い・笑顔のダイジェスト",
+          "asset": "2026-10-23_V06_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "description": "参加者が手を振る（掲載許可済み）",
+          "asset": "2026-10-23_V06_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "次回テロップ",
+          "asset": "2026-10-23_V06_s4.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "昨日のバドミントン会、こんな感じだったよ。（当日の様子に合わせて一言ずつ）。一人で来た人も、最後は笑顔だったよ。次は10月24日の土曜、フットサルだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-24-x-01",
@@ -528,7 +2368,107 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-24_V07.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-24_V07.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バレー、体育以来でもできる？",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "できなくても笑えばOK",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 15,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "text": "体育館シューズだけ持ってきてね",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育館シューズ"
+          ]
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ボールが変な方向に飛んで笑う",
+          "asset": "2026-10-24_V07_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "円になってパスを回す",
+          "asset": "2026-10-24_V07_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 15,
+          "description": "「8割」の数字",
+          "asset": "2026-10-24_V07_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-24_V07_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "日程テロップ",
+          "asset": "2026-10-24_V07_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "バレーボール、体育以来でもできる？。うまくできなくても、みんなで笑えば大丈夫。来てる人の8割は一人参加だよ。レンタルはないから、体育館シューズだけ持ってきてね。10月31日の土曜、11時45分からだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-24-youtube_shorts-01",
@@ -553,7 +2493,234 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-24_V07.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-24_V07.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バレー、体育以来でもできる？",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "できなくても笑えばOK",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 15,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "text": "体育館シューズだけ持ってきてね",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育館シューズ"
+          ]
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ボールが変な方向に飛んで笑う",
+          "asset": "2026-10-24_V07_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "円になってパスを回す",
+          "asset": "2026-10-24_V07_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 15,
+          "description": "「8割」の数字",
+          "asset": "2026-10-24_V07_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-24_V07_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "日程テロップ",
+          "asset": "2026-10-24_V07_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "バレーボール、体育以来でもできる？。うまくできなくても、みんなで笑えば大丈夫。来てる人の8割は一人参加だよ。レンタルはないから、体育館シューズだけ持ってきてね。10月31日の土曜、11時45分からだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-24-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-24T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "バレーボール、体育以来でも大丈夫🏐\nうまくできなくても、みんなで笑えばOK。\n\n🏐 10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n💰 1,500円（税込）\n👥 定員18名\n※体育館シューズだけ持ってきてね\n\n申込はこのピンのリンクから\n#バレーボール初心者 #社会人サークル #一人参加 #中野",
+    "thread": [],
+    "title": "バレーって初心者でもできる？体育以来でも大丈夫",
+    "hashtags": [
+      "バレーボール初心者",
+      "社会人サークル",
+      "一人参加",
+      "中野"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-24_V07.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-24_V07.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バレー、体育以来でもできる？",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "できなくても笑えばOK",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 15,
+          "text": "参加者の8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "text": "体育館シューズだけ持ってきてね",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育館シューズ"
+          ]
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ボールが変な方向に飛んで笑う",
+          "asset": "2026-10-24_V07_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "円になってパスを回す",
+          "asset": "2026-10-24_V07_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 15,
+          "description": "「8割」の数字",
+          "asset": "2026-10-24_V07_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 21,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-24_V07_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "日程テロップ",
+          "asset": "2026-10-24_V07_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "バレーボール、体育以来でもできる？。うまくできなくても、みんなで笑えば大丈夫。来てる人の8割は一人参加だよ。レンタルはないから、体育館シューズだけ持ってきてね。10月31日の土曜、11時45分からだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-25-x-01",
@@ -607,7 +2774,85 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする"
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "昨日のフットサル会",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "text": "（場面ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "text": "久しぶりでも楽しめたね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "次は10/31(土) バレーボール",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ゴールの瞬間",
+          "asset": "2026-10-25_V08_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "description": "受付・パス練習・ミニゲーム・ハイタッチのダイジェスト",
+          "asset": "2026-10-25_V08_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "description": "参加者が手を振る（掲載許可済み）",
+          "asset": "2026-10-25_V08_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "次回テロップ",
+          "asset": "2026-10-25_V08_s4.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "昨日のフットサル会、こんな感じだったよ。（当日の様子に合わせて一言ずつ）。久しぶりにボールを蹴った人も、楽しんでくれたね。次は10月31日の土曜、バレーボールだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-25-youtube_shorts-01",
@@ -631,7 +2876,189 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする"
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "昨日のフットサル会",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "text": "（場面ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "text": "久しぶりでも楽しめたね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "次は10/31(土) バレーボール",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ゴールの瞬間",
+          "asset": "2026-10-25_V08_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "description": "受付・パス練習・ミニゲーム・ハイタッチのダイジェスト",
+          "asset": "2026-10-25_V08_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "description": "参加者が手を振る（掲載許可済み）",
+          "asset": "2026-10-25_V08_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "次回テロップ",
+          "asset": "2026-10-25_V08_s4.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "昨日のフットサル会、こんな感じだったよ。（当日の様子に合わせて一言ずつ）。久しぶりにボールを蹴った人も、楽しんでくれたね。次は10月31日の土曜、バレーボールだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-25-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-25T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-24-futsal フットサル＠新宿中央公園 / 2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "昨日のフットサル会、こんな感じだったよ⚽\n来てくれたみなさん、ありがとう！\n\n次は🏐 10/31(土) 11:45-13:45 バレーボール＠中野区中部コミュニティプラザ\n申込はこのピンのリンクから\n#フットサル #社会人サークル #一人参加",
+    "thread": [],
+    "title": "フットサル会、こんな感じだったよ",
+    "hashtags": [
+      "フットサル",
+      "社会人サークル",
+      "一人参加"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-25_V08.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "昨日のフットサル会",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "text": "（場面ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "text": "久しぶりでも楽しめたね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "次は10/31(土) バレーボール",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ゴールの瞬間",
+          "asset": "2026-10-25_V08_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 15,
+          "description": "受付・パス練習・ミニゲーム・ハイタッチのダイジェスト",
+          "asset": "2026-10-25_V08_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 15,
+          "end": 20,
+          "description": "参加者が手を振る（掲載許可済み）",
+          "asset": "2026-10-25_V08_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "次回テロップ",
+          "asset": "2026-10-25_V08_s4.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "昨日のフットサル会、こんな感じだったよ。（当日の様子に合わせて一言ずつ）。久しぶりにボールを蹴った人も、楽しんでくれたね。次は10月31日の土曜、バレーボールだよ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-26-x-01",
@@ -686,7 +3113,100 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-26_V09.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-26_V09.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "一人で来た人の1日",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "受付でスタッフがお出迎え",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 8,
+          "end": 14,
+          "text": "準備運動からゆるくスタート",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 14,
+          "end": 20,
+          "text": "気づいたら話せてる",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "当日の流れはプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "一人で会場に向かう足元",
+          "asset": "2026-10-26_V09_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "受付でスタッフが名前を呼ぶ",
+          "asset": "2026-10-26_V09_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 14,
+          "description": "準備運動 ➔ チーム分け",
+          "asset": "2026-10-26_V09_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 14,
+          "end": 20,
+          "description": "ゲーム中に笑う",
+          "asset": "2026-10-26_V09_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "解散時に手を振る",
+          "asset": "2026-10-26_V09_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "一人で来た人の、スポーツ会の1日。まずは受付。スタッフが声をかけるよ。準備運動から、ゆるくスタート。ゲームが始まると、気づいたら話せてる。くわしい流れは、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-26-youtube_shorts-01",
@@ -711,7 +3231,220 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-26_V09.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-26_V09.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "一人で来た人の1日",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "受付でスタッフがお出迎え",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 8,
+          "end": 14,
+          "text": "準備運動からゆるくスタート",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 14,
+          "end": 20,
+          "text": "気づいたら話せてる",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "当日の流れはプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "一人で会場に向かう足元",
+          "asset": "2026-10-26_V09_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "受付でスタッフが名前を呼ぶ",
+          "asset": "2026-10-26_V09_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 14,
+          "description": "準備運動 ➔ チーム分け",
+          "asset": "2026-10-26_V09_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 14,
+          "end": 20,
+          "description": "ゲーム中に笑う",
+          "asset": "2026-10-26_V09_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "解散時に手を振る",
+          "asset": "2026-10-26_V09_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "一人で来た人の、スポーツ会の1日。まずは受付。スタッフが声をかけるよ。準備運動から、ゆるくスタート。ゲームが始まると、気づいたら話せてる。くわしい流れは、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-26-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-26T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "",
+    "text": "一人で来た人の、スポーツ会の1日👟\n受付でスタッフが声をかけるところから始まるよ。\n\n当日の流れは、このピンのリンクから見てね\n#一人参加 #社会人サークル #休日の過ごし方 #東京イベント",
+    "thread": [],
+    "title": "一人で来た人の、スポーツ会の1日",
+    "hashtags": [
+      "一人参加",
+      "社会人サークル",
+      "休日の過ごし方",
+      "東京イベント"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-26_V09.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-26_V09.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "一人で来た人の1日",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "text": "受付でスタッフがお出迎え",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 8,
+          "end": 14,
+          "text": "準備運動からゆるくスタート",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 14,
+          "end": 20,
+          "text": "気づいたら話せてる",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "text": "当日の流れはプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "一人で会場に向かう足元",
+          "asset": "2026-10-26_V09_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 8,
+          "description": "受付でスタッフが名前を呼ぶ",
+          "asset": "2026-10-26_V09_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 8,
+          "end": 14,
+          "description": "準備運動 ➔ チーム分け",
+          "asset": "2026-10-26_V09_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 14,
+          "end": 20,
+          "description": "ゲーム中に笑う",
+          "asset": "2026-10-26_V09_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "description": "解散時に手を振る",
+          "asset": "2026-10-26_V09_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "一人で来た人の、スポーツ会の1日。まずは受付。スタッフが声をかけるよ。準備運動から、ゆるくスタート。ゲームが始まると、気づいたら話せてる。くわしい流れは、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-27-x-01",
@@ -765,7 +3498,100 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-27_V10.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-27_V10.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "ジム、続かなかった？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "一人で黙々より、みんなでワイワイ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "うまさより楽しさ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45 バレーボール",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ジムの会員証を眺めてため息",
+          "asset": "2026-10-27_V10_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "一人でランニングマシン ➔ みんなでバレーに切り替え",
+          "asset": "2026-10-27_V10_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "笑いながらパスをつなぐ",
+          "asset": "2026-10-27_V10_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-27_V10_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-27_V10_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "ジム、続かなかったことある？。一人で黙々より、みんなでワイワイのほうが続くかも。うまさより楽しさが大事な会だよ。10月31日の土曜はバレーボール。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-27-youtube_shorts-01",
@@ -789,7 +3615,219 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-27_V10.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-27_V10.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "ジム、続かなかった？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "一人で黙々より、みんなでワイワイ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "うまさより楽しさ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45 バレーボール",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ジムの会員証を眺めてため息",
+          "asset": "2026-10-27_V10_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "一人でランニングマシン ➔ みんなでバレーに切り替え",
+          "asset": "2026-10-27_V10_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "笑いながらパスをつなぐ",
+          "asset": "2026-10-27_V10_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-27_V10_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-27_V10_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "ジム、続かなかったことある？。一人で黙々より、みんなでワイワイのほうが続くかも。うまさより楽しさが大事な会だよ。10月31日の土曜はバレーボール。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-27-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-27T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "ジム、続かなかったことある？\n一人で黙々より、みんなでワイワイのほうが続くかも🏐\n\n🏐 10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n💰 1,500円（税込）\n\n申込はこのピンのリンクから\n#運動不足解消 #バレーボール初心者 #社会人サークル",
+    "thread": [],
+    "title": "ジムが続かなかった人へ｜みんなでやると続くかも",
+    "hashtags": [
+      "運動不足解消",
+      "バレーボール初心者",
+      "社会人サークル"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-27_V10.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-27_V10.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "ジム、続かなかった？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "一人で黙々より、みんなでワイワイ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "うまさより楽しさ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45 バレーボール",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ジムの会員証を眺めてため息",
+          "asset": "2026-10-27_V10_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "一人でランニングマシン ➔ みんなでバレーに切り替え",
+          "asset": "2026-10-27_V10_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "笑いながらパスをつなぐ",
+          "asset": "2026-10-27_V10_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-27_V10_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-27_V10_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "ジム、続かなかったことある？。一人で黙々より、みんなでワイワイのほうが続くかも。うまさより楽しさが大事な会だよ。10月31日の土曜はバレーボール。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-28-x-01",
@@ -843,7 +3881,100 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-28_V11.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-28_V11.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "土曜の昼、なにしてる？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "気づいたら夕方…",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "お昼に2時間だけ体を動かそう",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ソファでスマホを見ている昼の部屋",
+          "asset": "2026-10-28_V11_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "時計が夕方になる演出",
+          "asset": "2026-10-28_V11_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "体育館でバレーをする笑顔",
+          "asset": "2026-10-28_V11_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-28_V11_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-28_V11_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "土曜のお昼、なにしてる？。気づいたら夕方…ってこと、あるよね。お昼に2時間だけ、体を動かしてみない？。10月31日の土曜、11時45分からだよ。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-28-youtube_shorts-01",
@@ -867,7 +3998,219 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-28_V11.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-28_V11.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "土曜の昼、なにしてる？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "気づいたら夕方…",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "お昼に2時間だけ体を動かそう",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ソファでスマホを見ている昼の部屋",
+          "asset": "2026-10-28_V11_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "時計が夕方になる演出",
+          "asset": "2026-10-28_V11_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "体育館でバレーをする笑顔",
+          "asset": "2026-10-28_V11_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-28_V11_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-28_V11_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "土曜のお昼、なにしてる？。気づいたら夕方…ってこと、あるよね。お昼に2時間だけ、体を動かしてみない？。10月31日の土曜、11時45分からだよ。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-28-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-28T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "土曜のお昼、なにしてる？\nお昼に2時間だけ、体を動かしてみない？🏐\n\n🏐 10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n💰 1,500円（税込）\n👥 定員18名\n\n申込はこのピンのリンクから\n#休日の過ごし方 #バレーボール初心者 #社会人サークル",
+    "thread": [],
+    "title": "土曜の昼、ちょっと体を動かさない？",
+    "hashtags": [
+      "休日の過ごし方",
+      "バレーボール初心者",
+      "社会人サークル"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-28_V11.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-28_V11.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "土曜の昼、なにしてる？",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "気づいたら夕方…",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "お昼に2時間だけ体を動かそう",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "申込はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "ソファでスマホを見ている昼の部屋",
+          "asset": "2026-10-28_V11_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "時計が夕方になる演出",
+          "asset": "2026-10-28_V11_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "体育館でバレーをする笑顔",
+          "asset": "2026-10-28_V11_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-28_V11_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-28_V11_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "土曜のお昼、なにしてる？。気づいたら夕方…ってこと、あるよね。お昼に2時間だけ、体を動かしてみない？。10月31日の土曜、11時45分からだよ。申込はプロフィールのリンクからどうぞ。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-29-x-01",
@@ -921,7 +4264,100 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-29_V12.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-29_V12.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バレーの持ち物、4つだけ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "text": "服装／室内シューズ／タオル／飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "text": "レンタルはないよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "text": "保存して当日見返してね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カバンを開ける手元",
+          "asset": "2026-10-29_V12_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "description": "服・室内シューズ・タオル・飲み物を1つずつ置く",
+          "asset": "2026-10-29_V12_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-29_V12_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "description": "日程テロップ",
+          "asset": "2026-10-29_V12_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-29_V12_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "バレーの持ち物は4つだけ。動きやすい服装、室内シューズ、タオル、飲み物。レンタルはないから、体育館シューズは忘れずにね。10月31日の土曜だよ。保存して、当日見返してね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-29-youtube_shorts-01",
@@ -945,7 +4381,219 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-29_V12.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-29_V12.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バレーの持ち物、4つだけ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "text": "服装／室内シューズ／タオル／飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "text": "レンタルはないよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "text": "保存して当日見返してね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カバンを開ける手元",
+          "asset": "2026-10-29_V12_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "description": "服・室内シューズ・タオル・飲み物を1つずつ置く",
+          "asset": "2026-10-29_V12_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-29_V12_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "description": "日程テロップ",
+          "asset": "2026-10-29_V12_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-29_V12_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "バレーの持ち物は4つだけ。動きやすい服装、室内シューズ、タオル、飲み物。レンタルはないから、体育館シューズは忘れずにね。10月31日の土曜だよ。保存して、当日見返してね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-29-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-29T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "バレーの持ち物は4つだけ🏐\n・動きやすい服装\n・室内シューズ\n・タオル\n・飲み物\nレンタルはないから、体育館シューズは忘れずにね。\n\n🏐 10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n申込はこのピンのリンクから\n#バレーボール初心者 #持ち物 #社会人サークル",
+    "thread": [],
+    "title": "バレーの持ち物は4つだけ",
+    "hashtags": [
+      "バレーボール初心者",
+      "持ち物",
+      "社会人サークル"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-29_V12.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-29_V12.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "バレーの持ち物、4つだけ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "text": "服装／室内シューズ／タオル／飲み物",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "text": "レンタルはないよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "text": "保存して当日見返してね",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カバンを開ける手元",
+          "asset": "2026-10-29_V12_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 12,
+          "description": "服・室内シューズ・タオル・飲み物を1つずつ置く",
+          "asset": "2026-10-29_V12_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-29_V12_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "description": "日程テロップ",
+          "asset": "2026-10-29_V12_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "description": "手を振る",
+          "asset": "2026-10-29_V12_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "バレーの持ち物は4つだけ。動きやすい服装、室内シューズ、タオル、飲み物。レンタルはないから、体育館シューズは忘れずにね。10月31日の土曜だよ。保存して、当日見返してね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-30-x-01",
@@ -999,7 +4647,107 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-30_V13.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-30_V13.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "明日、バレーやるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "体育以来でも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "体育館シューズを忘れずに",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育館シューズ"
+          ]
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カレンダーの31日に丸をつける",
+          "asset": "2026-10-30_V13_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "「8割」の数字",
+          "asset": "2026-10-30_V13_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "円になってパスを回す",
+          "asset": "2026-10-30_V13_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-30_V13_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-30_V13_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "明日はバレーボールだよ。来てる人の8割は一人参加。体育以来でも大丈夫。11時45分から、中野区中部コミュニティプラザで待ってるね。体育館シューズを忘れずにね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-30-youtube_shorts-01",
@@ -1023,7 +4771,233 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "動画 2026-10-30_V13.mp4 の書き出し・確認後に ready にする"
+    "hold_reason": "動画 2026-10-30_V13.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "明日、バレーやるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "体育以来でも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "体育館シューズを忘れずに",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育館シューズ"
+          ]
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カレンダーの31日に丸をつける",
+          "asset": "2026-10-30_V13_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "「8割」の数字",
+          "asset": "2026-10-30_V13_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "円になってパスを回す",
+          "asset": "2026-10-30_V13_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-30_V13_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-30_V13_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "明日はバレーボールだよ。来てる人の8割は一人参加。体育以来でも大丈夫。11時45分から、中野区中部コミュニティプラザで待ってるね。体育館シューズを忘れずにね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-30-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-30T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "明日はバレーボールだよ🏐\n来てる人の8割は一人参加。体育以来でも大丈夫。\n\n🏐 10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n※体育館シューズを忘れずにね\n\n申込はこのピンのリンクから\n#バレーボール初心者 #一人参加 #社会人サークル",
+    "thread": [],
+    "title": "明日バレーやるよ、一人でも大丈夫",
+    "hashtags": [
+      "バレーボール初心者",
+      "一人参加",
+      "社会人サークル"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-30_V13.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "動画 2026-10-30_V13.mp4 の書き出し・確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "明日、バレーやるよ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "text": "8割が一人参加",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "8割",
+            "一人参加"
+          ]
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "text": "体育以来でも大丈夫",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育以来"
+          ]
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "text": "10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "text": "体育館シューズを忘れずに",
+          "position": "center",
+          "size": "L",
+          "highlight": [
+            "体育館シューズ"
+          ]
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "カレンダーの31日に丸をつける",
+          "asset": "2026-10-30_V13_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 9,
+          "description": "「8割」の数字",
+          "asset": "2026-10-30_V13_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 9,
+          "end": 16,
+          "description": "円になってパスを回す",
+          "asset": "2026-10-30_V13_s3.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 16,
+          "end": 21,
+          "description": "日程テロップ",
+          "asset": "2026-10-30_V13_s4.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 21,
+          "end": 25,
+          "description": "体育館シューズのアップ",
+          "asset": "2026-10-30_V13_s5.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "明日はバレーボールだよ。来てる人の8割は一人参加。体育以来でも大丈夫。11時45分から、中野区中部コミュニティプラザで待ってるね。体育館シューズを忘れずにね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   },
   {
     "id": "2026-10-31-x-01",
@@ -1062,7 +5036,70 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする"
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "10月、ありがとう",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 18,
+          "text": "（種目ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "text": "11月の予定はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "3種目のベストショットを連続で",
+          "asset": "2026-10-31_V14_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 18,
+          "description": "バドミントン ➔ フットサル ➔ バレーのダイジェスト",
+          "asset": "2026-10-31_V14_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "description": "スタッフが手を振る",
+          "asset": "2026-10-31_V14_s3.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "10月のスポーツ会、ありがとう。（各回の様子に合わせて一言ずつ）。11月の予定は、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
   },
   {
     "id": "2026-10-31-threads-01",
@@ -1101,6 +5138,158 @@
     ],
     "cta_url": "https://lin.ee/txwrLQ9",
     "status": "hold",
-    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする"
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "10月、ありがとう",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 18,
+          "text": "（種目ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "text": "11月の予定はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "3種目のベストショットを連続で",
+          "asset": "2026-10-31_V14_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 18,
+          "description": "バドミントン ➔ フットサル ➔ バレーのダイジェスト",
+          "asset": "2026-10-31_V14_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "description": "スタッフが手を振る",
+          "asset": "2026-10-31_V14_s3.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "10月のスポーツ会、ありがとう。（各回の様子に合わせて一言ずつ）。11月の予定は、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    }
+  },
+  {
+    "id": "2026-10-31-pinterest-01",
+    "platform": "pinterest",
+    "scheduled_at": "2026-10-31T20:00:00+09:00",
+    "funnel_stage": "集客",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "text": "10月のスポーツ会、ありがとう🏸⚽🏐\nバドミントン、フットサル、バレーボールの3つをやったよ。\n\n11月の予定は、このピンのリンクから見てね\n#社会人サークル #一人参加 #運動不足解消",
+    "thread": [],
+    "title": "10月のスポーツ会まとめ｜バドミントン・フットサル・バレー",
+    "hashtags": [
+      "社会人サークル",
+      "一人参加",
+      "運動不足解消"
+    ],
+    "media": [
+      {
+        "type": "video",
+        "file": "2026-10-31_V14.mp4"
+      }
+    ],
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "hold",
+    "hold_reason": "開催後の映像で編集・掲載許可の確認後に ready にする",
+    "video_specs": {
+      "tool": "capcut",
+      "aspect_ratio": "9:16",
+      "duration_sec": 25,
+      "telops": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "10月、ありがとう",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 3,
+          "end": 18,
+          "text": "（種目ごとに一言）",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "text": "11月の予定はプロフィールのリンクから",
+          "position": "center",
+          "size": "L",
+          "highlight": []
+        }
+      ],
+      "backgrounds": [
+        {
+          "start": 0,
+          "end": 3,
+          "description": "3種目のベストショットを連続で",
+          "asset": "2026-10-31_V14_s1.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 3,
+          "end": 18,
+          "description": "バドミントン ➔ フットサル ➔ バレーのダイジェスト",
+          "asset": "2026-10-31_V14_s2.mp4",
+          "source": "撮影"
+        },
+        {
+          "start": 18,
+          "end": 25,
+          "description": "スタッフが手を振る",
+          "asset": "2026-10-31_V14_s3.mp4",
+          "source": "撮影"
+        }
+      ],
+      "voiceover": {
+        "text": "10月のスポーツ会、ありがとう。（各回の様子に合わせて一言ずつ）。11月の予定は、プロフィールのリンクから見てね。",
+        "voice": "明るく温かい声・ややゆっくり",
+        "speed": 1.0
+      },
+      "bgm": {
+        "mood": "明るいアコースティックポップ",
+        "bpm": 110
+      }
+    },
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "board": "Macachette Sports｜東京の社会人スポーツ会"
   }
 ]

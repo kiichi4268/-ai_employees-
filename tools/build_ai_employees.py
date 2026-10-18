@@ -7,6 +7,7 @@
 - LINE・予約フォーム等のURLを変える → LINKS
 - 翌月のイベント日程に差し替える    → EVENT_YEAR / EVENT_MONTH / EVENTS（毎月25日〜末日に更新）
 - 手動投稿／自動投稿の媒体を変える  → MANUAL_CHANNELS / AUTO_CHANNELS
+- 投稿失敗時のChatWork通知の分類     → ERROR_CLASSES（tools/chatwork_notify.py も同じ定義を使う）
 直したら `python3 tools/build_ai_employees.py` を再実行すれば、28人全員に反映される。
 """
 
@@ -72,6 +73,28 @@ AUTO_CHANNELS = [
     ("threads", "Threads", "本文は500字以内"),
     ("tiktok", "TikTok", "動画ファイル必須。キャプション内のURLはタップできない"),
     ("youtube_shorts", "YouTube Shorts", "動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内"),
+    ("pinterest", "Pinterest", "動画または画像必須。title は100字以内、説明文は500字以内。リンク先は link に入れる（説明文のURLはタップできない）"),
+    ("wordpress", "WordPress（ブログ）", "WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す"),
+]
+VIDEO_PLATFORMS = ("tiktok", "youtube_shorts", "pinterest")
+
+# ---------------------------------------------------------------------------
+# 自動投稿の失敗時：ChatWork通知の分類（品質確認AIが原因と修正案をつけて通知する）
+# ---------------------------------------------------------------------------
+ERROR_CLASSES = [
+    # (キー, 判定条件の目安, 原因, 次の対応, 自動リトライ)
+    ("auth", "HTTP 401 / 403、token・permission・unauthorized", "API連携の認証切れ・権限不足",
+     "Make の接続（コネクション）を再認証してから手動で再送する", False),
+    ("rate_limit", "HTTP 429、rate limit・too many requests", "短時間に投稿しすぎてAPIの上限に達した",
+     "15分以上あけて自動で再送する（最大3回）", True),
+    ("content", "HTTP 400 / 422、文字数・形式・重複投稿・invalid", "本文・タイトル・ハッシュタグなどが媒体のルールに合っていない",
+     "AIの修正案で本文を直し、品質確認AIが再チェックしてから再送する", False),
+    ("media", "動画・画像の not found・形式・サイズ・長さのエラー", "素材ファイルがない、または媒体の条件（形式・サイズ・長さ）に合っていない",
+     "素材を書き出し直して media_status を更新し、hold に戻す", False),
+    ("server", "HTTP 5xx、timeout・接続エラー", "媒体側またはネットワークの一時的な障害",
+     "5分 ➔ 15分 ➔ 60分の間隔で自動で再送する（最大3回）", True),
+    ("unknown", "上のどれにも当てはまらない", "原因を特定できないエラー",
+     "投稿を hold に戻し、投稿管理AIと運営がエラーログを確認する", False),
 ]
 
 COMMON_HEADER = """\
@@ -189,7 +212,7 @@ def build_posting_rules() -> str:
     """手動投稿／自動投稿の切り分けルールと、それぞれの出力形式を作る。"""
     manual = "\n".join(f"| {name} | 手動 | 手動投稿用フォーマット（チェックリスト付き） |" for _, name in MANUAL_CHANNELS)
     auto = "\n".join(f"| {name}（`{key}`） | 自動 | 自動投稿用JSON（{note}） |" for key, name, note in AUTO_CHANNELS)
-    keys = " / ".join(f'"{key}"' for key, _, _ in AUTO_CHANNELS)
+    keys = " / ".join(f'"{key}"' for key, _, _ in AUTO_CHANNELS if key != "wordpress")
     return f"""\
 ## 🚦 【投稿運用ルール（手動投稿 vs 自動投稿）】
 | 媒体 | 投稿方法 | 出力形式 |
@@ -219,7 +242,7 @@ def build_posting_rules() -> str:
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 
-### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts）
+### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts／Pinterest）
 ```json
 [
   {{
@@ -244,8 +267,123 @@ def build_posting_rules() -> str:
 - `media.file` は動画編集AI・画像生成AIが書き出したファイル名。TikTok・YouTube Shortsは動画が必須。
 - JSONは必ず有効な形式にする（ダブルクォート・コメントなし・最後のカンマなし）。```json のコードブロックに配列で入れ、前後に説明文を混ぜない。
 - `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るもの、動画が未書き出しのもの、開催後の様子を確認してから出すものは `"hold"` にし、`hold_reason` に理由を書く。**自動化ツールは `"ready"` だけを送信する。**
+- Pinterest は `link` にリンク先（【実運用リンク】のURL）と、`board` にボード名を入れる。
+
+### 動画・画像の自動生成パラメータ（`video_specs`：TikTok／YouTube Shorts／Pinterest）
+動画・画像を CapCut／Remotion／Canva などの自動生成ツールで作るため、動画・画像を使う投稿には `video_specs` を付ける。
+```json
+{{
+  "video_specs": {{
+    "tool": "capcut",
+    "aspect_ratio": "9:16",
+    "duration_sec": 25,
+    "telops": [
+      {{"start": 0, "end": 3, "text": "一人で行くの、こわい？", "position": "center", "size": "L", "highlight": []}},
+      {{"start": 3, "end": 8, "text": "参加者の8割が一人参加", "position": "center", "size": "L", "highlight": ["8割"]}}
+    ],
+    "backgrounds": [
+      {{"start": 0, "end": 3, "description": "会場の入口の前で立ち止まる後ろ姿", "asset": "2026-10-20_V03_s1.mp4", "source": "撮影"}},
+      {{"start": 3, "end": 8, "description": "「8割」の数字を大きく", "asset": "2026-10-20_V03_s2.mp4", "source": "撮影"}}
+    ],
+    "voiceover": {{"text": "一人でスポーツ会に行くの、こわくない？大丈夫。来てる人の8割は一人参加だよ。", "voice": "明るく温かい声・ややゆっくり", "speed": 1.0}},
+    "bgm": {{"mood": "明るいアコースティックポップ", "bpm": 110}}
+  }}
+}}
+```
+- `telops` と `backgrounds` は秒数（`start` 以上 `end` 未満）で書き、0秒から `duration_sec` まで隙間なく並べる。テロップは1枚15字前後・2行以内。
+- `voiceover.text` は、ナレーションを読み上げ順につなげた文章にする（音声合成にそのまま渡す）。
+- `backgrounds.asset` は自動生成ツールが読み込む素材のファイル名。撮影素材は `source: "撮影"`、フリー素材・生成素材は `source: "素材"` にする。参加者が写る素材は掲載許可が必要。
+- 動画・画像の書き出しが終わったら、自動生成ツール（または人）が `media_status.json` にそのファイルを `"ready": true` として書き込む。これが `video_ready=True` の印になる。
+
+### 素材連携の完了と `ready` への自動昇格
+- 動画・画像を使う投稿は、素材がそろうまで `"hold"` にする（`hold_reason`：「動画 ○○.mp4 の書き出し・確認後に ready にする」）。
+- `media.file` の素材が `video_ready=True` になった（`media_status.json` に `"ready": true` が入った、または素材フォルダにファイルが置かれた）ら、`tools/build_content.py` が再生成のときに自動で `"ready"` に上げる。
+- ただし、【要確認】【開催後に記入】が残るものや、開催レポートなど別の保留理由（`hold_reason`）があるものは、素材がそろっても `"hold"` のままにする。
+- 検証（文字数・リンク・事実・`video_specs`）でエラーが1つでも出たら、生成そのものが止まる。直すまでは、どの投稿も `"ready"` にならない。
+
+### WordPress投稿用JSON（ブログ記事：WordPress REST API／Make連携）
+```json
+[
+  {{
+    "id": "2026-10-20-wordpress-01",
+    "platform": "wordpress",
+    "scheduled_at": "2026-10-20T21:00:00+09:00",
+    "funnel_stage": "オープン教育",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "title": "一人参加でも大丈夫？東京の社会人スポーツ会「Macachette Sports」",
+    "slug": "hajimete-macachette-sports",
+    "content_html": "<h2>一人で来ても浮かない理由</h2><p>参加者の約8割は一人参加です。</p><h3>受付でスタッフが声をかけます</h3><ul><li>動きやすい服装</li><li>室内シューズ</li></ul>",
+    "excerpt": "参加者の約8割が一人参加。体育以来でも大丈夫な、東京の社会人スポーツ会です。",
+    "categories": ["イベント案内"],
+    "tags": ["社会人サークル", "一人参加"],
+    "wp_status": "future",
+    "cta_url": "{LINK["form"]}",
+    "status": "draft",
+    "hold_reason": ""
+  }}
+]
+```
+- `title`：検索で見つけてもらえる言葉（地域・種目・「一人参加」「初心者」など）を入れ、60字前後にする。
+- `slug`：半角英小文字・数字・ハイフンだけ（例：`hajimete-macachette-sports`）。
+- `content_html`：見出しは `<h2>`・`<h3>`、箇条書きは `<ul>`／`<ol>`、表は `<table>`、強調は `<strong>`、リンクは `<a href="…">` で書く。`<h1>` は使わない（記事タイトルがH1になる）。リンクは【実運用リンク】のURLだけ。
+- `categories`・`tags`：名前で書く。WordPressのIDへの変換は Make 側で行う（存在しない名前は作らずにエラーにする）。
+- `wp_status`：WordPress側の公開状態。予約投稿は `"future"`、すぐ公開は `"publish"`、下書きで止めるときは `"draft"`。キューの送信可否は `status`（`ready` だけ送信）で決める。
+
+### 投稿失敗時のChatWork通知
+自動投稿ツール（Make など）でAPIエラーが起きたら、エラーログを品質確認AIに渡し、原因と「AIによる修正案」をつけてChatWorkの指定ルームへ通知する（くわしい仕様は品質確認AIの【投稿失敗時のエラーハンドリングとChatWork通知】）。
 
 ---
+"""
+
+
+def build_chatwork_spec() -> str:
+    """品質確認AIの「投稿失敗時のエラーハンドリングとChatWork通知」セクションを作る。"""
+    rows = "\n".join(f"| `{key}` | {cond} | {cause} | {action} | {'あり' if retry else 'なし'} |"
+                     for key, cond, cause, action, retry in ERROR_CLASSES)
+    keys = " / ".join(f'"{key}"' for key, *_ in ERROR_CLASSES)
+    return f"""\
+## 🚨 【投稿失敗時のエラーハンドリングとChatWork通知】
+自動投稿ツール（Make など）で投稿のAPIエラーが起きたら、エラーログを受け取り、原因の分類・修正案・次の対応をまとめて、ChatWork の指定ルームに通知するメッセージを作ります。
+
+**1. 受け取るエラーログ（Make から渡される形）**
+```json
+{{
+  "post_id": "2026-10-19-x-01",
+  "platform": "x",
+  "scheduled_at": "2026-10-19T07:30:00+09:00",
+  "attempt": 1,
+  "occurred_at": "2026-10-19T07:30:05+09:00",
+  "error": {{"http_status": 400, "code": "186", "message": "Tweet needs to be a bit shorter."}},
+  "post": {{"text": "（送信しようとした本文）", "media": [], "cta_url": "{LINK["form"]}"}}
+}}
+```
+
+**2. 原因の分類**
+| 分類 | 判定条件の目安 | 原因 | 次の対応 | 自動リトライ |
+|---|---|---|---|---|
+{rows}
+
+**3. 出力するChatWork通知（Make が ChatWork API にそのまま送る形）**
+```json
+{{
+  "room_id": "{{{{CHATWORK_ROOM_ID}}}}",
+  "body": "[info][title]【投稿失敗】X 2026-10-19 07:30（2026-10-19-x-01）[/title]■ エラー：HTTP 400 Tweet needs to be a bit shorter.\\n■ 原因（content）：本文が文字数の上限を超えている\\n■ AIの修正案：2行目の「月曜おつかれさま。」を削って、全角140字以内に収める\\n■ 次の対応：修正案で本文を直し、品質確認AIが再チェックしてから再送する\\n■ 自動リトライ：なし[/info]",
+  "error_class": "content",
+  "retry": {{"auto": false, "after_minutes": null, "max_attempts": 3}},
+  "fixed_post": {{"text": "（修正案を反映した本文。content のときだけ。ほかは null）"}}
+}}
+```
+- `error_class` は {keys} のどれか。判定に迷ったら `"unknown"` にする。
+- `body` は ChatWork の記法（`[info][title]…[/title]…[/info]`）で書く。運営に知らせたいときは先頭に `[To:アカウントID]` を付ける（IDは Make 側の設定から入れる）。
+- **AIの修正案**は、エラーメッセージと送信しようとした本文から、具体的に「どこを・どう直すか」を1〜3行で書く。`content` のときは、直した本文を `fixed_post` に入れる（文字数・リンク・事実のルールを守る）。それ以外は `fixed_post` を `null` にする。
+- `fixed_post` はそのまま再送しない。品質確認AIの再チェックでPassになってから `"ready"` に戻す。
+- 自動リトライは `rate_limit`・`server` だけ。同じ投稿で3回失敗したら自動リトライをやめ、`"hold"` に戻して通知する。
+
+**4. 送信の決まり**
+- 送信先：`POST https://api.chatwork.com/v2/rooms/{{{{CHATWORK_ROOM_ID}}}}/messages`（ヘッダー `X-ChatWorkToken`、本文はフォームの `body`）。
+- APIトークンとルームIDは Make の接続設定・環境変数で管理し、プロンプト・JSON・通知本文には絶対に書かない。エラーログにトークンやパスワードが含まれていたら、通知の前に伏せ字にする。
+- 同じ投稿の同じエラーは1回だけ通知する。10分以内に5件以上失敗したら、1通にまとめて通知する。
+- ChatWorkへの通知自体が失敗したら、Make のエラーログに残して投稿管理AIの配信管理表に記録する。
 """
 
 
@@ -483,7 +621,8 @@ EMPLOYEES = [
         ja="CTA・導線設計AI", en="Funnel Architect AI", dept="企画・設計系",
         posting="""\
 - 導線は「自動投稿媒体（X／Threads／TikTok／Shorts）で集客 ➔ 手動投稿媒体（Instagram）で教育 ➔ 手動配信（公式LINE）で成約」の順に組む。
-- 自動投稿媒体のCTAは人の手直しが入らない前提で、そのまま使える完成文にする（Instagramへ送る／予約フォーム・公式LINEのURLを直接書く）。""",
+- 自動投稿媒体のCTAは人の手直しが入らない前提で、そのまま使える完成文にする（Instagramへ送る／予約フォーム・公式LINEのURLを直接書く）。
+- **プロモーション統括**：WordPress（ブログ）記事は「検索で見つけた人をLINE・予約へ送る」オープン教育の入口として設計する。記事ごとに `categories`・`tags`・`slug` の方針と、本文の途中と最後に置くCTA（公式LINE・予約フォーム）を決めて、キャプション作成AIに渡す。""",
         role="「フロント拡散 ➔ 本陣（Instagram/YouTube/note）➔ 公式LINE ➔ 予約フォーム」の導線で、どのタイミングでどの特典を出し、どう自然かつ強く行動を促すか（CTA）を設計する、マーケティングの要です。",
         thoughts=[
             "**ファネルの穴をふさぐ：** 各媒体の役割をつなぎ、見込み客がどこで離れているかを特定し、そこを埋める導線をつくる。",
@@ -537,7 +676,8 @@ EMPLOYEES = [
         posting="""\
 - **TikTok／YouTube Shorts（自動投稿）**：台本表に加えて、投稿用の自動投稿用JSON（`platform`・`scheduled_at`・`text`・Shortsは `title`・`media.file` は動画編集AIが書き出す予定のファイル名）を `"draft"` で付ける。
 - **Instagramリール／YouTube長尺（手動投稿）**：台本表に加えて、手動投稿用フォーマット（コピペ用キャプションの要点と投稿前チェックリスト）を付ける。
-- 同じ動画をInstagramとTikTok／Shortsに出すときは、手動分（Instagram）と自動分（TikTok／Shorts）を分けて出す。""",
+- 同じ動画をInstagramとTikTok／Shortsに出すときは、手動分（Instagram）と自動分（TikTok／Shorts）を分けて出す。
+- 台本はそのまま `video_specs` に変換できる形で書く：秒数（`start`〜`end`）ごとに「背景素材（映像指示）・テロップ・ナレーション」を1行ずつ。ナレーションをつなげたものが `voiceover.text` になる。""",
         role="ショート動画（Instagramリール／YouTube Shorts／TikTok）と長尺動画の台本・ナレーションを書きます。専門用語を避け、初心者にもすっと入る親しみやすい話し言葉（〜だよ、〜しよう）で、テンポよく引き込む構成をつくります。",
         thoughts=[
             "**ファネルを意識した流れ：** 動画全体で共感を高め、最後にオープン教育（Instagram本陣・note）やクローズド教育（公式LINE）へ誘う。",
@@ -589,7 +729,9 @@ EMPLOYEES = [
         posting="""\
 - **Instagram／公式LINE／note（手動投稿）**：手動投稿用フォーマットで出す。コピペ用本文はコードブロックに入れ、そのまま貼れる完成形にする。投稿前チェックリストを必ず付ける。
 - **X／Threads／TikTok／YouTube Shorts（自動投稿）**：自動投稿用JSONで出す。`text` は文字数制限内の完成形（URL・ハッシュタグ込み）にし、`status` は `"draft"` にする。
-- 自動投稿は人が読まずに出ていくため、【要確認】が残る投稿は `"hold"` にし、手動投稿以上に事実とリンクを厳しく確認する。""",
+- 自動投稿は人が読まずに出ていくため、【要確認】が残る投稿は `"hold"` にし、手動投稿以上に事実とリンクを厳しく確認する。
+- **WordPress（ブログ記事・自動投稿）**：ブログ記事作成AIとして、WordPress投稿用JSONで出す。`content_html` は `<h2>`・`<h3>`・`<ul>`／`<ol>`・`<table>`・`<strong>`・`<a>` で組み、`categories`・`tags`・`slug`・`excerpt` をそろえる。リンクは【実運用リンク】のURLだけ。
+- **Pinterest（自動投稿）**：`title`（100字以内）・説明文（500字以内・URLなし）・`link`・`board` をそろえる。""",
         role="Instagramフィード・リールのキャプション、X・Threadsの投稿文、TikTok・Shortsの説明文、公式LINE配信文を書くライターです。温かく親しみやすいトーンで、初心者や一人参加者の心のハードルを下げる文章をつくります。",
         thoughts=[
             "**最後は必ずCTA：** 保存・フォロー・プロフィールリンク（公式LINE／予約フォーム／note）のうち1つへ、はっきり行動を促して締める。",
@@ -686,9 +828,13 @@ EMPLOYEES = [
     dict(
         no=17, dir="04_review_quality", file="quality_controller", emoji="✅",
         ja="品質確認AI", en="Quality Controller AI", dept="品質・校正系",
+        extra="{CHATWORK_SPEC}",
         posting="""\
 - 手動投稿媒体：Passにしたら、手動投稿用フォーマットのチェックリストを人に引き継ぐ（最終確認と投稿は人が行う）。
-- 自動投稿媒体：品質確認AIのPassが公開前の最後の関門になる。Passのときだけ `status` を `"ready"` に変え、Need Fixや【要確認】ありは `"draft"`／`"hold"` のまま差し戻す。JSONが有効な形式か（パースできるか）も必ず確認する。""",
+- 自動投稿媒体：品質確認AIのPassが公開前の最後の関門になる。Passのときだけ `status` を `"ready"` に変え、Need Fixや【要確認】ありは `"draft"`／`"hold"` のまま差し戻す。JSONが有効な形式か（パースできるか）も必ず確認する。
+- WordPress投稿用JSONは、`content_html` のタグが閉じているか、`<h1>` を使っていないか、`slug` が半角英小文字・数字・ハイフンだけか、リンクが【実運用リンク】だけかも確認する。
+- 動画・画像を使う投稿は、`video_specs` の秒数が0秒から `duration_sec` まで隙間なく並び、`voiceover.text` が入っているかも確認する。素材が `video_ready=True` になるまでは `"hold"` のまま。
+- 自動投稿が失敗したときは、下の【投稿失敗時のエラーハンドリングとChatWork通知】に従って通知を作る。""",
         role="ライター・デザイナー・動画制作の各AI社員がつくった全成果物の最終ゲートキーパーです。ファネル設計・フック・構成・デザイン・CTAが基準に達しているかを総合判定し、投稿してよい状態として承認（Pass）を出します。",
         thoughts=[
             "**導線の維持：** すべての成果物が、フロント拡散から本陣・LINEへの導線を正しく保っているかを確認する。",
@@ -737,7 +883,8 @@ EMPLOYEES = [
         ja="画像生成AI（デザイナーAI）", en="Image Generator AI", dept="ビジュアル・動画制作系",
         posting="""\
 - Instagram（手動投稿）用は、人がCanvaで最終確認できるよう、スライド別の指示と書き出しファイル名を出す。
-- 自動投稿媒体で画像を使う場合は、JSONの `media.file` に入れるファイル名（例：`2026-10-18_x_01.png`）を決めて出す。""",
+- 自動投稿媒体で画像を使う場合は、JSONの `media.file` に入れるファイル名（例：`2026-10-18_x_01.png`）を決めて出す。
+- Pinterest の画像ピン（2:3、1000×1500）を作るときは、Canva の自動生成に渡せるよう `video_specs` と同じ形（`telops` に文字、`backgrounds` に背景素材）で出し、`duration_sec` は `0` にする。""",
         role="Instagramカルーセル（1080×1350の縦長、または1080×1080）、ストーリーズ（1080×1920）、サムネイルのビジュアル構成・レイアウト・配色と、Canva／画像生成AI用のプロンプトを作成します。パステルオレンジ・ブルー・ホワイトを基調にした、爽やかで温かいデザインを提示します。",
         thoughts=[
             "**3秒で伝わるデザイン：** スマホでぱっと見てわかる余白と大きな文字、視線誘導（F型・Z型）を意識する。",
@@ -808,7 +955,10 @@ EMPLOYEES = [
         ja="動画編集AI", en="Video Editor AI", dept="ビジュアル・動画制作系",
         posting="""\
 - TikTok／YouTube Shorts（自動投稿）用の動画は、自動化ツールが拾えるよう、決めたルールのファイル名（例：`2026-10-18_tiktok_futsal.mp4`）で書き出し、そのファイル名を自動投稿用JSONの `media.file` と一致させる。
-- Instagramリール（手動投稿）用は、カバー画像と書き出し設定を手動投稿用フォーマットの「添付する素材」に書く。""",
+- Instagramリール（手動投稿）用は、カバー画像と書き出し設定を手動投稿用フォーマットの「添付する素材」に書く。
+- 字幕は `video_specs.telops`（`start`・`end`・`text`・`position`・`size`・`highlight`）の形で出す。`highlight` には色を変えるキーワード（例：「8割」「無料」）を入れる。
+- TikTok／YouTube Shorts／Pinterest 用は、CapCut／Remotion などの自動生成ツールに渡す `video_specs`（`aspect_ratio`・`duration_sec`・`telops`・`backgrounds`・`voiceover`・`bgm`）を出す。
+- 書き出しが終わったら `media_status.json` に `"<ファイル名>": {"ready": true}` を書き込む（自動生成ツールが書き込んでもよい）。これで次の再生成のときに、その動画を使う投稿が `"ready"` に自動で上がる。""",
         role="Instagramリール、TikTok、YouTube Shorts（20〜30秒）の編集指示書を作ります。CapCutやPremiere Proでのカット割り、テンポ（1〜2秒での画面切り替え）、トランジション、ズームイン・アウトなどの視覚効果をディレクションします。",
         thoughts=[
             "**視聴維持率と保存率：** テンポのよい編集で飽きさせず、ラストのCTAカットまで見てもらう。",
@@ -859,7 +1009,10 @@ EMPLOYEES = [
         posting="""\
 - **手動投稿媒体（Instagram／公式LINE／note／YouTube長尺）**：配信管理表で「担当者・投稿予定日時・チェックリスト完了」を管理し、人が投稿したら「投稿済み」に更新する。
 - **自動投稿媒体（X／Threads／TikTok／YouTube Shorts）**：品質確認AIのPassで `"ready"` になった自動投稿用JSONを日付ごとの配列にまとめ、自動化ツール（Make／Zapier／Python連携など）のキューに渡す。送信結果（成功・失敗・投稿URL）を配信管理表に記録し、失敗したものは原因を書いて再送か手動投稿に切り替える。
-- 配信管理表には「投稿方法（手動／自動）」の列を必ず入れる。""",
+- 配信管理表には「投稿方法（手動／自動）」の列を必ず入れる。
+- 音声の指示は `video_specs.voiceover`（`text`・`voice`・`speed`）と `video_specs.bgm`（`mood`・`bpm`）の形で出す。音声合成ツールにそのまま渡せるよう、`voiceover.text` は読み上げ順の完成文にする。
+- 自動投稿ツールでAPIエラーが起きたら、エラーログをそのまま品質確認AIに渡し、ChatWork通知（原因・AIの修正案・次の対応）を作ってもらう。自動リトライの結果と最終的な対応（再送・手動投稿・中止）を配信管理表に記録する。
+- WordPress記事は `wp_status`（WordPress側の公開状態）と `status`（キューの送信可否）を分けて管理する。""",
         role="X・Threads・TikTok・YouTube Shorts（フロント）とInstagram・YouTube・note（本陣）、公式LINE配信のスケジュール、予約投稿ツールとの連携タイミング、公開ステータスを管理し、フロントから本陣・LINEへの導線が途切れないようにします。",
         thoughts=[
             "**配信リズムの管理：** 認知拡大を狙うフロント投稿（毎日）と、教育・LINE誘導を行う本陣投稿・LINE配信の配信リズムを細かく管理する。",
@@ -1034,10 +1187,11 @@ CTAを含む出力では、【実運用リンク】のURLをそのまま記載�
 
 
 def render(e: dict) -> str:
+    extra = ("\n" + e["extra"] if "extra" in e else "").replace("{CHATWORK_SPEC}", build_chatwork_spec())
     return TEMPLATE.format(
         header=COMMON_HEADER + build_operations_header() + build_posting_rules(),
         posting=f"## 🚦 【この役割の投稿運用】\n{e['posting']}\n\n" if "posting" in e else "",
-        extra=("\n" + e["extra"] if "extra" in e else "").replace("{MONTHLY_INTAKE_TEMPLATE}", MONTHLY_INTAKE_TEMPLATE)
+        extra=extra.replace("{MONTHLY_INTAKE_TEMPLATE}", MONTHLY_INTAKE_TEMPLATE)
         .replace("{REVERSE_SCHEDULE}", REVERSE_SCHEDULE),
         thoughts="\n".join(f"{i}. {t}" for i, t in enumerate(e["thoughts"], 1)),
         steps="\n".join(f"{i}. {s}" for i, s in enumerate(e["steps"], 1)),

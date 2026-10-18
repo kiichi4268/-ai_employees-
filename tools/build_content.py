@@ -5,12 +5,19 @@
 
 content/<年-月>/source.py（企画・台本・キャプションの元データ）を読み込み、
 同じフォルダに次のファイルを書き出す。検証エラーが1つでもあれば何も書き出さずに止まる。
-  - auto_posts.json  自動投稿用JSON（X / Threads / TikTok / YouTube Shorts）
+  - auto_posts.json  自動投稿用JSON（X / Threads / TikTok / YouTube Shorts / Pinterest）
+  - wordpress_posts.json  WordPress投稿用JSON（ブログ記事：WordPress REST API／Make連携）
   - manual_posts.md  手動投稿用フォーマット（Instagram / 公式LINE / note / YouTube長尺）
   - calendar.md      日別の企画・台本・配信カレンダー
   - qc_report.md     品質確認AIの判定と自動検証の結果
 
 イベント情報・リンク・投稿媒体は tools/build_ai_employees.py の定義をそのまま使う。
+
+動画・画像の素材がそろったら（video_ready=True）、その素材を使う投稿は自動で ready に上がる。
+video_ready=True になる条件（どれか1つ）：
+  - content/<年-月>/media_status.json に {"<ファイル名>": {"ready": true}} がある（自動生成ツール・人が書き込む）
+  - content/<年-月>/media/ にそのファイルが置かれている
+  - source.py の VIDEOS に video_ready=True と書いてある
 """
 
 import datetime
@@ -19,6 +26,7 @@ import json
 import re
 import sys
 from collections import Counter
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -35,8 +43,11 @@ MANUAL_LABELS = {
     "instagram": "Instagram", "instagram_story": "Instagramストーリーズ",
     "line": "公式LINE", "note": "note", "youtube": "YouTube長尺",
 }
-PLATFORM_LABELS = {"x": "X", "threads": "Threads", "tiktok": "TikTok", "youtube_shorts": "YouTube Shorts"}
-LIMITS = {"threads": 500, "tiktok": 2200, "youtube_shorts": 5000}  # X は重み付きで別計算
+PLATFORM_LABELS = {"x": "X", "threads": "Threads", "tiktok": "TikTok", "youtube_shorts": "YouTube Shorts",
+                   "pinterest": "Pinterest", "wordpress": "WordPress"}
+LIMITS = {"threads": 500, "tiktok": 2200, "youtube_shorts": 5000, "pinterest": 500}  # X は重み付きで別計算
+TITLE_LIMITS = {"youtube_shorts": 100, "pinterest": 100}
+HIGHLIGHT_WORDS = ["8割", "無料", "体育以来", "一人参加", "手ぶら", "スパイク不可", "体育館シューズ"]
 PENDING_MARK = "【"  # 【要確認】【開催後に記入】など、埋まっていない印
 
 
@@ -112,10 +123,60 @@ def check_links(where, text, allow_urls, errors):
             errors.append(f"{where}: 実運用リンクにないURL {url}")
 
 
-def build_auto(src, errors):
-    posts, counter = [], Counter()
+def load_media_status(folder):
+    """素材連携の完了状況。media_status.json と media/ フォルダのファイルを見る。"""
+    ready = set()
+    manifest = folder / "media_status.json"
+    if manifest.exists():
+        ready |= {name for name, info in json.loads(manifest.read_text(encoding="utf-8")).items()
+                  if isinstance(info, dict) and info.get("ready") is True}
+    if (folder / "media").is_dir():
+        ready |= {f.name for f in (folder / "media").iterdir() if f.is_file()}
+    return ready
 
-    def add(date, time, platform, kind, events, text, title, media, cta, hold_reason):
+
+def parse_seconds(span):
+    start, end = span.split("-")
+    return int(start), int(end)
+
+
+def build_video_specs(v, defaults):
+    """台本（rows）から CapCut／Remotion／Canva に渡す video_specs を作る。"""
+    telops, backgrounds, voice = [], [], []
+    for n, (span, visual, telop, narration) in enumerate(v["rows"], 1):
+        start, end = parse_seconds(span)
+        telops.append({"start": start, "end": end, "text": telop, "position": "center", "size": "L",
+                       "highlight": [w for w in HIGHLIGHT_WORDS if w in telop]})
+        backgrounds.append({"start": start, "end": end, "description": visual,
+                            "asset": f"{v['date']}_{v['vid']}_s{n}.mp4", "source": "撮影"})
+        voice.append(narration)
+    return {"tool": defaults["tool"], "aspect_ratio": "9:16", "duration_sec": telops[-1]["end"],
+            "telops": telops, "backgrounds": backgrounds,
+            "voiceover": {"text": "。".join(t.rstrip("。") for t in voice) + "。",
+                          "voice": defaults["voice"], "speed": defaults["speed"]},
+            "bgm": defaults["bgm"]}
+
+
+def check_video_specs(where, specs, errors):
+    for key in ("telops", "backgrounds"):
+        t = 0
+        for item in specs[key]:
+            if item["start"] != t or item["end"] <= item["start"]:
+                errors.append(f"{where}: video_specs.{key} の秒数が0秒から隙間なく並んでいない（{item['start']}-{item['end']}）")
+            t = item["end"]
+        if t != specs["duration_sec"]:
+            errors.append(f"{where}: video_specs.{key} の終わり（{t}秒）が duration_sec と合わない")
+    if specs["duration_sec"] > 180:
+        errors.append(f"{where}: 動画が3分を超えている")
+    if not specs["voiceover"]["text"].strip("。"):
+        errors.append(f"{where}: voiceover.text が空")
+
+
+def build_auto(src, errors, media_ready):
+    posts, counter = [], Counter()
+    promoted = []
+
+    def add(date, time, platform, kind, events, text, title, media, cta, hold_reason, **extra):
         counter[(date, platform)] += 1
         pid = f"{date}-{platform}-{counter[(date, platform)]:02d}"
         text = fill_links(text)
@@ -128,7 +189,7 @@ def build_auto(src, errors):
             event=" / ".join(f"{e} {EVENTS[e]['sport']}＠{EVENTS[e]['venue']}" for e in events),
             text=text, thread=[], title=title,
             hashtags=re.findall(r"#(\S+)", text), media=media,
-            cta_url=LINK[cta], status=status, hold_reason=hold_reason,
+            cta_url=LINK[cta], status=status, hold_reason=hold_reason, **extra,
             _kind=kind, _events=events))
 
     for p in src.TEXT_POSTS:
@@ -137,13 +198,23 @@ def build_auto(src, errors):
         if LINK[p["cta"]] not in posts[-1]["text"]:
             errors.append(f"{posts[-1]['id']}: CTA（{p['cta']}）のURLが本文に入っていない")
     for v in src.VIDEOS:
-        media = [{"type": "video", "file": f"{v['date']}_{v['vid']}.mp4"}]
-        # 動画を書き出して確認したら source.py で video_ready=True にする
-        reason = v.get("hold_reason") or ("" if v.get("video_ready") else f"動画 {media[0]['file']} の書き出し・確認後に ready にする")
+        file = f"{v['date']}_{v['vid']}.mp4"
+        media = [{"type": "video", "file": file}]
+        video_ready = v.get("video_ready") or file in media_ready
+        # 素材がそろったら自動で ready に上がる。別の保留理由（開催レポートなど）があれば hold のまま
+        reason = v.get("hold_reason") or ("" if video_ready else f"動画 {file} の書き出し・確認後に ready にする")
+        if video_ready and not v.get("hold_reason"):
+            promoted.append(file)
+        specs = build_video_specs(v, src.VIDEO_DEFAULTS)
         add(v["date"], src.VIDEO_TIMES["tiktok"], "tiktok", v["kind"], v["events"], v["tiktok"],
-            "", media, "line", reason)
+            "", media, "line", reason, video_specs=specs)
         add(v["date"], src.VIDEO_TIMES["youtube_shorts"], "youtube_shorts", v["kind"], v["events"], v["tiktok"],
-            v["title"], media, "line", reason)
+            v["title"], media, "line", reason, video_specs=specs)
+        # Pinterest はピン自体がリンク先に飛ぶので「プロフィールのリンク」ではなく「このピンのリンク」と案内する
+        add(v["date"], src.VIDEO_TIMES["pinterest"], "pinterest", v["kind"], v["events"],
+            v["tiktok"].replace("プロフィールのリンク", "このピンのリンク"),
+            v["title"], media, v.get("pin_link", "form"), reason, video_specs=specs,
+            link=LINK[v.get("pin_link", "form")], board=src.PINTEREST_BOARD)
 
     for p in posts:
         where = p["id"]
@@ -154,10 +225,14 @@ def build_auto(src, errors):
                 errors.append(f"{where}: X の文字数 {x_weighted_length(p['text'])}/280 を超えている")
         elif len(p["text"]) > LIMITS[p["platform"]]:
             errors.append(f"{where}: 文字数 {len(p['text'])}/{LIMITS[p['platform']]} を超えている")
-        if p["platform"] == "youtube_shorts" and not 0 < len(p["title"]) <= 100:
-            errors.append(f"{where}: Shorts の title が1〜100字ではない")
-        if p["platform"] in ("tiktok", "youtube_shorts") and not p["media"]:
-            errors.append(f"{where}: 動画ファイルが指定されていない")
+        if p["platform"] in TITLE_LIMITS and not 0 < len(p["title"]) <= TITLE_LIMITS[p["platform"]]:
+            errors.append(f"{where}: title が1〜{TITLE_LIMITS[p['platform']]}字ではない")
+        if p["platform"] in base.VIDEO_PLATFORMS:
+            if not p["media"]:
+                errors.append(f"{where}: 動画・画像ファイルが指定されていない")
+            check_video_specs(where, p["video_specs"], errors)
+        if p["platform"] == "pinterest" and (p["link"] not in LINK_URLS or not p["board"]):
+            errors.append(f"{where}: Pinterest の link が実運用リンクにない、または board がない")
         if p["cta_url"] not in LINK_URLS:
             errors.append(f"{where}: cta_url が実運用リンクにない")
         check_links(where, p["text"], p["platform"] in ("x", "threads"), errors)
@@ -166,6 +241,109 @@ def build_auto(src, errors):
         if p["status"] == "hold" and not p["hold_reason"]:
             errors.append(f"{where}: hold なのに hold_reason がない")
     posts.sort(key=lambda p: (p["scheduled_at"], p["id"]))
+    return posts, promoted
+
+
+class _HTMLChecker(HTMLParser):
+    VOID = {"br", "hr", "img"}
+
+    def __init__(self):
+        super().__init__()
+        self.stack, self.problems, self.hrefs, self.text = [], [], [], []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "h1":
+            self.problems.append("<h1> は使わない（記事タイトルがH1になる）")
+        if tag == "a":
+            self.hrefs.append(dict(attrs).get("href", ""))
+        if tag not in self.VOID:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        if not self.stack or self.stack[-1] != tag:
+            self.problems.append(f"</{tag}> の対応が取れていない")
+        else:
+            self.stack.pop()
+
+    def handle_data(self, data):
+        self.text.append(data)
+
+
+def inline_html(text):
+    text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+    return URL_RE.sub(lambda m: f'<a href="{m.group(0)}">{m.group(0)}</a>', text)
+
+
+def markdown_to_html(md):
+    """記事用の簡易Markdown（## ### - 1. 表 **太字** URL）を WordPress 用のHTMLにする。"""
+    html, lines, i = [], md.strip().split("\n"), 0
+    while i < len(lines):
+        line = lines[i].rstrip()
+        if not line or line.startswith("# "):
+            i += 1
+        elif line.startswith("### "):
+            html.append(f"<h3>{inline_html(line[4:])}</h3>"); i += 1
+        elif line.startswith("## "):
+            html.append(f"<h2>{inline_html(line[3:])}</h2>"); i += 1
+        elif line.startswith("|"):
+            rows = []
+            while i < len(lines) and lines[i].startswith("|"):
+                cells = [c.strip() for c in lines[i].strip("|").split("|")]
+                if not all(set(c) <= {"-", ":"} for c in cells):
+                    rows.append(cells)
+                i += 1
+            head = "".join(f"<th>{inline_html(c)}</th>" for c in rows[0])
+            body = "".join("<tr>" + "".join(f"<td>{inline_html(c)}</td>" for c in r) + "</tr>" for r in rows[1:])
+            html.append(f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>")
+        elif re.match(r"(- |\d+\. )", line):
+            tag = "ul" if line.startswith("- ") else "ol"
+            items = []
+            while i < len(lines) and re.match(r"(- |\d+\. )", lines[i]):
+                items.append(f"<li>{inline_html(re.sub(r'^(- |\d+\. )', '', lines[i]))}</li>"); i += 1
+            html.append(f"<{tag}>{''.join(items)}</{tag}>")
+        else:
+            para = []
+            while i < len(lines) and lines[i].strip() and not re.match(r"(#|\||- |\d+\. )", lines[i]):
+                para.append(inline_html(lines[i].strip())); i += 1
+            html.append(f"<p>{'<br>'.join(para)}</p>")
+    return "".join(html)
+
+
+def build_wordpress(src, errors):
+    posts = []
+    for n, w in enumerate(getattr(src, "WORDPRESS", []), 1):
+        pid = f"{w['date']}-wordpress-{n:02d}"
+        content = markdown_to_html(fill_links(w["body"]))
+        checker = _HTMLChecker()
+        checker.feed(content)
+        checker.close()
+        for problem in checker.problems + ([f"閉じていないタグ {checker.stack}"] if checker.stack else []):
+            errors.append(f"{pid}: content_html {problem}")
+        for href in checker.hrefs:
+            if href not in LINK_URLS:
+                errors.append(f"{pid}: 実運用リンクにないURL {href}")
+        if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", w["slug"]):
+            errors.append(f"{pid}: slug は半角英小文字・数字・ハイフンだけにする（{w['slug']}）")
+        if not 0 < len(w["title"]) <= 70:
+            errors.append(f"{pid}: title が1〜70字ではない（{len(w['title'])}字）")
+        if not w["categories"] or not w["tags"]:
+            errors.append(f"{pid}: categories・tags が空")
+        if w["wp_status"] not in ("future", "publish", "draft"):
+            errors.append(f"{pid}: wp_status が future / publish / draft ではない")
+        plain = "".join(checker.text)
+        check_facts(pid, w["title"] + "\n" + plain + "\n" + w["excerpt"], w["events"], errors)
+        check_timing(pid, w["kind"], scheduled(w["date"], w["time"]), w["events"], errors)
+        hold = w.get("hold_reason", "")
+        if not hold and PENDING_MARK in w["title"] + plain:
+            errors.append(f"{pid}: 埋まっていない【】が残っているのに ready")
+        posts.append(dict(
+            id=pid, platform="wordpress", scheduled_at=scheduled(w["date"], w["time"]).isoformat(),
+            funnel_stage="オープン教育",
+            event=" / ".join(f"{e} {EVENTS[e]['sport']}＠{EVENTS[e]['venue']}" for e in w["events"]),
+            title=w["title"], slug=w["slug"], content_html=content, excerpt=w["excerpt"],
+            categories=w["categories"], tags=w["tags"], wp_status=w["wp_status"],
+            cta_url=LINK[w["cta"]], status="hold" if hold else "ready", hold_reason=hold))
     return posts
 
 
@@ -253,27 +431,36 @@ def render_calendar(src, auto, manual):
     return "\n".join(out)
 
 
-def render_qc(auto, manual):
-    status = Counter(p["status"] for p in auto)
-    by_platform = Counter((p["platform"], p["status"]) for p in auto)
+def render_qc(auto, wordpress, manual, promoted):
+    posts = auto + wordpress
+    status = Counter(p["status"] for p in posts)
+    by_platform = Counter((p["platform"], p["status"]) for p in posts)
     out = ["# ✅ 品質確認レポート（2026/10/18〜10/31）", "",
            "`python3 tools/build_content.py 2026-10` が、生成のたびに下の項目を自動で検証しています（エラーが1つでもあれば書き出しません）。", "",
            "## 自動検証の項目", "",
            "- JSONとして読み込めること（`json.loads`）",
-           "- 文字数：X は全角140字（半角280字、URLは1つ23字換算）以内／Threads 500字以内／TikTok 2,200字以内／Shorts は title 100字以内",
-           "- リンク：本文のURL・`cta_url` がすべて【実運用リンク】のものであること、X・Threadsは本文にCTAのURLが入っていること、TikTok・Shorts・Instagramは本文にURLを書いていないこと",
+           "- 文字数：X は全角140字（半角280字、URLは1つ23字換算）以内／Threads 500字以内／TikTok 2,200字以内／Shorts・Pinterest は title 100字以内／Pinterest 説明文 500字以内",
+           "- リンク：本文のURL・`cta_url`・Pinterest の `link`・WordPress の `<a href>` がすべて【実運用リンク】のものであること、X・Threadsは本文にCTAのURLが入っていること、TikTok・Shorts・Pinterest・Instagramは本文にURLを書いていないこと",
            "- 事実：日付と曜日、時間、会場、参加費、定員がイベント情報と一致すること、レンタルがないバレーボールでレンタル・手ぶらを案内していないこと",
            "- タイミング：告知は開催開始より前、レポートは開催後に投稿されること",
+           "- `video_specs`：テロップ・背景素材が0秒から `duration_sec` まで隙間なく並び、3分以内で、読み上げテキストが入っていること",
+           "- WordPress：`content_html` のタグが閉じていて `<h1>` を使っていないこと、`slug` が半角英小文字・数字・ハイフンだけ、`categories`・`tags` があること",
            "- ステータス：`ready` に【要確認】【開催後に記入】が残っていないこと、`hold` に理由があること", "",
            "## 結果：エラー 0件", "",
-           f"- 自動投稿 {len(auto)}件（ready {status['ready']}件／hold {status['hold']}件）",
-           f"- 手動投稿 {len(manual)}件", "",
+           f"- 自動投稿 {len(posts)}件（ready {status['ready']}件／hold {status['hold']}件）",
+           f"- 手動投稿 {len(manual)}件",
+           f"- 素材連携の完了で `ready` に上がった動画：{len(promoted)}本" + (f"（{', '.join(promoted)}）" if promoted else ""), "",
            "| 媒体 | ready | hold |", "|---|---|---|",
            *[f"| {PLATFORM_LABELS[k]} | {by_platform[(k, 'ready')]} | {by_platform[(k, 'hold')]} |" for k in PLATFORM_LABELS], "",
            "## 品質確認AIの判定（自動投稿）", "",
            "| ID | 投稿日時 | 文字数 | 判定 | 理由 |", "|---|---|---|---|---|"]
-    for p in auto:
-        n = f"{x_weighted_length(p['text'])}/280" if p["platform"] == "x" else f"{len(p['text'])}/{LIMITS[p['platform']]}"
+    for p in sorted(posts, key=lambda p: (p["scheduled_at"], p["id"])):
+        if p["platform"] == "x":
+            n = f"{x_weighted_length(p['text'])}/280"
+        elif p["platform"] == "wordpress":
+            n = f"タイトル{len(p['title'])}字"
+        else:
+            n = f"{len(p['text'])}/{LIMITS[p['platform']]}"
         verdict = "Pass ➔ `ready`" if p["status"] == "ready" else "保留 ➔ `hold`"
         reason = p["hold_reason"] or "フック・保存トリガー・トーン・事実・CTAを確認済み"
         out.append(f"| {p['id']} | {p['scheduled_at'][5:16].replace('T', ' ')} | {n} | {verdict} | {reason} |")
@@ -288,20 +475,25 @@ def main():
     spec.loader.exec_module(src)
 
     errors = []
-    auto = build_auto(src, errors)
+    auto, promoted = build_auto(src, errors, load_media_status(folder))
+    wordpress = build_wordpress(src, errors)
     manual = build_manual(src, errors)
     payload = json.dumps([public(p) for p in auto], ensure_ascii=False, indent=2)
+    wp_payload = json.dumps(wordpress, ensure_ascii=False, indent=2)
     json.loads(payload)
+    json.loads(wp_payload)
     if errors:
         print("\n".join(errors), file=sys.stderr)
         sys.exit(f"検証エラー {len(errors)}件。何も書き出していません。")
 
     (folder / "auto_posts.json").write_text(payload + "\n", encoding="utf-8")
+    (folder / "wordpress_posts.json").write_text(wp_payload + "\n", encoding="utf-8")
     (folder / "manual_posts.md").write_text(render_manual(manual), encoding="utf-8")
-    (folder / "calendar.md").write_text(render_calendar(src, auto, manual), encoding="utf-8")
-    (folder / "qc_report.md").write_text(render_qc(auto, manual), encoding="utf-8")
-    status = Counter(p["status"] for p in auto)
-    print(f"OK: 自動投稿 {len(auto)}件（ready {status['ready']}／hold {status['hold']}）、手動投稿 {len(manual)}件")
+    (folder / "calendar.md").write_text(render_calendar(src, auto + wordpress, manual), encoding="utf-8")
+    (folder / "qc_report.md").write_text(render_qc(auto, wordpress, manual, promoted), encoding="utf-8")
+    status = Counter(p["status"] for p in auto + wordpress)
+    print(f"OK: 自動投稿 {len(auto) + len(wordpress)}件（ready {status['ready']}／hold {status['hold']}）、"
+          f"手動投稿 {len(manual)}件、素材連携で ready に上がった動画 {len(promoted)}本")
 
 
 if __name__ == "__main__":

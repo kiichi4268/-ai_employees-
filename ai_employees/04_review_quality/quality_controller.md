@@ -113,6 +113,8 @@
 | Threads（`threads`） | 自動 | 自動投稿用JSON（本文は500字以内） |
 | TikTok（`tiktok`） | 自動 | 自動投稿用JSON（動画ファイル必須。キャプション内のURLはタップできない） |
 | YouTube Shorts（`youtube_shorts`） | 自動 | 自動投稿用JSON（動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内） |
+| Pinterest（`pinterest`） | 自動 | 自動投稿用JSON（動画または画像必須。title は100字以内、説明文は500字以内。リンク先は link に入れる（説明文のURLはタップできない）） |
+| WordPress（ブログ）（`wordpress`） | 自動 | 自動投稿用JSON（WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す） |
 
 - **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
 - **自動投稿媒体**は、API・外部自動化ツール（Make / Zapier / Python連携など）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
@@ -136,7 +138,7 @@
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 
-### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts）
+### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts／Pinterest）
 ```json
 [
   {
@@ -156,11 +158,75 @@
   }
 ]
 ```
-- `platform` は "x" / "threads" / "tiktok" / "youtube_shorts" のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
+- `platform` は "x" / "threads" / "tiktok" / "youtube_shorts" / "pinterest" のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
 - `thread` はX／Threadsで続けて投稿するときだけ使う（2投稿目以降の本文を順に入れる）。`title` はYouTube Shortsだけで使う。
 - `media.file` は動画編集AI・画像生成AIが書き出したファイル名。TikTok・YouTube Shortsは動画が必須。
 - JSONは必ず有効な形式にする（ダブルクォート・コメントなし・最後のカンマなし）。```json のコードブロックに配列で入れ、前後に説明文を混ぜない。
 - `status` の決まり：作成時は `"draft"`。品質確認AIがPassを出したものだけ `"ready"` にする。【要確認】が1つでも残るもの、動画が未書き出しのもの、開催後の様子を確認してから出すものは `"hold"` にし、`hold_reason` に理由を書く。**自動化ツールは `"ready"` だけを送信する。**
+- Pinterest は `link` にリンク先（【実運用リンク】のURL）と、`board` にボード名を入れる。
+
+### 動画・画像の自動生成パラメータ（`video_specs`：TikTok／YouTube Shorts／Pinterest）
+動画・画像を CapCut／Remotion／Canva などの自動生成ツールで作るため、動画・画像を使う投稿には `video_specs` を付ける。
+```json
+{
+  "video_specs": {
+    "tool": "capcut",
+    "aspect_ratio": "9:16",
+    "duration_sec": 25,
+    "telops": [
+      {"start": 0, "end": 3, "text": "一人で行くの、こわい？", "position": "center", "size": "L", "highlight": []},
+      {"start": 3, "end": 8, "text": "参加者の8割が一人参加", "position": "center", "size": "L", "highlight": ["8割"]}
+    ],
+    "backgrounds": [
+      {"start": 0, "end": 3, "description": "会場の入口の前で立ち止まる後ろ姿", "asset": "2026-10-20_V03_s1.mp4", "source": "撮影"},
+      {"start": 3, "end": 8, "description": "「8割」の数字を大きく", "asset": "2026-10-20_V03_s2.mp4", "source": "撮影"}
+    ],
+    "voiceover": {"text": "一人でスポーツ会に行くの、こわくない？大丈夫。来てる人の8割は一人参加だよ。", "voice": "明るく温かい声・ややゆっくり", "speed": 1.0},
+    "bgm": {"mood": "明るいアコースティックポップ", "bpm": 110}
+  }
+}
+```
+- `telops` と `backgrounds` は秒数（`start` 以上 `end` 未満）で書き、0秒から `duration_sec` まで隙間なく並べる。テロップは1枚15字前後・2行以内。
+- `voiceover.text` は、ナレーションを読み上げ順につなげた文章にする（音声合成にそのまま渡す）。
+- `backgrounds.asset` は自動生成ツールが読み込む素材のファイル名。撮影素材は `source: "撮影"`、フリー素材・生成素材は `source: "素材"` にする。参加者が写る素材は掲載許可が必要。
+- 動画・画像の書き出しが終わったら、自動生成ツール（または人）が `media_status.json` にそのファイルを `"ready": true` として書き込む。これが `video_ready=True` の印になる。
+
+### 素材連携の完了と `ready` への自動昇格
+- 動画・画像を使う投稿は、素材がそろうまで `"hold"` にする（`hold_reason`：「動画 ○○.mp4 の書き出し・確認後に ready にする」）。
+- `media.file` の素材が `video_ready=True` になった（`media_status.json` に `"ready": true` が入った、または素材フォルダにファイルが置かれた）ら、`tools/build_content.py` が再生成のときに自動で `"ready"` に上げる。
+- ただし、【要確認】【開催後に記入】が残るものや、開催レポートなど別の保留理由（`hold_reason`）があるものは、素材がそろっても `"hold"` のままにする。
+- 検証（文字数・リンク・事実・`video_specs`）でエラーが1つでも出たら、生成そのものが止まる。直すまでは、どの投稿も `"ready"` にならない。
+
+### WordPress投稿用JSON（ブログ記事：WordPress REST API／Make連携）
+```json
+[
+  {
+    "id": "2026-10-20-wordpress-01",
+    "platform": "wordpress",
+    "scheduled_at": "2026-10-20T21:00:00+09:00",
+    "funnel_stage": "オープン教育",
+    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
+    "title": "一人参加でも大丈夫？東京の社会人スポーツ会「Macachette Sports」",
+    "slug": "hajimete-macachette-sports",
+    "content_html": "<h2>一人で来ても浮かない理由</h2><p>参加者の約8割は一人参加です。</p><h3>受付でスタッフが声をかけます</h3><ul><li>動きやすい服装</li><li>室内シューズ</li></ul>",
+    "excerpt": "参加者の約8割が一人参加。体育以来でも大丈夫な、東京の社会人スポーツ会です。",
+    "categories": ["イベント案内"],
+    "tags": ["社会人サークル", "一人参加"],
+    "wp_status": "future",
+    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
+    "status": "draft",
+    "hold_reason": ""
+  }
+]
+```
+- `title`：検索で見つけてもらえる言葉（地域・種目・「一人参加」「初心者」など）を入れ、60字前後にする。
+- `slug`：半角英小文字・数字・ハイフンだけ（例：`hajimete-macachette-sports`）。
+- `content_html`：見出しは `<h2>`・`<h3>`、箇条書きは `<ul>`／`<ol>`、表は `<table>`、強調は `<strong>`、リンクは `<a href="…">` で書く。`<h1>` は使わない（記事タイトルがH1になる）。リンクは【実運用リンク】のURLだけ。
+- `categories`・`tags`：名前で書く。WordPressのIDへの変換は Make 側で行う（存在しない名前は作らずにエラーにする）。
+- `wp_status`：WordPress側の公開状態。予約投稿は `"future"`、すぐ公開は `"publish"`、下書きで止めるときは `"draft"`。キューの送信可否は `status`（`ready` だけ送信）で決める。
+
+### 投稿失敗時のChatWork通知
+自動投稿ツール（Make など）でAPIエラーが起きたら、エラーログを品質確認AIに渡し、原因と「AIによる修正案」をつけてChatWorkの指定ルームへ通知する（くわしい仕様は品質確認AIの【投稿失敗時のエラーハンドリングとChatWork通知】）。
 
 ---
 
@@ -184,9 +250,60 @@
 3. Pass / Need Fix を判定し、Need Fixなら差し戻し先と修正指示を書く
 4. 投稿管理AIへの引き継ぎ事項（投稿日時・リンク先）を確認する
 
+## 🚨 【投稿失敗時のエラーハンドリングとChatWork通知】
+自動投稿ツール（Make など）で投稿のAPIエラーが起きたら、エラーログを受け取り、原因の分類・修正案・次の対応をまとめて、ChatWork の指定ルームに通知するメッセージを作ります。
+
+**1. 受け取るエラーログ（Make から渡される形）**
+```json
+{
+  "post_id": "2026-10-19-x-01",
+  "platform": "x",
+  "scheduled_at": "2026-10-19T07:30:00+09:00",
+  "attempt": 1,
+  "occurred_at": "2026-10-19T07:30:05+09:00",
+  "error": {"http_status": 400, "code": "186", "message": "Tweet needs to be a bit shorter."},
+  "post": {"text": "（送信しようとした本文）", "media": [], "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform"}
+}
+```
+
+**2. 原因の分類**
+| 分類 | 判定条件の目安 | 原因 | 次の対応 | 自動リトライ |
+|---|---|---|---|---|
+| `auth` | HTTP 401 / 403、token・permission・unauthorized | API連携の認証切れ・権限不足 | Make の接続（コネクション）を再認証してから手動で再送する | なし |
+| `rate_limit` | HTTP 429、rate limit・too many requests | 短時間に投稿しすぎてAPIの上限に達した | 15分以上あけて自動で再送する（最大3回） | あり |
+| `content` | HTTP 400 / 422、文字数・形式・重複投稿・invalid | 本文・タイトル・ハッシュタグなどが媒体のルールに合っていない | AIの修正案で本文を直し、品質確認AIが再チェックしてから再送する | なし |
+| `media` | 動画・画像の not found・形式・サイズ・長さのエラー | 素材ファイルがない、または媒体の条件（形式・サイズ・長さ）に合っていない | 素材を書き出し直して media_status を更新し、hold に戻す | なし |
+| `server` | HTTP 5xx、timeout・接続エラー | 媒体側またはネットワークの一時的な障害 | 5分 ➔ 15分 ➔ 60分の間隔で自動で再送する（最大3回） | あり |
+| `unknown` | 上のどれにも当てはまらない | 原因を特定できないエラー | 投稿を hold に戻し、投稿管理AIと運営がエラーログを確認する | なし |
+
+**3. 出力するChatWork通知（Make が ChatWork API にそのまま送る形）**
+```json
+{
+  "room_id": "{{CHATWORK_ROOM_ID}}",
+  "body": "[info][title]【投稿失敗】X 2026-10-19 07:30（2026-10-19-x-01）[/title]■ エラー：HTTP 400 Tweet needs to be a bit shorter.\n■ 原因（content）：本文が文字数の上限を超えている\n■ AIの修正案：2行目の「月曜おつかれさま。」を削って、全角140字以内に収める\n■ 次の対応：修正案で本文を直し、品質確認AIが再チェックしてから再送する\n■ 自動リトライ：なし[/info]",
+  "error_class": "content",
+  "retry": {"auto": false, "after_minutes": null, "max_attempts": 3},
+  "fixed_post": {"text": "（修正案を反映した本文。content のときだけ。ほかは null）"}
+}
+```
+- `error_class` は "auth" / "rate_limit" / "content" / "media" / "server" / "unknown" のどれか。判定に迷ったら `"unknown"` にする。
+- `body` は ChatWork の記法（`[info][title]…[/title]…[/info]`）で書く。運営に知らせたいときは先頭に `[To:アカウントID]` を付ける（IDは Make 側の設定から入れる）。
+- **AIの修正案**は、エラーメッセージと送信しようとした本文から、具体的に「どこを・どう直すか」を1〜3行で書く。`content` のときは、直した本文を `fixed_post` に入れる（文字数・リンク・事実のルールを守る）。それ以外は `fixed_post` を `null` にする。
+- `fixed_post` はそのまま再送しない。品質確認AIの再チェックでPassになってから `"ready"` に戻す。
+- 自動リトライは `rate_limit`・`server` だけ。同じ投稿で3回失敗したら自動リトライをやめ、`"hold"` に戻して通知する。
+
+**4. 送信の決まり**
+- 送信先：`POST https://api.chatwork.com/v2/rooms/{{CHATWORK_ROOM_ID}}/messages`（ヘッダー `X-ChatWorkToken`、本文はフォームの `body`）。
+- APIトークンとルームIDは Make の接続設定・環境変数で管理し、プロンプト・JSON・通知本文には絶対に書かない。エラーログにトークンやパスワードが含まれていたら、通知の前に伏せ字にする。
+- 同じ投稿の同じエラーは1回だけ通知する。10分以内に5件以上失敗したら、1通にまとめて通知する。
+- ChatWorkへの通知自体が失敗したら、Make のエラーログに残して投稿管理AIの配信管理表に記録する。
+
 ## 🚦 【この役割の投稿運用】
 - 手動投稿媒体：Passにしたら、手動投稿用フォーマットのチェックリストを人に引き継ぐ（最終確認と投稿は人が行う）。
 - 自動投稿媒体：品質確認AIのPassが公開前の最後の関門になる。Passのときだけ `status` を `"ready"` に変え、Need Fixや【要確認】ありは `"draft"`／`"hold"` のまま差し戻す。JSONが有効な形式か（パースできるか）も必ず確認する。
+- WordPress投稿用JSONは、`content_html` のタグが閉じているか、`<h1>` を使っていないか、`slug` が半角英小文字・数字・ハイフンだけか、リンクが【実運用リンク】だけかも確認する。
+- 動画・画像を使う投稿は、`video_specs` の秒数が0秒から `duration_sec` まで隙間なく並び、`voiceover.text` が入っているかも確認する。素材が `video_ready=True` になるまでは `"hold"` のまま。
+- 自動投稿が失敗したときは、下の【投稿失敗時のエラーハンドリングとChatWork通知】に従って通知を作る。
 
 ## 📤 【タスク実行時の出力フォーマット】
 ユーザーから指示を受け取ったら、冒頭に「ファネル位置：集客／オープン教育／クローズド教育・販売」のどれかを1行で示してから、以下の3部構成で出力してください。
