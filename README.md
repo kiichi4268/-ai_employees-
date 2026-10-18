@@ -18,11 +18,21 @@
 ### 実運用リンク（全AI社員のCTAに埋め込み済み）
 | 名称 | URL | 使いどころ |
 |---|---|---|
-| 公式LINE登録 | https://lin.ee/txwrLQ9 | すべての投稿の最終CTA（初参加ガイド・先行案内） |
+| 公式LINE登録 | https://lin.ee/VwtzoAm | すべての投稿の最終CTA（初参加ガイド・先行案内） |
 | 予約フォーム | https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform | 日程が決まった人への申込導線（LINE配信・告知・リマインド） |
 | note（オープン教育） | https://note.com/gifted_canna4865 | 長文で不安を解消したい人向け |
 | Instagram（本陣） | https://www.instagram.com/macachette_sports | フロント拡散からの送り先 |
 | アプリ（App Store） | https://itunes.apple.com/app/id1544827472 | アプリでの参加・連絡を案内するときだけ |
+
+### 連携先（自動投稿・通知の接続先。投稿本文のCTAには使わない）
+| 連携先 | URL | API・設定 | メモ |
+|---|---|---|---|
+| WordPress（ブログ） | https://sportsbackstage1.wordpress.com | `POST https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts` | WordPress.com のサイト。初期記事 `/2026/09/04/hello-world/` は公開前に削除する |
+| ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | `POST https://api.chatwork.com/v2/rooms/363171715/messages` | ルームID `363171715`（環境変数 `CHATWORK_ROOM_ID` で上書き可）。APIトークンは `CHATWORK_API_TOKEN` だけで渡す |
+| Pinterest | https://jp.pinterest.com/ | Make の Pinterest 接続 | ボードは接続時に選ぶ |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 公開チャンネルURL（`https://www.twitch.tv/<ユーザー名>`）が決まるまで投稿のCTAには使わない |
+
+連携先は `tools/build_ai_employees.py` の `INTEGRATIONS` で管理しています。APIトークン・パスワードは書かず、`.env`（`.env.example` をコピー。git には入りません）か Make の接続設定で管理します。
 
 - X / Threads / LINE配信 / note は本文にURLを直接書きます。Instagram / TikTok はキャプション内のURLがタップできないため「プロフィールのリンクから」で案内し、プロフィールに公式LINEのURLを置きます。
 
@@ -71,6 +81,7 @@
 > |---|---|
 > | 思想・コンセプト・ペルソナ・数字（おひとり様参加率など） | `COMMON_HEADER` |
 > | 公式LINE・予約フォームなどのURL | `LINKS` |
+> | WordPress・ChatWork・Pinterest・Twitch の接続先 | `INTEGRATIONS` |
 > | 今月のイベントスケジュール | `EVENT_YEAR` / `EVENT_MONTH` / `EVENTS` |
 > | 手動投稿／自動投稿の媒体 | `MANUAL_CHANNELS` / `AUTO_CHANNELS` |
 > | 各AI社員の役割・手順・出力フォーマット | `EMPLOYEES` |
@@ -148,7 +159,7 @@
 2. **イベント情報（正）を1か所にまとめる**
    - 日時・曜日・会場・参加費（税込）・持ち物・定員・レンタル用具・申込URLを、Googleスプレッドシートなどで「正」の表として管理します。事実確認AIは必ずこの表と突き合わせます。
 3. **導線を用意する**
-   - Instagram（https://www.instagram.com/macachette_sports）のプロフィールに公式LINE（https://lin.ee/txwrLQ9）を設定します。TikTok・X・Threadsのプロフィールにも同じURLを置きます。
+   - Instagram（https://www.instagram.com/macachette_sports）のプロフィールに公式LINE（https://lin.ee/VwtzoAm）を設定します。TikTok・X・Threadsのプロフィールにも同じURLを置きます。
    - LINE登録特典を1つ決めます（例：「はじめての参加ガイド（当日の流れ・持ち物・服装）」「一人参加さんの不安Q&A」「次回イベントの先行案内」）。
    - 公式LINEの自動応答（友だち追加時のあいさつ）に特典と予約フォーム（https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform）を入れておきます。文面はCTA・導線設計AIに作らせます。
 4. **素材を集める**
@@ -156,7 +167,7 @@
 5. **自動投稿ツールをつなぐ**（X・Threads・TikTok・YouTube Shorts・Pinterest・WordPress）
    - Make／Zapier／Python連携などで、自動投稿用JSONの配列を受け取り、`status` が `"ready"` のものだけを `scheduled_at` の時刻に `platform` へ送信するシナリオを作ります。
    - 動画（TikTok・Shorts・Pinterest）は `media.file` のファイル名で保存先（Googleドライブなど）から取得します。Pinterest は `link`（リンク先）と `board`（ボード名）も渡します。
-   - WordPress は `wordpress_posts.json` を読み、`title`・`content_html`・`excerpt`・`slug`・`wp_status`・`scheduled_at`（公開日時）を WordPress REST API（`POST /wp-json/wp/v2/posts`）または Make の WordPress モジュールに渡します。`categories`・`tags` は名前で入っているので、Make 側でIDに変換します（存在しない名前は作らずにエラーにする）。
+   - WordPress は `wordpress_posts.json` を読み、`title`・`content_html`・`excerpt`・`slug`・`wp_status`・`scheduled_at`（公開日時）を、各記事の `endpoint`（`https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts`、WordPress.com の REST API）に渡します。認証は WordPress.com の OAuth2 です。Make の WordPress モジュールはサイト側にプラグインが必要なため、プラグインを入れられないプランでは Make の HTTP モジュール（OAuth2 接続）から送ります。`categories`・`tags` は名前で入っているので、Make 側でIDに変換します（存在しない名前は作らずにエラーにする）。
    - 送信結果（成功・失敗・投稿URL）を配信管理表に書き戻すようにします。
    - **失敗したとき**は、エラーログを品質確認AI（または `tools/chatwork_notify.py`）に渡し、ChatWork に通知します（「9. 投稿失敗時のChatWork通知」）。
    - **動画・画像の自動生成**（任意）：CapCut／Remotion／Canva などに、投稿の `video_specs`（テロップ・背景素材・読み上げテキスト・BGM）を渡して動画を作ります。書き出しが終わったら `media_status.json` に `"<ファイル名>": {"ready": true}` を書き込みます。
@@ -328,12 +339,14 @@
 **スクリプトでの使い方**
 ```bash
 python3 tools/chatwork_notify.py error_log.json          # 通知内容を表示するだけ（送信しない）
-CHATWORK_API_TOKEN=… CHATWORK_ROOM_ID=… python3 tools/chatwork_notify.py error_log.json --send
+cp .env.example .env   # 初回だけ。.env の CHATWORK_API_TOKEN= にトークンを入れる（git には入らない）
+python3 tools/chatwork_notify.py error_log.json --send   # ルーム 363171715 に送信
 python3 tools/chatwork_notify.py --self-test              # 6分類のテスト（examples/chatwork_error_logs.json）
 ```
 
 **守ること**
-- ChatWork の APIトークン・ルームIDは Make の接続設定や環境変数で管理し、リポジトリ・プロンプト・JSONには書かない。エラーログに混ざったトークンやパスワードは、通知の前に伏せ字（`****`）にする（`tools/chatwork_notify.py` は自動で伏せる）。
+- 通知先ルームは https://www.chatwork.com/#!rid363171715（ルームID `363171715`）。別のルームに送るときは環境変数 `CHATWORK_ROOM_ID` で上書きする。
+- ChatWork の APIトークンは Make の接続設定か環境変数 `CHATWORK_API_TOKEN`（`.env`）で管理し、リポジトリ・プロンプト・JSONには書かない。エラーログに混ざったトークンやパスワードは、通知の前に伏せ字（`****`）にする（`tools/chatwork_notify.py` は自動で伏せる）。
 - `fixed_post` はそのまま再送しない。品質確認AIの再チェックでPassになってから `ready` に戻す。
 - 同じ投稿の同じエラーは1回だけ通知し、10分以内に5件以上失敗したら1通にまとめる（Make 側で設定）。
 
@@ -359,3 +372,41 @@ python3 tools/chatwork_notify.py --self-test              # 6分類のテスト�
 | Threads `2026-10-18-threads-01`（今週は2つ） | 12:00（過ぎている） | 同上。**当日中に手動投稿でカバー** |
 | TikTok・YouTube Shorts・Pinterest（V01） | 12:00／18:00／20:00 | もともと `hold`（動画の書き出し待ち）。今日中に書き出せなければ見送り |
 | Instagram ストーリーズ・公式LINE・Instagram カルーセル | 19:00／20:00／21:00 | 手動投稿の予定どおり |
+
+## 11. 自動投稿ツールの稼働設定（ステップ5）のチェックリスト
+
+Make を例にした接続の順番です。上から順に設定し、最後にテスト投稿で確認します。
+
+**A. 事前準備**
+- [ ] WordPress.com の初期記事（`/2026/09/04/hello-world/`）を削除し、カテゴリ「イベント案内」とタグ（`wordpress_posts.json` の `tags`）を作っておく
+- [ ] Instagram・TikTok・X・Threads のプロフィールに公式LINE（https://lin.ee/VwtzoAm）を設定する
+- [ ] `.env.example` を `.env` にコピーし、`CHATWORK_API_TOKEN` を入れる（ChatWork の「サービス連携 ➔ APIトークン」で発行）
+- [ ] 動画・画像の保存先（Googleドライブのフォルダなど）を決め、`media.file` のファイル名で置くルールを共有する
+
+**B. Make の接続（Connections）**
+| 接続 | 使う投稿 | 確認すること |
+|---|---|---|
+| X | `platform: "x"` | 投稿権限つきで認可されているか |
+| Threads | `"threads"` | Instagram と同じ Meta アカウントで認可されているか |
+| TikTok | `"tiktok"` | 動画の直接投稿の権限があるか |
+| YouTube | `"youtube_shorts"` | 投稿先チャンネルが正しいか |
+| Pinterest | `"pinterest"` | `board` と同じ名前のボードがあるか |
+| WordPress.com（HTTP・OAuth2） | `wordpress_posts.json` | `endpoint` に送れるか（`wp_status: "draft"` でテスト） |
+| ChatWork | 失敗通知 | ルーム 363171715 にテストメッセージが届くか |
+
+**C. シナリオ（Scenarios）**
+1. **投稿キュー**（15分ごとに実行）：`auto_posts.json` と `wordpress_posts.json` を読み込む（GitHub の raw URL、またはGoogleドライブに置いたコピー）。次のすべてに当てはまるものだけを送る。
+   - `status` が `"ready"`
+   - `scheduled_at` が今から30分前〜今の間
+   - まだ送っていない（配信管理表に記録がない）
+2. **媒体ごとの送信**：Router で `platform` ごとに分け、各媒体のモジュールに `text`・`title`・`media`・`link`・`board` を渡す。WordPress は HTTP モジュールで `endpoint` に POST する。
+3. **結果の記録**：成功したら投稿URLを、失敗したらエラー内容を、配信管理表に書き戻す。
+4. **エラーハンドラー**：各送信モジュールに Error handler を付け、エラーログ（`post_id`・`platform`・`scheduled_at`・`attempt`・`error`・`post`）を作る。品質確認AIの通知仕様（または `tools/chatwork_notify.py`）で通知を作り、ChatWork に送る。`retry.auto` が `true` のときだけ `retry.after_minutes` 後に再送する。
+5. **期限切れ**：`scheduled_at` を30分以上過ぎた `ready` は送らず、「期限切れ」として記録し、ChatWork に1通まとめて知らせる（「10. 予定時刻を過ぎた投稿の扱い」）。
+6. **素材連携**（任意）：動画の書き出しが終わったら `media_status.json` に `"ready": true` を書き込み、`python3 tools/build_content.py 2026-10` を実行して JSON を作り直す。
+
+**D. 稼働前のテスト**
+- [ ] `python3 tools/build_content.py 2026-10` と `python3 tools/chatwork_notify.py --self-test` が通る
+- [ ] X・Threads にテスト投稿を1件だけ流し、送信 ➔ 配信管理表への記録まで確認する
+- [ ] わざと失敗する投稿（例：上限を超える長文）を1件流し、ChatWork のルームに通知が届くか確認する
+- [ ] WordPress に `wp_status: "draft"` で1件送り、見出し・表・リンクの表示を確認してから `"future"` に戻す

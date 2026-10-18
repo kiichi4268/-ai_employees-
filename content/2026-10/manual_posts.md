@@ -94,7 +94,7 @@ https://note.com/gifted_canna4865
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
 ## 10/19(月)
@@ -149,7 +149,7 @@ https://note.com/gifted_canna4865
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
 ### M06｜22:00｜note記事「一人参加でも大丈夫？はじめてのMacachette Sports」
@@ -194,7 +194,7 @@ Macachette Sportsは、都内で働く20〜30代の社会人が集まる、ゆ�
 https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform
 
 「やっぱりちょっと不安」という人は、公式LINEで気軽に質問してね。当日の流れをまとめた初参加ガイドも渡しています。
-https://lin.ee/txwrLQ9
+https://lin.ee/VwtzoAm
 
 当日の雰囲気は、Instagramで見られます。
 https://www.instagram.com/macachette_sports
@@ -258,7 +258,7 @@ Macachette Sportsに来てる人の8割は一人参加だよ。
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
 ## 10/21(水)
@@ -401,7 +401,7 @@ Macachette Sportsに来てる人の8割は一人参加だよ。
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 【開催後に記入】を当日の様子に書き換えた
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
@@ -498,7 +498,7 @@ https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvN
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 【開催後に記入】を当日の様子に書き換えた
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
@@ -557,7 +557,7 @@ A. レンタルはないので、体育館シューズだけ持ってきてね�
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
 ## 10/27(火)
@@ -658,7 +658,7 @@ https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvN
 - [ ] 日時・曜日・種目・会場・参加費・持ち物・定員・レンタルが【今月のイベントスケジュール】と一致している
 - [ ] 【要確認】【開催後に記入】が残っていない
 - [ ] 本文にURLを書かず「プロフィールのリンクから」で案内している
-- [ ] プロフィールのリンクが公式LINE（https://lin.ee/txwrLQ9）になっている
+- [ ] プロフィールのリンクが公式LINE（https://lin.ee/VwtzoAm）になっている
 - [ ] 投稿後、配信管理表を「投稿済み」に更新した
 
 ## 10/29(木)
@@ -745,7 +745,7 @@ https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvN
 ▼ 申込
 https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform
 ▼ 公式LINE（初参加ガイド）
-https://lin.ee/txwrLQ9
+https://lin.ee/VwtzoAm
 ▼ Instagram
 https://www.instagram.com/macachette_sports
 ▼ note（当日の流れ）

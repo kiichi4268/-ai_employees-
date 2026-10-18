@@ -5,6 +5,7 @@
 イベントスケジュール）はこのファイルだけで管理する。
 - 思想・コンセプトを変える        → COMMON_HEADER
 - LINE・予約フォーム等のURLを変える → LINKS
+- WordPress・ChatWork・Pinterest・Twitch の接続先 → INTEGRATIONS（APIトークンは書かない。環境変数で渡す）
 - 翌月のイベント日程に差し替える    → EVENT_YEAR / EVENT_MONTH / EVENTS（毎月25日〜末日に更新）
 - 手動投稿／自動投稿の媒体を変える  → MANUAL_CHANNELS / AUTO_CHANNELS
 - 投稿失敗時のChatWork通知の分類     → ERROR_CLASSES（tools/chatwork_notify.py も同じ定義を使う）
@@ -23,7 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent / "ai_employees"
 # ---------------------------------------------------------------------------
 LINKS = [
     # (キー, 名称, URL, ファネル上の役割・使いどころ)
-    ("line", "公式LINE登録", "https://lin.ee/txwrLQ9",
+    ("line", "公式LINE登録", "https://lin.ee/VwtzoAm",
      "クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り）"),
     ("form", "予約フォーム", "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
      "販売（申込）。LINE配信・イベント告知・リマインドで「日程が決まっている人」に出す"),
@@ -35,6 +36,28 @@ LINKS = [
      "アプリでの参加・連絡を案内するときだけ使う"),
 ]
 LINK = {key: url for key, _, url, _ in LINKS}
+
+# ---------------------------------------------------------------------------
+# 連携先（自動投稿・通知の接続先）。投稿本文のCTAには使わない
+#   APIトークン・パスワードはここに書かない（.env または Make の接続設定で管理する）
+# ---------------------------------------------------------------------------
+WP_SITE = "https://sportsbackstage1.wordpress.com"
+INTEGRATIONS = {
+    "wordpress": dict(
+        name="WordPress（ブログ）", url=WP_SITE,
+        api=f"https://public-api.wordpress.com/wp/v2/sites/{WP_SITE.split('//')[1]}/posts",
+        note="WordPress.com のサイト。初期記事 https://sportsbackstage1.wordpress.com/2026/09/04/hello-world/ は公開前に削除する"),
+    "chatwork": dict(
+        name="ChatWork（投稿失敗の通知先）", url="https://www.chatwork.com/#!rid363171715", room_id="363171715",
+        api="https://api.chatwork.com/v2/rooms/363171715/messages",
+        note="ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す"),
+    "pinterest": dict(
+        name="Pinterest", url="https://jp.pinterest.com/",
+        note="ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ"),
+    "twitch": dict(
+        name="Twitch（ライブ配信）", url="https://www.twitch.tv/", settings="https://www.twitch.tv/settings/profile",
+        note="プロフィール設定ページ。公開チャンネルURL（https://www.twitch.tv/<ユーザー名>）が決まるまで投稿のCTAには使わない"),
+}
 
 # ---------------------------------------------------------------------------
 # 今月のイベントスケジュール（毎月25日〜末日に、翌月分へ差し替える）
@@ -182,11 +205,18 @@ def build_operations_header() -> str:
             f"| {EVENT_MONTH}/{ev['day']}({ev['wd']}) | {ev['start']}-{ev['end']} | {ev['emoji']} {ev['sport']} "
             f"| {ev['venue']} | {ev['fee']} | {ev['items']} | {ev['capacity']}名 | {ev['rental']} |")
     event_rows = "\n".join(event_rows)
+    integration_rows = "\n".join(
+        f"| {v['name']} | {v['url']} | {v.get('api', v.get('settings', '―'))} | {v['note']} |" for v in INTEGRATIONS.values())
     return f"""\
 ## 🔗 【実運用リンク（CTAで必ず使うURL）】
 | 名称 | URL | 使いどころ |
 |---|---|---|
 {link_rows}
+
+## 🔌 【連携先（自動投稿・通知の接続先。投稿本文のCTAには使わない）】
+| 連携先 | URL | API・設定 | メモ |
+|---|---|---|---|
+{integration_rows}
 
 **CTAのルール**
 - CTAに入れるURLは上の表のものだけ。URLを作ったり、短縮したり、別のURLに置き換えたりしない。
@@ -307,6 +337,8 @@ def build_posting_rules() -> str:
   {{
     "id": "2026-10-20-wordpress-01",
     "platform": "wordpress",
+    "site": "{WP_SITE}",
+    "endpoint": "{INTEGRATIONS["wordpress"]["api"]}",
     "scheduled_at": "2026-10-20T21:00:00+09:00",
     "funnel_stage": "オープン教育",
     "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
@@ -327,6 +359,7 @@ def build_posting_rules() -> str:
 - `slug`：半角英小文字・数字・ハイフンだけ（例：`hajimete-macachette-sports`）。
 - `content_html`：見出しは `<h2>`・`<h3>`、箇条書きは `<ul>`／`<ol>`、表は `<table>`、強調は `<strong>`、リンクは `<a href="…">` で書く。`<h1>` は使わない（記事タイトルがH1になる）。リンクは【実運用リンク】のURLだけ。
 - `categories`・`tags`：名前で書く。WordPressのIDへの変換は Make 側で行う（存在しない名前は作らずにエラーにする）。
+- `site`・`endpoint`：投稿先のWordPressサイトとREST APIの送信先（【連携先】の値をそのまま入れる）。
 - `wp_status`：WordPress側の公開状態。予約投稿は `"future"`、すぐ公開は `"publish"`、下書きで止めるときは `"draft"`。キューの送信可否は `status`（`ready` だけ送信）で決める。
 
 ### 投稿失敗時のChatWork通知
@@ -366,7 +399,7 @@ def build_chatwork_spec() -> str:
 **3. 出力するChatWork通知（Make が ChatWork API にそのまま送る形）**
 ```json
 {{
-  "room_id": "{{{{CHATWORK_ROOM_ID}}}}",
+  "room_id": "{INTEGRATIONS["chatwork"]["room_id"]}",
   "body": "[info][title]【投稿失敗】X 2026-10-19 07:30（2026-10-19-x-01）[/title]■ エラー：HTTP 400 Tweet needs to be a bit shorter.\\n■ 原因（content）：本文が文字数の上限を超えている\\n■ AIの修正案：2行目の「月曜おつかれさま。」を削って、全角140字以内に収める\\n■ 次の対応：修正案で本文を直し、品質確認AIが再チェックしてから再送する\\n■ 自動リトライ：なし[/info]",
   "error_class": "content",
   "retry": {{"auto": false, "after_minutes": null, "max_attempts": 3}},
@@ -380,8 +413,8 @@ def build_chatwork_spec() -> str:
 - 自動リトライは `rate_limit`・`server` だけ。同じ投稿で3回失敗したら自動リトライをやめ、`"hold"` に戻して通知する。
 
 **4. 送信の決まり**
-- 送信先：`POST https://api.chatwork.com/v2/rooms/{{{{CHATWORK_ROOM_ID}}}}/messages`（ヘッダー `X-ChatWorkToken`、本文はフォームの `body`）。
-- APIトークンとルームIDは Make の接続設定・環境変数で管理し、プロンプト・JSON・通知本文には絶対に書かない。エラーログにトークンやパスワードが含まれていたら、通知の前に伏せ字にする。
+- 送信先：`POST {INTEGRATIONS["chatwork"]["api"]}`（ルーム：{INTEGRATIONS["chatwork"]["url"]}。ヘッダー `X-ChatWorkToken`、本文はフォームの `body`）。
+- ルームIDは環境変数 `CHATWORK_ROOM_ID` で上書きできる（未設定なら {INTEGRATIONS["chatwork"]["room_id"]}）。APIトークンは環境変数 `CHATWORK_API_TOKEN`（または Make の接続設定）だけで渡し、プロンプト・JSON・通知本文・リポジトリには絶対に書かない。エラーログにトークンやパスワードが含まれていたら、通知の前に伏せ字にする。
 - 同じ投稿の同じエラーは1回だけ通知する。10分以内に5件以上失敗したら、1通にまとめて通知する。
 - ChatWorkへの通知自体が失敗したら、Make のエラーログに残して投稿管理AIの配信管理表に記録する。
 """

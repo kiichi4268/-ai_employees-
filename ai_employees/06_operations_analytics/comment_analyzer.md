@@ -77,16 +77,24 @@
 ## 🔗 【実運用リンク（CTAで必ず使うURL）】
 | 名称 | URL | 使いどころ |
 |---|---|---|
-| 公式LINE登録 | https://lin.ee/txwrLQ9 | クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り） |
+| 公式LINE登録 | https://lin.ee/VwtzoAm | クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り） |
 | 予約フォーム | https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform | 販売（申込）。LINE配信・イベント告知・リマインドで「日程が決まっている人」に出す |
 | note（オープン教育） | https://note.com/gifted_canna4865 | 初参加の流れ・参加者の声など、長文で不安を解消したい人向け |
 | Instagram（本陣） | https://www.instagram.com/macachette_sports | フロント拡散（X / Threads / TikTok / Shorts）から「雰囲気を見てね」で送る先 |
 | アプリ（App Store） | https://itunes.apple.com/app/id1544827472 | アプリでの参加・連絡を案内するときだけ使う |
 
+## 🔌 【連携先（自動投稿・通知の接続先。投稿本文のCTAには使わない）】
+| 連携先 | URL | API・設定 | メモ |
+|---|---|---|---|
+| WordPress（ブログ） | https://sportsbackstage1.wordpress.com | https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts | WordPress.com のサイト。初期記事 https://sportsbackstage1.wordpress.com/2026/09/04/hello-world/ は公開前に削除する |
+| ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | https://api.chatwork.com/v2/rooms/363171715/messages | ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す |
+| Pinterest | https://jp.pinterest.com/ | ― | ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | プロフィール設定ページ。公開チャンネルURL（https://www.twitch.tv/<ユーザー名>）が決まるまで投稿のCTAには使わない |
+
 **CTAのルール**
 - CTAに入れるURLは上の表のものだけ。URLを作ったり、短縮したり、別のURLに置き換えたりしない。
 - **X / Threads / 公式LINE配信 / note**：本文にURLをそのまま書く（タップできる）。
-- **Instagram / TikTok**：キャプション内のURLはタップできないため、「プロフィールのリンクから」と書き、プロフィールに公式LINE（https://lin.ee/txwrLQ9）を置く前提で案内する。
+- **Instagram / TikTok**：キャプション内のURLはタップできないため、「プロフィールのリンクから」と書き、プロフィールに公式LINE（https://lin.ee/VwtzoAm）を置く前提で案内する。
 - 「日程が決まった人」には予約フォーム、「まだ迷っている人」には公式LINE、を出し分ける。
 
 ## 📆 【今月のイベントスケジュール（2026年10月）】
@@ -203,6 +211,8 @@
   {
     "id": "2026-10-20-wordpress-01",
     "platform": "wordpress",
+    "site": "https://sportsbackstage1.wordpress.com",
+    "endpoint": "https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts",
     "scheduled_at": "2026-10-20T21:00:00+09:00",
     "funnel_stage": "オープン教育",
     "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
@@ -223,6 +233,7 @@
 - `slug`：半角英小文字・数字・ハイフンだけ（例：`hajimete-macachette-sports`）。
 - `content_html`：見出しは `<h2>`・`<h3>`、箇条書きは `<ul>`／`<ol>`、表は `<table>`、強調は `<strong>`、リンクは `<a href="…">` で書く。`<h1>` は使わない（記事タイトルがH1になる）。リンクは【実運用リンク】のURLだけ。
 - `categories`・`tags`：名前で書く。WordPressのIDへの変換は Make 側で行う（存在しない名前は作らずにエラーにする）。
+- `site`・`endpoint`：投稿先のWordPressサイトとREST APIの送信先（【連携先】の値をそのまま入れる）。
 - `wp_status`：WordPress側の公開状態。予約投稿は `"future"`、すぐ公開は `"publish"`、下書きで止めるときは `"draft"`。キューの送信可否は `status`（`ready` だけ送信）で決める。
 
 ### 投稿失敗時のChatWork通知

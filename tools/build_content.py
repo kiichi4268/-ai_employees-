@@ -338,7 +338,8 @@ def build_wordpress(src, errors):
         if not hold and PENDING_MARK in w["title"] + plain:
             errors.append(f"{pid}: 埋まっていない【】が残っているのに ready")
         posts.append(dict(
-            id=pid, platform="wordpress", scheduled_at=scheduled(w["date"], w["time"]).isoformat(),
+            id=pid, platform="wordpress", site=base.INTEGRATIONS["wordpress"]["url"],
+            endpoint=base.INTEGRATIONS["wordpress"]["api"], scheduled_at=scheduled(w["date"], w["time"]).isoformat(),
             funnel_stage="オープン教育",
             event=" / ".join(f"{e} {EVENTS[e]['sport']}＠{EVENTS[e]['venue']}" for e in w["events"]),
             title=w["title"], slug=w["slug"], content_html=content, excerpt=w["excerpt"],

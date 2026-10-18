@@ -8,7 +8,7 @@
       "attempt": 1,
       "occurred_at": "2026-10-19T07:30:05+09:00",
       "error": {"http_status": 400, "code": "186", "message": "Tweet needs to be a bit shorter."},
-      "post": {"text": "月曜おつかれさま。\n今週木曜は、仕事帰りにバドミントンだよ🏸", "media": [], "cta_url": "https://lin.ee/txwrLQ9"},
+      "post": {"text": "月曜おつかれさま。\n今週木曜は、仕事帰りにバドミントンだよ🏸", "media": [], "cta_url": "https://lin.ee/VwtzoAm"},
       "ai_fix": "1行目の「月曜おつかれさま。」を削り、全角140字以内に収める",
       "ai_fixed_post": {"text": "今週木曜は、仕事帰りにバドミントンだよ🏸"}
     }

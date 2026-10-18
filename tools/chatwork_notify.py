@@ -8,7 +8,9 @@
 
 エラーログは Make などの自動投稿ツールから渡される JSON（1件のオブジェクト、または配列）。
 "ai_fix" に品質確認AIが作った修正案テキストが入っていればそれを使い、なければ分類ごとの定型の修正案を入れる。
-送信には環境変数 CHATWORK_API_TOKEN と CHATWORK_ROOM_ID が必要。トークンはファイルやコードに書かないこと。
+送信には環境変数 CHATWORK_API_TOKEN が必要（リポジトリ直下の .env に書いてもよい。.env は git に入らない）。
+ルームIDは環境変数 CHATWORK_ROOM_ID ➔ .env ➔ build_ai_employees.py の INTEGRATIONS の順で決まる。
+トークンはコード・JSON・プロンプトに書かないこと（.env.example を参照）。
 """
 
 import json
@@ -29,6 +31,21 @@ RETRY_MINUTES = {"rate_limit": [15, 15, 15], "server": [5, 15, 60]}
 MAX_ATTEMPTS = 3
 SECRET_RE = re.compile(
     r"(?i)(bearer\s+|token[\"'=:\s]+|x-chatworktoken[\"'=:\s]+|password[\"'=:\s]+|secret[\"'=:\s]+)[^\s\"',]+")
+
+
+def load_env(path: Path = ROOT / ".env") -> None:
+    """リポジトリ直下の .env（KEY=VALUE）を、まだ設定されていない環境変数として読み込む。"""
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
+def room_id() -> str:
+    return os.environ.get("CHATWORK_ROOM_ID") or base.INTEGRATIONS["chatwork"]["room_id"]
 
 
 def mask(text: str) -> str:
@@ -98,7 +115,7 @@ def build_message(log: dict, room_id: str) -> dict:
 
 
 def send(message: dict, token: str) -> dict:
-    url = f"https://api.chatwork.com/v2/rooms/{urllib.parse.quote(str(message['room_id']))}/messages"
+    url = f"https://api.chatwork.com/v2/rooms/{urllib.parse.quote(str(message['room_id']), safe='')}/messages"
     data = urllib.parse.urlencode({"body": message["body"]}).encode()
     req = urllib.request.Request(url, data=data, headers={"X-ChatWorkToken": token}, method="POST")
     with urllib.request.urlopen(req, timeout=15) as res:
@@ -108,7 +125,8 @@ def send(message: dict, token: str) -> dict:
 def self_test() -> None:
     samples = json.loads((ROOT / "examples" / "chatwork_error_logs.json").read_text(encoding="utf-8"))
     for sample in samples:
-        msg = build_message(sample["log"], "{{CHATWORK_ROOM_ID}}")
+        msg = build_message(sample["log"], base.INTEGRATIONS["chatwork"]["room_id"])
+        assert msg["room_id"] == "363171715"
         assert msg["error_class"] == sample["expect"], (sample["log"]["post_id"], msg["error_class"])
         assert msg["body"].startswith("[info][title]【投稿失敗】") and msg["body"].endswith("[/info]")
         assert "abcd1234secret" not in json.dumps(msg, ensure_ascii=False)
@@ -125,12 +143,12 @@ def main() -> None:
         sys.exit(__doc__)
     logs = json.loads(Path(args[0]).read_text(encoding="utf-8"))
     logs = logs if isinstance(logs, list) else [logs]
-    room_id = os.environ.get("CHATWORK_ROOM_ID", "{{CHATWORK_ROOM_ID}}")
-    messages = [build_message(log, room_id) for log in logs]
+    load_env()
+    messages = [build_message(log, room_id()) for log in logs]
     if "--send" in args:
         token = os.environ.get("CHATWORK_API_TOKEN")
-        if not token or "CHATWORK_ROOM_ID" not in os.environ:
-            sys.exit("CHATWORK_API_TOKEN と CHATWORK_ROOM_ID を環境変数で指定してください")
+        if not token:
+            sys.exit("CHATWORK_API_TOKEN を環境変数（または .env）で指定してください")
         for msg in messages:
             print(send(msg, token))
     else:
