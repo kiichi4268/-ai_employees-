@@ -5,6 +5,7 @@
   python3 tools/chatwork_notify.py error_log.json            # 通知メッセージを表示するだけ（送信しない）
   python3 tools/chatwork_notify.py error_log.json --send     # ChatWork API に送信する
   python3 tools/chatwork_notify.py --self-test               # examples/chatwork_error_logs.json で動作確認
+  python3 tools/chatwork_notify.py --check                   # トークンが有効か確認する（GET /v2/me。メッセージは送らない）
 
 エラーログは Make などの自動投稿ツールから渡される JSON（1件のオブジェクト、または配列）。
 "ai_fix" に品質確認AIが作った修正案テキストが入っていればそれを使い、なければ分類ごとの定型の修正案を入れる。
@@ -122,6 +123,20 @@ def send(message: dict, token: str) -> dict:
         return json.loads(res.read().decode())
 
 
+def check_token() -> None:
+    """トークンが有効か、ルームに参加しているかを確認する（読み取りだけ。メッセージは送らない）。"""
+    load_env()
+    token = os.environ.get("CHATWORK_API_TOKEN")
+    if not token:
+        sys.exit("CHATWORK_API_TOKEN を環境変数（または .env）で指定してください")
+    headers = {"X-ChatWorkToken": token}
+    for path in ("/v2/me", f"/v2/rooms/{urllib.parse.quote(room_id(), safe='')}"):
+        req = urllib.request.Request("https://api.chatwork.com" + path, headers=headers)
+        with urllib.request.urlopen(req, timeout=15) as res:
+            data = json.loads(res.read().decode())
+        print(f"OK {path}: {data.get('name', '')}")
+
+
 def self_test() -> None:
     samples = json.loads((ROOT / "examples" / "chatwork_error_logs.json").read_text(encoding="utf-8"))
     for sample in samples:
@@ -139,6 +154,8 @@ def main() -> None:
     args = sys.argv[1:]
     if args == ["--self-test"]:
         return self_test()
+    if args == ["--check"]:
+        return check_token()
     if not args:
         sys.exit(__doc__)
     logs = json.loads(Path(args[0]).read_text(encoding="utf-8"))

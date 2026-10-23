@@ -97,12 +97,16 @@
 ├── README.md                           # 本手順書
 ├── tools/build_ai_employees.py         # 28人分の .md を生成するスクリプト（共通ヘッダー・リンク・イベント情報の一元管理）
 ├── tools/build_content.py              # 月ごとの毎日投稿コンテンツを生成・検証するスクリプト
-├── tools/chatwork_notify.py            # 自動投稿の失敗をChatWorkに通知するメッセージを作る（送信も可）
+├── tools/chatwork_notify.py            # 自動投稿の失敗をChatWorkに通知するメッセージを作る（送信・トークン確認も可）
+├── tools/build_make.py                 # Make に読み込む Blueprint と設定ファイルを生成する
+├── make/                               # Make 用 Blueprint（01 投稿キュー／02 失敗通知／03 Twitch告知／04 WordPress）と config.json
 ├── content/2026-10/                    # 10月（10/18〜10/31）の本番用コンテンツ
 │   ├── source.py                       #   企画・台本・キャプションの元データ（ここを編集する）
 │   ├── auto_posts.json                 #   自動投稿用JSON（X / Threads / TikTok / Shorts / Pinterest）→ 自動化ツールへ
 │   ├── wordpress_posts.json            #   WordPress投稿用JSON（ブログ記事）→ Make の WordPress シナリオへ
 │   ├── media_status.json               #   素材連携の完了状況（書き出した動画を "ready": true で書き込む）
+│   ├── sheet_rows.json                 #   配信管理表の行番号（id ➔ 行。一度決まったら変えない）
+│   ├── sheet_seed.csv / .json          #   配信管理表の初期データ（A〜F列・71行）
 │   ├── manual_posts.md                 #   手動投稿用フォーマット（Instagram / LINE / note / YouTube長尺）
 │   ├── calendar.md                     #   日別の企画・台本・配信カレンダー
 │   └── qc_report.md                    #   品質確認の判定と自動検証の結果
@@ -410,3 +414,51 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 - [ ] X・Threads にテスト投稿を1件だけ流し、送信 ➔ 配信管理表への記録まで確認する
 - [ ] わざと失敗する投稿（例：上限を超える長文）を1件流し、ChatWork のルームに通知が届くか確認する
 - [ ] WordPress に `wp_status: "draft"` で1件送り、見出し・表・リンクの表示を確認してから `"future"` に戻す
+
+## 12. Make 稼働設定（ステップ5）：Blueprint・配信管理表・ChatWork
+
+`python3 tools/build_make.py 2026-10` で `make/` に Blueprint と `config.json` が作られます（APIトークンは含みません。含まれていたら生成が止まります）。
+
+### 12-1. 設定値
+| 項目 | 値 |
+|---|---|
+| Make | eu1.make.com／チーム「My Team」 |
+| 投稿データ | `https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/2026-10/auto_posts.json`（WordPress は `wordpress_posts.json`） |
+| キャッシュ回避 | 取得のたびに `?t={{formatDate(now; "x")}}`（ミリ秒のUNIX時刻）を付け、`Cache-Control: no-cache` を送る |
+| 配信管理表 | スプレッドシート `1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk` のシート「配信管理表」 |
+| 配信管理表の列 | A `id`／B `platform`／C `scheduled_at`／D `status`／E `posted_at`／F `log`（G列以降は人が使う欄：配信日・配信内容・対象者・媒体・ステータス・担当者・備考） |
+| ChatWork | ルーム 363171715（https://www.chatwork.com/#!rid363171715）。トークンは `.env` の `CHATWORK_API_TOKEN` と、Make の「HTTP ➔ API key」接続（ヘッダー `X-ChatWorkToken`）にだけ入れる |
+
+**配信管理表の `status`**
+| 値 | 意味 |
+|---|---|
+| `ready` | 送信待ち |
+| `hold` | 保留中（`log` に理由） |
+| `posted` | 送信成功（`posted_at` に日時、`log` に投稿URL） |
+| `failed` | 送信失敗（ChatWork に通知済み） |
+| `retrying` | 自動リトライ待ち（rate_limit・server） |
+| `expired` | 予定時刻を30分以上過ぎたため送らなかった |
+| `manual_posted` | 運営が手動で投稿した |
+| `skipped` | 見送り |
+| `module_missing` | Make にその媒体の投稿モジュールがまだない |
+
+### 12-2. 配信管理表の準備（初回だけ）
+1. シート「配信管理表」の1行目を、A〜F列 `id, platform, scheduled_at, status, posted_at, log` にする（今ある見出し「配信日〜備考」は G〜M列に移す）。
+2. `content/2026-10/sheet_seed.csv` の2行目以降（71行）を A2 から貼り付ける。各投稿の行番号は `auto_posts.json` の `sheet_row` と一致していて、Make はこの行番号で結果を書き戻す。
+3. 投稿を作り直して新しい id が増えたときは、`sheet_rows.json` で決まった行番号のところに追記する（既存の行番号は変わらない）。
+
+### 12-3. Make への読み込み
+各シナリオで「…」➔「Import Blueprint」から `make/0*.blueprint.json` を読み込み、接続を選びます。
+
+| シナリオ | 動き | 選ぶ接続 | 稼働設定 |
+|---|---|---|---|
+| 01 投稿キュー | 15分ごとに `auto_posts.json` を取得し、`ready` で予定時刻が直近15分以内の投稿を媒体ごとに振り分け、配信管理表に書き戻す | Google（配信管理表） | 15分ごと |
+| 02 投稿失敗の ChatWork 通知 | Webhook でエラーログを受け、原因の分類と修正案をつけて ChatWork に通知し、配信管理表を `failed`／`retrying` にする | HTTP API key（ChatWork）、Google | 即時（Webhook） |
+| 03 Twitch 配信開始 | Twitch EventSub の確認（challenge）に答え、`stream.online` を受けたら「ライブ配信スタート！」の告知を配信管理表に記録する | Google | 即時（Webhook） |
+| 04 WordPress 記事 | 15分ごとに `wordpress_posts.json` を取得し、予定時刻の記事を WordPress.com に送り、結果を書き戻す。失敗したら ChatWork に通知 | WordPress.com（HTTP・OAuth2）、HTTP API key（ChatWork）、Google | 15分ごと |
+
+**読み込んだあとに必要な作業**
+- **01・03 の各ルート**：X・Threads・TikTok・YouTube・Pinterest の投稿モジュールを、配信管理表を書き換えるモジュールの前に追加する。各SNSの接続はアカウントのログインが必要なので、Make の画面で作る。そのうえで、書き戻しの値を `status=posted`・`posted_at={{now}}`・`log=投稿URL` に変える。追加するまでは `module_missing` と記録され、誤って `posted` にはならない。
+- **投稿モジュールのエラーハンドラー**：HTTP モジュールで 02 の Webhook URL にエラーログを POST する。中身は `post_id`・`platform`・`scheduled_at`・`sheet_row`・`attempt`・`error`・`post`・`retry_auto`。
+- **Twitch**：EventSub の `stream.online` 購読を作り、callback に 03 の Webhook URL を登録する。Twitch の署名（`Twitch-Eventsub-Message-Signature`）は Make の標準フィルターでは確かめられない。そのため、配信者ID（`event.broadcaster_user_id`）の一致もフィルターに足しておく。
+- **ChatWork のトークン確認**：`python3 tools/chatwork_notify.py --check` で、メッセージを送らずに確認できる。

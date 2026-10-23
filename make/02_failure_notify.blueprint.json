@@ -1,0 +1,101 @@
+{
+  "name": "02 投稿失敗の ChatWork 通知",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": null,
+        "maxResults": 1
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "note": "各投稿モジュールのエラーハンドラーから、エラーログ（post_id・platform・scheduled_at・sheet_row・attempt・error・post・retry_auto）をこのURLにPOSTする。retry_auto は rate_limit・server で3回未満なら true"
+      }
+    },
+    {
+      "id": 2,
+      "module": "http:MakeRequest",
+      "version": 4,
+      "parameters": {
+        "authenticationType": "apiKeyConnection",
+        "apiKeyAccount": null
+      },
+      "mapper": {
+        "url": "https://api.chatwork.com/v2/rooms/363171715/messages",
+        "method": "post",
+        "contentType": "urlEncoded",
+        "urlEncodedBodyContent": [
+          {
+            "name": "body",
+            "value": "[info][title]【投稿失敗】{{1.platform}} {{1.scheduled_at}}（{{1.post_id}}）[/title]■ エラー：HTTP {{1.error.http_status}} {{1.error.message}}\n■ 原因（{{switch(1.error.http_status; 401; \"auth\"; 403; \"auth\"; 429; \"rate_limit\"; 400; \"content\"; 422; \"content\"; 500; \"server\"; 502; \"server\"; 503; \"server\"; 504; \"server\"; \"unknown\")}}）：{{switch(1.error.http_status; 401; \"API連携の認証切れ・権限不足\"; 403; \"API連携の認証切れ・権限不足\"; 429; \"短時間に投稿しすぎてAPIの上限に達した\"; 400; \"本文・タイトル・ハッシュタグなどが媒体のルールに合っていない\"; 422; \"本文・タイトル・ハッシュタグなどが媒体のルールに合っていない\"; 500; \"媒体側またはネットワークの一時的な障害\"; 502; \"媒体側またはネットワークの一時的な障害\"; 503; \"媒体側またはネットワークの一時的な障害\"; 504; \"媒体側またはネットワークの一時的な障害\"; \"原因を特定できないエラー\")}}\n■ AIの修正案：{{ifempty(1.ai_fix; \"品質確認AIの分類表（ai_employees/04_review_quality/quality_controller.md）で確認\")}}\n■ 次の対応：{{switch(1.error.http_status; 401; \"Make の接続（コネクション）を再認証してから手動で再送する\"; 403; \"Make の接続（コネクション）を再認証してから手動で再送する\"; 429; \"15分以上あけて自動で再送する（最大3回）\"; 400; \"AIの修正案で本文を直し、品質確認AIが再チェックしてから再送する\"; 422; \"AIの修正案で本文を直し、品質確認AIが再チェックしてから再送する\"; 500; \"5分 ➔ 15分 ➔ 60分の間隔で自動で再送する（最大3回）\"; 502; \"5分 ➔ 15分 ➔ 60分の間隔で自動で再送する（最大3回）\"; 503; \"5分 ➔ 15分 ➔ 60分の間隔で自動で再送する（最大3回）\"; 504; \"5分 ➔ 15分 ➔ 60分の間隔で自動で再送する（最大3回）\"; \"投稿を hold に戻し、投稿管理AIと運営がエラーログを確認する\")}}[/info]"
+          }
+        ],
+        "parseResponse": true
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "note": "接続は「HTTP ➔ API key」：ヘッダー名 X-ChatWorkToken、値に .env の CHATWORK_API_TOKEN"
+      }
+    },
+    {
+      "id": 3,
+      "module": "google-sheets:updateRow",
+      "version": 2,
+      "parameters": {
+        "__IMTCONN__": null
+      },
+      "mapper": {
+        "mode": "map",
+        "spreadsheetId": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+        "sheetId": "配信管理表",
+        "rowNumber": "{{1.sheet_row}}",
+        "tableFirstRow": "A1:Z1",
+        "values": {
+          "3": "{{if(1.retry_auto; \"retrying\"; \"failed\")}}",
+          "4": "",
+          "5": "HTTP {{1.error.http_status}} {{1.error.message}}（{{1.attempt}}回目）"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 4,
+      "module": "gateway:WebhookRespond",
+      "version": 1,
+      "mapper": {
+        "status": "200",
+        "body": "ok",
+        "headers": []
+      },
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "version": 1,
+    "instant": true,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "sequential": false
+    }
+  }
+}

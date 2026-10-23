@@ -56,8 +56,32 @@ INTEGRATIONS = {
         note="ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ"),
     "twitch": dict(
         name="Twitch（ライブ配信）", url="https://www.twitch.tv/", settings="https://www.twitch.tv/settings/profile",
-        note="プロフィール設定ページ。公開チャンネルURL（https://www.twitch.tv/<ユーザー名>）が決まるまで投稿のCTAには使わない"),
+        note="配信開始（EventSub stream.online）を Make の Webhook で受け、X・Threads に告知する。チャンネルURLは通知の broadcaster_user_login から組み立てる"),
+    "sheets": dict(
+        name="配信管理表（Googleスプレッドシート）",
+        url="https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit",
+        spreadsheet_id="1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk", sheet="配信管理表",
+        note="A〜F列：id / platform / scheduled_at / status / posted_at / log。Make が送信結果を書き戻す"),
+    "github_raw": dict(
+        name="投稿データ（GitHub Raw）",
+        url="https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/",
+        note='Make の取得時に ?t={{formatDate(now; "x")}}（ミリ秒のUNIX時刻）を付けてキャッシュを避ける'),
 }
+SHEET_COLUMNS = ["id", "platform", "scheduled_at", "status", "posted_at", "log"]
+# 配信管理表の status（Make が書き換える）
+SHEET_STATUSES = [
+    ("ready", "送信待ち（auto_posts.json の status が ready）"),
+    ("hold", "保留中（素材待ち・開催後確認など。hold_reason を見る）"),
+    ("posted", "送信成功（posted_at に送信日時、log に投稿URL）"),
+    ("failed", "送信失敗（log にエラー内容。ChatWork に通知済み）"),
+    ("retrying", "自動リトライ待ち（rate_limit・server のとき）"),
+    ("expired", "予定時刻を30分以上過ぎたため送らなかった"),
+    ("manual_posted", "運営が手動で投稿した"),
+    ("skipped", "見送り（log に理由）"),
+    ("module_missing", "Make にこの媒体の投稿モジュールがまだない（接続後に追加する）"),
+]
+TWITCH_LIVE_TEXT = ("ライブ配信スタート！🎥\n今Twitchで配信中だよ。気軽にのぞいてね\n"
+                    "https://www.twitch.tv/{login}\n\nスポーツ会の申込はこちら👇\n{form}")
 
 # ---------------------------------------------------------------------------
 # 今月のイベントスケジュール（毎月25日〜末日に、翌月分へ差し替える）
