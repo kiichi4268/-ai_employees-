@@ -26,8 +26,20 @@ CHATWORK = base.INTEGRATIONS["chatwork"]
 COL = {name: str(i) for i, name in enumerate(base.SHEET_COLUMNS)}  # 列番号（A=0）
 INTERVAL_MIN = 15
 CACHE_BUSTER = {"name": "t", "value": '{{formatDate(now; "x")}}'}  # ミリ秒のUNIX時刻
-SNS_LABELS = {"x": "X", "threads": "Threads", "tiktok": "TikTok", "youtube_shorts": "YouTube Shorts",
-              "pinterest": "Pinterest"}
+# 投稿キュー（01）のルート：platform ➔ (表示名, 追加する投稿モジュール)
+# Make に公式の投稿モジュールがない X・Threads・TikTok・Instagramストーリーズは Zernio（make-nodes-late）を使う
+ROUTES = {
+    "x": ("X", "Zernio「Add a Post to Twitter」(make-nodes-late:addTwitterPost)"),
+    "threads": ("Threads", "Zernio「Add a Threads Post」(make-nodes-late:addThreadsPost)"),
+    "linkedin": ("LinkedIn", "LinkedIn「Create a Company Text Post」(linkedin:CreateTextShare)"),
+    "tiktok": ("TikTok", "Zernio「Add a Post to Tiktok」(make-nodes-late:addTiktokPost)"),
+    "youtube_shorts": ("YouTube Shorts", "YouTube「Upload a Video」(youtube:uploadVideo)"),
+    "instagram_story": ("Instagram ストーリーズ", "Zernio「Add a Story to Instagram」(make-nodes-late:addInstagramStory)"),
+    "instagram_reel": ("Instagram リール", "Instagram for Business「Create a reel post」(instagram-business:CreateAReelPost)"),
+    "pinterest": ("Pinterest", "Zernio「Upload a Video Pin」(make-nodes-late:addPinterestVideoPin)"),
+}
+# API がなく自動投稿できない媒体（ルートは作り、配信管理表に「手動」と記録する）
+MANUAL_ROUTES = {"note": "note（無料・有料）は投稿APIがないため手動で投稿する。投稿したら status を manual_posted にする"}
 
 # 投稿失敗の分類（build_ai_employees.ERROR_CLASSES と同じ）を Make の switch() で表す
 STATUS_TO_CLASS = [(401, "auth"), (403, "auth"), (429, "rate_limit"), (400, "content"), (422, "content"),
@@ -100,13 +112,18 @@ def failure_body(prefix):
 
 def post_queue(ym):
     routes = []
-    for n, (key, label) in enumerate(SNS_LABELS.items()):
+    for n, (key, (label, module)) in enumerate(ROUTES.items()):
         routes.append({"flow": [dict(
             sheet_update(10 + n, "{{2.sheet_row}}", "module_missing", "",
-                         f"Make に {label} の投稿モジュールがまだない。この前に投稿モジュールを追加し、成功時は status=posted・posted_at={{{{now}}}}・log=投稿URL にする"),
+                         f"{label}：この前に {module} を追加し、成功時は status=posted・posted_at={{{{now}}}}・log=投稿URL にする"),
             filter=window_filter(2, [{"a": "{{2.platform}}", "o": "text:equal", "b": key}],
                                  f"platform = {key}・ready・予定時刻が直近{INTERVAL_MIN}分以内"))]})
-    return {"name": "01 投稿キュー（X / Threads / TikTok / Shorts / Pinterest）",
+    for n, (key, note) in enumerate(MANUAL_ROUTES.items()):
+        routes.append({"flow": [dict(
+            sheet_update(30 + n, "{{2.sheet_row}}", "skipped", "", note),
+            filter=window_filter(2, [{"a": "{{2.platform}}", "o": "text:equal", "b": key}],
+                                 f"platform = {key}（手動）"))]})
+    return {"name": "01 投稿キュー（X / Threads / LinkedIn / TikTok / Shorts / Instagram / Pinterest / note）",
             "flow": [http_get(1, raw_url(ym, "auto_posts.json")),
                      iterator(2, "{{1.data}}"),
                      {"id": 3, "module": "builtin:BasicRouter", "version": 1, "routes": routes,

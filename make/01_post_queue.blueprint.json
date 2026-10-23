@@ -1,5 +1,5 @@
 {
-  "name": "01 投稿キュー（X / Threads / TikTok / Shorts / Pinterest）",
+  "name": "01 投稿キュー（X / Threads / LinkedIn / TikTok / Shorts / Instagram / Pinterest / note）",
   "flow": [
     {
       "id": 1,
@@ -70,7 +70,7 @@
                 "values": {
                   "3": "module_missing",
                   "4": "",
-                  "5": "Make に X の投稿モジュールがまだない。この前に投稿モジュールを追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                  "5": "X：この前に Zernio「Add a Post to Twitter」(make-nodes-late:addTwitterPost) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
                 }
               },
               "metadata": {
@@ -127,7 +127,7 @@
                 "values": {
                   "3": "module_missing",
                   "4": "",
-                  "5": "Make に Threads の投稿モジュールがまだない。この前に投稿モジュールを追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                  "5": "Threads：この前に Zernio「Add a Threads Post」(make-nodes-late:addThreadsPost) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
                 }
               },
               "metadata": {
@@ -184,7 +184,64 @@
                 "values": {
                   "3": "module_missing",
                   "4": "",
-                  "5": "Make に TikTok の投稿モジュールがまだない。この前に投稿モジュールを追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                  "5": "LinkedIn：この前に LinkedIn「Create a Company Text Post」(linkedin:CreateTextShare) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 0
+                }
+              },
+              "filter": {
+                "name": "platform = linkedin・ready・予定時刻が直近15分以内",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.status}}",
+                      "o": "text:equal",
+                      "b": "ready"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:lessorequal",
+                      "b": "{{now}}"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:greater",
+                      "b": "{{addMinutes(now; -15)}}"
+                    },
+                    {
+                      "a": "{{2.platform}}",
+                      "o": "text:equal",
+                      "b": "linkedin"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 13,
+              "module": "google-sheets:updateRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "mapper": {
+                "mode": "map",
+                "spreadsheetId": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+                "sheetId": "配信管理表",
+                "rowNumber": "{{2.sheet_row}}",
+                "tableFirstRow": "A1:Z1",
+                "values": {
+                  "3": "module_missing",
+                  "4": "",
+                  "5": "TikTok：この前に Zernio「Add a Post to Tiktok」(make-nodes-late:addTiktokPost) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
                 }
               },
               "metadata": {
@@ -226,7 +283,7 @@
         {
           "flow": [
             {
-              "id": 13,
+              "id": 14,
               "module": "google-sheets:updateRow",
               "version": 2,
               "parameters": {
@@ -241,7 +298,7 @@
                 "values": {
                   "3": "module_missing",
                   "4": "",
-                  "5": "Make に YouTube Shorts の投稿モジュールがまだない。この前に投稿モジュールを追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                  "5": "YouTube Shorts：この前に YouTube「Upload a Video」(youtube:uploadVideo) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
                 }
               },
               "metadata": {
@@ -283,7 +340,7 @@
         {
           "flow": [
             {
-              "id": 14,
+              "id": 15,
               "module": "google-sheets:updateRow",
               "version": 2,
               "parameters": {
@@ -298,7 +355,121 @@
                 "values": {
                   "3": "module_missing",
                   "4": "",
-                  "5": "Make に Pinterest の投稿モジュールがまだない。この前に投稿モジュールを追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                  "5": "Instagram ストーリーズ：この前に Zernio「Add a Story to Instagram」(make-nodes-late:addInstagramStory) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 0
+                }
+              },
+              "filter": {
+                "name": "platform = instagram_story・ready・予定時刻が直近15分以内",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.status}}",
+                      "o": "text:equal",
+                      "b": "ready"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:lessorequal",
+                      "b": "{{now}}"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:greater",
+                      "b": "{{addMinutes(now; -15)}}"
+                    },
+                    {
+                      "a": "{{2.platform}}",
+                      "o": "text:equal",
+                      "b": "instagram_story"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 16,
+              "module": "google-sheets:updateRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "mapper": {
+                "mode": "map",
+                "spreadsheetId": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+                "sheetId": "配信管理表",
+                "rowNumber": "{{2.sheet_row}}",
+                "tableFirstRow": "A1:Z1",
+                "values": {
+                  "3": "module_missing",
+                  "4": "",
+                  "5": "Instagram リール：この前に Instagram for Business「Create a reel post」(instagram-business:CreateAReelPost) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 0
+                }
+              },
+              "filter": {
+                "name": "platform = instagram_reel・ready・予定時刻が直近15分以内",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.status}}",
+                      "o": "text:equal",
+                      "b": "ready"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:lessorequal",
+                      "b": "{{now}}"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:greater",
+                      "b": "{{addMinutes(now; -15)}}"
+                    },
+                    {
+                      "a": "{{2.platform}}",
+                      "o": "text:equal",
+                      "b": "instagram_reel"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 17,
+              "module": "google-sheets:updateRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "mapper": {
+                "mode": "map",
+                "spreadsheetId": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+                "sheetId": "配信管理表",
+                "rowNumber": "{{2.sheet_row}}",
+                "tableFirstRow": "A1:Z1",
+                "values": {
+                  "3": "module_missing",
+                  "4": "",
+                  "5": "Pinterest：この前に Zernio「Upload a Video Pin」(make-nodes-late:addPinterestVideoPin) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
                 }
               },
               "metadata": {
@@ -330,6 +501,63 @@
                       "a": "{{2.platform}}",
                       "o": "text:equal",
                       "b": "pinterest"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 30,
+              "module": "google-sheets:updateRow",
+              "version": 2,
+              "parameters": {
+                "__IMTCONN__": null
+              },
+              "mapper": {
+                "mode": "map",
+                "spreadsheetId": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+                "sheetId": "配信管理表",
+                "rowNumber": "{{2.sheet_row}}",
+                "tableFirstRow": "A1:Z1",
+                "values": {
+                  "3": "skipped",
+                  "4": "",
+                  "5": "note（無料・有料）は投稿APIがないため手動で投稿する。投稿したら status を manual_posted にする"
+                }
+              },
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 0
+                }
+              },
+              "filter": {
+                "name": "platform = note（手動）",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.status}}",
+                      "o": "text:equal",
+                      "b": "ready"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:lessorequal",
+                      "b": "{{now}}"
+                    },
+                    {
+                      "a": "{{2.scheduled_at}}",
+                      "o": "date:greater",
+                      "b": "{{addMinutes(now; -15)}}"
+                    },
+                    {
+                      "a": "{{2.platform}}",
+                      "o": "text:equal",
+                      "b": "note"
                     }
                   ]
                 ]
