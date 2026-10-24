@@ -89,7 +89,7 @@
 | WordPress（ブログ） | https://sportsbackstage1.wordpress.com | https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts | WordPress.com のサイト。初期記事 https://sportsbackstage1.wordpress.com/2026/09/04/hello-world/ は公開前に削除する |
 | ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | https://api.chatwork.com/v2/rooms/363171715/messages | ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す |
 | Pinterest | https://jp.pinterest.com/ | ― | ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ |
-| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 配信開始（EventSub stream.online）を Make の Webhook で受け、X・Threads に告知する。チャンネルURLは通知の broadcaster_user_login から組み立てる |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 配信開始（EventSub stream.online）を Webhook で受け、Threads に自動で告知する（X は手動予約のため対象外）。チャンネルURLは通知の broadcaster_user_login から組み立てる |
 | 配信管理表（Googleスプレッドシート） | https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit | ― | A〜F列：id / platform / scheduled_at / status / posted_at / log。Make が送信結果を書き戻す |
 | 投稿データ（GitHub Raw） | https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/ | ― | Make の取得時に ?t={{formatDate(now; "x")}}（ミリ秒のUNIX時刻）を付けてキャッシュを避ける |
 
@@ -112,14 +112,14 @@
 - このスケジュールは毎月25日〜末日に、翌月分へ差し替える（企画立案AI・投稿管理AIの【月間スケジュールの受け取り】を参照）。
 
 ---
-## 🚦 【投稿運用ルール（手動投稿 vs 自動投稿）】
+## 🚦 【投稿運用ルール（手動投稿 vs 手動予約 vs 自動投稿）】
 | 媒体 | 投稿方法 | 出力形式 |
 |---|---|---|
 | Instagram（フィード／カルーセル／リール／ストーリーズ） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | 公式LINE（メッセージ配信・オファー） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | note（長文のオープン教育記事） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | YouTube（長尺動画） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
-| X（旧Twitter）（`x`） | 自動 | 自動投稿用JSON（本文は全角140字（半角280字）以内、URLは1つ23字換算。スレッドは thread 配列で分割） |
+| X（旧Twitter）（`x`） | 手動予約 | 自動投稿用JSONで作り、X予約投稿用フォーマットに変換（本文は全角140字（半角280字）以内、URLは1つ23字換算。スレッドは thread 配列で分割） |
 | Threads（`threads`） | 自動 | 自動投稿用JSON（本文は500字以内） |
 | TikTok（`tiktok`） | 自動 | 自動投稿用JSON（動画ファイル必須。キャプション内のURLはタップできない） |
 | YouTube Shorts（`youtube_shorts`） | 自動 | 自動投稿用JSON（動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内） |
@@ -127,7 +127,8 @@
 | WordPress（ブログ）（`wordpress`） | 自動 | 自動投稿用JSON（WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す） |
 
 - **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
-- **自動投稿媒体**は、API・外部自動化ツール（Make / Zapier / Python連携など）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
+- **手動予約媒体（X）**は、X API が有料（従量課金）のため自動投稿しない。AI社員は他の自動投稿媒体と同じ自動投稿用JSONで作り（文字数・リンク・事実の自動検証を通すため）、`tools/build_content.py` が人がそのまま予約できる「X予約投稿用フォーマット」（`x_reserve_posts.md`：予約日時・コピペ用本文・添付画像・チェックリスト）に変換する。自動投稿ツールは `platform: "x"` を絶対に送らない。
+- **自動投稿媒体**は、API・外部自動化ツール（GitHub Actions ＋ Python。すべて無料のAPI枠）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
 - 1つの依頼で両方の媒体を扱うときは、手動分と自動分を見出しで分けて出す。
 
 ### 手動投稿用フォーマット（Instagram／公式LINE／note／YouTube長尺）
@@ -148,7 +149,7 @@
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 
-### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts／Pinterest）
+### 自動投稿用JSON（Threads／TikTok／YouTube Shorts／Pinterest。手動予約の X も同じ形式で作る）
 ```json
 [
   {
@@ -265,7 +266,7 @@ Instagramフィード・リールのキャプション、X・Threadsの投稿文
 
 ## 🚦 【この役割の投稿運用】
 - **Instagram／公式LINE／note（手動投稿）**：手動投稿用フォーマットで出す。コピペ用本文はコードブロックに入れ、そのまま貼れる完成形にする。投稿前チェックリストを必ず付ける。
-- **X／Threads／TikTok／YouTube Shorts（自動投稿）**：自動投稿用JSONで出す。`text` は文字数制限内の完成形（URL・ハッシュタグ込み）にし、`status` は `"draft"` にする。
+- **X（手動予約）／Threads／TikTok／YouTube Shorts（自動投稿）**：自動投稿用JSONで出す。X には予約時に添付する画像を `media` に必ず1つ以上入れる（画像付きの方が伸びるため）。`text` は文字数制限内の完成形（URL・ハッシュタグ込み）にし、`status` は `"draft"` にする。
 - 自動投稿は人が読まずに出ていくため、【要確認】が残る投稿は `"hold"` にし、手動投稿以上に事実とリンクを厳しく確認する。
 - **WordPress（ブログ記事・自動投稿）**：ブログ記事作成AIとして、WordPress投稿用JSONで出す。`content_html` は `<h2>`・`<h3>`・`<ul>`／`<ol>`・`<table>`・`<strong>`・`<a>` で組み、`categories`・`tags`・`slug`・`excerpt` をそろえる。リンクは【実運用リンク】のURLだけ。
 - **Pinterest（自動投稿）**：`title`（100字以内）・説明文（500字以内・URLなし）・`link`・`board` をそろえる。

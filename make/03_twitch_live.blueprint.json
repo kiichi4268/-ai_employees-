@@ -1,5 +1,5 @@
 {
-  "name": "03 Twitch 配信開始 ➔ X / Threads 告知",
+  "name": "03 Twitch 配信開始 ➔ Threads 告知",
   "flow": [
     {
       "id": 1,
@@ -115,7 +115,7 @@
                   "x": 900,
                   "y": 150
                 },
-                "note": "この後に X・Threads の投稿モジュールを追加し、本文に log と同じ文面（TWITCH_LIVE_TEXT）を入れる"
+                "note": "この後に Threads の投稿モジュールを追加し、本文に log と同じ文面（TWITCH_LIVE_TEXT）を入れる"
               }
             }
           ]

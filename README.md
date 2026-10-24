@@ -36,15 +36,17 @@
 
 - X / Threads / LINE配信 / note は本文にURLを直接書きます。Instagram / TikTok はキャプション内のURLがタップできないため「プロフィールのリンクから」で案内し、プロフィールに公式LINEのURLを置きます。
 
-### 投稿運用の切り分け（手動投稿 vs 自動投稿）
+### 投稿運用の切り分け（手動投稿 vs 手動予約 vs 自動投稿）
 | 投稿方法 | 媒体 | 誰が投稿するか | AI社員の出力形式 |
 |---|---|---|---|
+| 手動予約 | X（旧Twitter） | AI が本文・画像を完成させ、人が X の予約投稿機能で予約（X API は有料のため自動投稿しない） | 自動投稿用JSONで作り、`x_reserve_posts.md`（予約日時・コピペ用本文・添付画像・チェックリスト）に変換 |
 | 手動投稿 | Instagram（フィード／カルーセル／リール／ストーリーズ）・公式LINE（配信・オファー）・note・YouTube（長尺） | 人がデザイン・クローズド教育・記事品質を確認して投稿・配信 | 手動投稿用フォーマット（コピペ用本文＋投稿前チェックリスト） |
-| 自動投稿 | X・Threads・TikTok・YouTube Shorts・Pinterest | API・外部自動化ツール（Make／Zapier／Python連携など）が投稿まで完結 | 自動投稿用JSON（ツールがそのまま読み取って送信できる形式。動画・画像には `video_specs` 付き） |
+| 自動投稿 | Threads・TikTok・YouTube Shorts・Pinterest | GitHub Actions ＋ Python が各SNSの無料の公式APIで投稿まで完結 | 自動投稿用JSON（ツールがそのまま読み取って送信できる形式。動画・画像には `video_specs` 付き） |
 | 自動投稿 | WordPress（ブログ） | WordPress REST API／Make連携で予約公開 | WordPress投稿用JSON（`title`・`content_html`・`categories`・`tags`・`slug`） |
 
 - 自動投稿用JSONの `status` は `"draft"`（作成時）➔ `"ready"`（品質確認AIがPassしたものだけ）➔ 自動化ツールが送信。【要確認】が残るものは `"hold"` のまま止まります。**自動化ツールは `"ready"` だけを送信する設定にしてください。**
 - 各フォーマットの中身は、各AI社員ファイルの【投稿運用ルール】にあります。
+- **費用は0円で運用します。** X API は2026年から無料枠がなく従量課金（リンク付き投稿は1件約0.20ドル）のため、X は自動投稿せず手動予約にしています。自動投稿する媒体（Threads・YouTube・TikTok・Pinterest・WordPress）の公式APIと、GitHub Actions（非公開リポジトリは月2,000分まで無料）、Google スプレッドシート、ChatWork はすべて無料の範囲に収まります。
 - WordPress記事は、ブログ記事作成をキャプション作成AI、カテゴリ・タグ・CTAの方針（プロモーション統括）をCTA・導線設計AIが担当します。
 
 ### 今月のイベントスケジュール（2026年10月）
@@ -102,7 +104,8 @@
 ├── make/                               # Make 用 Blueprint（01 投稿キュー／02 失敗通知／03 Twitch告知／04 WordPress）と config.json
 ├── content/2026-10/                    # 10月（10/18〜10/31）の本番用コンテンツ
 │   ├── source.py                       #   企画・台本・キャプションの元データ（ここを編集する）
-│   ├── auto_posts.json                 #   自動投稿用JSON（X / Threads / TikTok / Shorts / Pinterest）→ 自動化ツールへ
+│   ├── auto_posts.json                 #   自動投稿用JSON（Threads / TikTok / Shorts / Pinterest）→ 自動化ツールへ
+│   ├── x_reserve_posts.md              #   X予約投稿用フォーマット（人が X の予約投稿機能で予約する）
 │   ├── wordpress_posts.json            #   WordPress投稿用JSON（ブログ記事）→ Make の WordPress シナリオへ
 │   ├── media_status.json               #   素材連携の完了状況（書き出した動画を "ready": true で書き込む）
 │   ├── sheet_rows.json                 #   配信管理表の行番号（id ➔ 行。一度決まったら変えない）
@@ -168,7 +171,8 @@
    - 公式LINEの自動応答（友だち追加時のあいさつ）に特典と予約フォーム（https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform）を入れておきます。文面はCTA・導線設計AIに作らせます。
 4. **素材を集める**
    - 実際の会場・受付・レンタル用具・参加者の笑顔の写真と動画を撮りためます（**参加者が写るものは必ず掲載許可を取る**）。
-5. **自動投稿ツールをつなぐ**（X・Threads・TikTok・YouTube Shorts・Pinterest・WordPress）
+5. **自動投稿ツールをつなぐ**（Threads・TikTok・YouTube Shorts・Pinterest・WordPress）
+   - X は自動投稿しません。`x_reserve_posts.md` を見て、前日までに X の予約投稿機能で予約し、配信管理表の status を `manual` ➔ `manual_posted` に変えます。
    - Make／Zapier／Python連携などで、自動投稿用JSONの配列を受け取り、`status` が `"ready"` のものだけを `scheduled_at` の時刻に `platform` へ送信するシナリオを作ります。
    - 動画（TikTok・Shorts・Pinterest）は `media.file` のファイル名で保存先（Googleドライブなど）から取得します。Pinterest は `link`（リンク先）と `board`（ボード名）も渡します。
    - WordPress は `wordpress_posts.json` を読み、`title`・`content_html`・`excerpt`・`slug`・`wp_status`・`scheduled_at`（公開日時）を、各記事の `endpoint`（`https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts`、WordPress.com の REST API）に渡します。認証は WordPress.com の OAuth2 です。Make の WordPress モジュールはサイト側にプラグインが必要なため、プラグインを入れられないプランでは Make の HTTP モジュール（OAuth2 接続）から送ります。`categories`・`tags` は名前で入っているので、Make 側でIDに変換します（存在しない名前は作らずにエラーにする）。
@@ -206,17 +210,17 @@
 | 朝（15分） | 進行管理AI | ストック日数・今日の投稿・遅れの確認 | 今日のタスク表 |
 | 朝（15分） | トレンド調査AI | 今日使える音源・形式・ワードの差分チェック | トレンドメモ |
 | 午前（60分） | フック作成AI ➔ 台本作成AI ➔ 台本レビューAI | 翌日以降のショート動画台本を1〜2本 | 添削済み台本 |
-| 午前（30分） | キャプション作成AI ➔ タイトル作成AI | 【自動】X・Threads・TikTok・Shortsの投稿文 ／【手動】Instagram・LINE・noteの本文 | 自動投稿用JSON（draft）＋手動投稿用フォーマット |
+| 午前（30分） | キャプション作成AI ➔ タイトル作成AI | 【自動】Threads・TikTok・Shortsの投稿文 ／【手動予約】Xの投稿文 ／【手動】Instagram・LINE・noteの本文 | 自動投稿用JSON（draft）＋手動投稿用フォーマット |
 | 昼（30分） | 表現チェックAI ➔ 事実確認AI ➔ 品質確認AI | 原稿のチェックと最終判定 | 【自動】Passしたものを `ready` に ／【手動】Passした原稿とチェックリスト |
 | 午後（60〜90分） | 素材収集AI ➔ 字幕作成AI ➔ 音声調整AI ➔ 動画編集AI／画像生成AI | 動画・カルーセルの制作（指示書どおりにCapCut・Canvaで作業）。自動投稿用の動画はJSONの `media.file` と同じファイル名で書き出す | 完成データ |
 | 夕方（15分） | 投稿管理AI | 【自動】`ready` のJSONを自動化ツールのキューへ渡す ／【手動】人の投稿予定とリンク動作の確認 | 配信管理表（投稿方法の列つき） |
-| 夕方〜夜（人の作業・20分） | 運営スタッフ | 【手動】チェックリストを見ながらInstagram投稿・LINE配信・note公開 | 投稿済みの更新 |
+| 夕方〜夜（人の作業・20分） | 運営スタッフ | 【手動】チェックリストを見ながらInstagram投稿・LINE配信・note公開 ／【手動予約】翌日分の X を予約 | 投稿済みの更新 |
 | 夜（15分） | 投稿管理AI ➔ コメント分析AI | 【自動】送信結果（失敗の再送・手動切り替え）の確認 ／ 前日投稿のコメント・DMへの返信文づくり | 送信ログ・返信文・不安TOP5 |
 
 ### 4-3. 媒体別の投稿リズム（初期値・数値を見て調整）
 | 媒体 | 投稿方法 | ファネル | 頻度 | 中身 | CTA |
 |---|---|---|---|---|---|
-| X / Threads | 自動 | 集客 | 毎日1〜3投稿 | 一人参加あるある・運動不足の共感・当日の小ネタ | プロフィール／Instagramへ |
+| X（手動予約）／ Threads（自動） | 手動予約／自動 | 集客 | 毎日1〜3投稿 | 一人参加あるある・運動不足の共感・当日の小ネタ | プロフィール／Instagramへ |
 | TikTok / YouTube Shorts | 自動 | 集客 | 毎日1本 | 冒頭3秒フック＋会場の笑顔ダイジェスト（20〜30秒） | プロフィール／Instagramへ |
 | Pinterest | 自動 | 集客 | 毎日1本（ショート動画を転用） | 「一人参加」「初心者」「持ち物」など検索されやすいテーマ | ピンのリンク先（予約フォーム） |
 | WordPress（ブログ） | 自動 | オープン教育 | 月1〜2本 | 月間の日程・当日の流れ・持ち物（検索で見つけた人向け） | 予約フォーム／公式LINEへ |
@@ -317,7 +321,8 @@
 - **音源の権利**：各プラットフォームで商用利用できる音源だけを使う。
 - **AIっぽさの排除**：投稿前に必ず表現チェックAIを通し、「〜の世界へようこそ」「革命的な」などのNG表現を残さない。
 - **手動投稿媒体（Instagram・公式LINE・note・YouTube長尺）**：品質確認AIでPassになっても、投稿・配信するのは人。手動投稿用フォーマットのチェックリストをすべて埋めてから投稿する。
-- **自動投稿媒体（X・Threads・TikTok・YouTube Shorts）**：人の目を通らずに公開されるため、品質確認AIのPassで `"ready"` になったものだけを自動化ツールが送信する。`"draft"`・`"hold"` は絶対に送信しない。送信に失敗したものは投稿管理AIが原因を記録し、再送するか手動投稿に切り替える。
+- **手動予約媒体（X）**：自動投稿ツールは X を送らない。人が `x_reserve_posts.md` のチェックリストを埋めてから予約する。
+- **自動投稿媒体（Threads・TikTok・YouTube Shorts・Pinterest）**：人の目を通らずに公開されるため、品質確認AIのPassで `"ready"` になったものだけを自動化ツールが送信する。`"draft"`・`"hold"` は絶対に送信しない。送信に失敗したものは投稿管理AIが原因を記録し、再送するか手動投稿に切り替える。
 - **フォーマットを崩さない**：自動投稿用JSONは、キー名や構造を人の手で変えない（自動化ツールが読めなくなる）。直すときは `text`・`thread`・`title` の中身だけを直す。
 
 ## 9. 投稿失敗時のChatWork通知
@@ -390,7 +395,6 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 **B. Make の接続（Connections）**
 | 接続 | 使う投稿 | 確認すること |
 |---|---|---|
-| X | `platform: "x"` | 投稿権限つきで認可されているか |
 | Threads | `"threads"` | Instagram と同じ Meta アカウントで認可されているか |
 | TikTok | `"tiktok"` | 動画の直接投稿の権限があるか |
 | YouTube | `"youtube_shorts"` | 投稿先チャンネルが正しいか |
@@ -411,7 +415,7 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 
 **D. 稼働前のテスト**
 - [ ] `python3 tools/build_content.py 2026-10` と `python3 tools/chatwork_notify.py --self-test` が通る
-- [ ] X・Threads にテスト投稿を1件だけ流し、送信 ➔ 配信管理表への記録まで確認する
+- [ ] Threads にテスト投稿を1件だけ流し、送信 ➔ 配信管理表への記録まで確認する
 - [ ] わざと失敗する投稿（例：上限を超える長文）を1件流し、ChatWork のルームに通知が届くか確認する
 - [ ] WordPress に `wp_status: "draft"` で1件送り、見出し・表・リンクの表示を確認してから `"future"` に戻す
 

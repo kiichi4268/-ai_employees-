@@ -30,7 +30,8 @@
       "expired": "予定時刻を30分以上過ぎたため送らなかった",
       "manual_posted": "運営が手動で投稿した",
       "skipped": "見送り（log に理由）",
-      "module_missing": "Make にこの媒体の投稿モジュールがまだない（接続後に追加する）"
+      "module_missing": "Make にこの媒体の投稿モジュールがまだない（接続後に追加する）",
+      "manual": "手動予約の媒体（X）。人が予約投稿したら manual_posted に変える。自動投稿ツールは送らない"
     },
     "seed": "content/2026-10/sheet_seed.json"
   },
