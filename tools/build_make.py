@@ -29,7 +29,8 @@ CACHE_BUSTER = {"name": "t", "value": '{{formatDate(now; "x")}}'}  # ミリ秒�
 # 投稿キュー（01）のルート：platform ➔ (表示名, 追加する投稿モジュール)
 # Make に公式の投稿モジュールがない X・Threads・TikTok・Instagramストーリーズは Zernio（make-nodes-late）を使う
 ROUTES = {
-    "x": ("X", "Zernio「Add a Post to Twitter」(make-nodes-late:addTwitterPost)"),
+    # X は Zernio を使わず、HTTP モジュールで X API v2 に直接投稿する（無料枠の範囲で運用）
+    "x": ("X", "HTTP「Make a request」で X API に直接投稿（画像あり：先に POST https://api.x.com/2/media/upload で media_id を取得 ➔ POST https://api.x.com/2/tweets に text・media.media_ids を送る。認証は X の OAuth 2.0 接続（tweet.write・media.write）。無料枠の投稿上限を超えない）"),
     "threads": ("Threads", "Zernio「Add a Threads Post」(make-nodes-late:addThreadsPost)"),
     "linkedin": ("LinkedIn", "LinkedIn「Create a Company Text Post」(linkedin:CreateTextShare)"),
     "tiktok": ("TikTok", "Zernio「Add a Post to Tiktok」(make-nodes-late:addTiktokPost)"),

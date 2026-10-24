@@ -70,7 +70,7 @@
                 "values": {
                   "3": "module_missing",
                   "4": "",
-                  "5": "X：この前に Zernio「Add a Post to Twitter」(make-nodes-late:addTwitterPost) を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
+                  "5": "X：この前に HTTP「Make a request」で X API に直接投稿（画像あり：先に POST https://api.x.com/2/media/upload で media_id を取得 ➔ POST https://api.x.com/2/tweets に text・media.media_ids を送る。認証は X の OAuth 2.0 接続（tweet.write・media.write）。無料枠の投稿上限を超えない） を追加し、成功時は status=posted・posted_at={{now}}・log=投稿URL にする"
                 }
               },
               "metadata": {
