@@ -466,3 +466,26 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 - **投稿モジュールのエラーハンドラー**：HTTP モジュールで 02 の Webhook URL にエラーログを POST する。中身は `post_id`・`platform`・`scheduled_at`・`sheet_row`・`attempt`・`error`・`post`・`retry_auto`。
 - **Twitch**：EventSub の `stream.online` 購読を作り、callback に 03 の Webhook URL を登録する。Twitch の署名（`Twitch-Eventsub-Message-Signature`）は Make の標準フィルターでは確かめられない。そのため、配信者ID（`event.broadcaster_user_id`）の一致もフィルターに足しておく。
 - **ChatWork のトークン確認**：`python3 tools/chatwork_notify.py --check` で、メッセージを送らずに確認できる。
+
+## 13. GitHub Actions で自動投稿する（費用0円）
+
+`tools/run_queue.py` が、配信管理表で `ready` の投稿を予定時刻に各SNSの公式APIで送ります。`.github/workflows/post.yml` が日本時間 10:00／12:00／18:00／20:00／21:00 の2分後と17分後にだけ動かします（月300分ほど。非公開リポジトリの無料枠2,000分に収まります）。
+
+| 媒体 | 送信 | 必要な Secrets |
+|---|---|---|
+| Threads | ✅（文章のみ。`thread` は返信でつなぐ） | `THREADS_ACCESS_TOKEN` |
+| Pinterest | ✅（動画・画像。ボードは `board` の名前で探す） | `PINTEREST_ACCESS_TOKEN` |
+| WordPress | ✅（カテゴリ・タグは名前でIDに変換。同じ slug があれば送らない） | `WORDPRESS_TOKEN` |
+| TikTok・YouTube Shorts | まだ作っていない（`module_missing` と記録） | トークン取得後に追加 |
+| X | **送らない**（手動予約。`x_reserve_posts.md`） | なし |
+| 配信管理表・ChatWork | 送信結果の書き戻し・失敗通知 | `GOOGLE_SERVICE_ACCOUNT_JSON`・`CHATWORK_API_TOKEN` |
+
+**動かし方**
+1. トークンをご自身のPCで取得する：`python3 tools/get_tokens.py wordpress`（`youtube`／`tiktok`／`threads` も同じ）。ブラウザで「許可」を押すと `.env` に保存されます。
+2. GitHub の **Settings ➔ Secrets and variables ➔ Actions** に、上の表の Secrets を同じ名前で登録する（チャットには貼らない）。サービスアカウントのメールアドレスを、配信管理表の「共有」に編集者で追加する。
+3. **Actions ➔ post-queue ➔ Run workflow** を `dry_run=1` で実行し、送る予定の投稿が正しく表示されるか確認する（何も送られません）。
+4. 問題なければ、**Variables** に `QUEUE_ENABLED=true`（定期実行を開始）と `DRY_RUN=0`（本番送信）を追加する。止めたいときは `QUEUE_ENABLED` を消すだけです。
+
+- 送る前に配信管理表を `posting` にして二重投稿を防ぎます。成功すると `posted`・`posted_at`・投稿URL、失敗すると `failed`・エラー内容を書き戻し、ChatWork に通知します（`rate_limit`・`server` は3回まで再送）。
+- 予定時刻を30分以上過ぎた `ready` は送らずに `expired` にします。
+- 手元での確認：`python3 tools/run_queue.py --self-test`、`python3 tools/run_queue.py --now 2026-10-26T12:05`（`DRY_RUN=1` が既定）。
