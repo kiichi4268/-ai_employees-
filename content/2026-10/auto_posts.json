@@ -1,21 +1,5 @@
 [
   {
-    "id": "2026-10-18-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-18T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-22-badminton バドミントン＠まもり山 / 2026-10-24-futsal フットサル＠新宿中央公園",
-    "text": "今週は2つやるよ🏸⚽\n\n10/22(木) 18:00-21:00 バドミントン＠まもり山\n10/24(土) 14:00-16:00 フットサル＠新宿中央公園\n\n参加者の8割は一人参加。初心者さん大歓迎だよ\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 2
-  },
-  {
     "id": "2026-10-18-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-18T12:00:00+09:00",
@@ -406,22 +390,6 @@
     "sheet_row": 6
   },
   {
-    "id": "2026-10-19-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-19T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-22-badminton バドミントン＠まもり山",
-    "text": "月曜おつかれさま。\n今週木曜は、仕事帰りにバドミントンだよ🏸\n\n10/22(木) 18:00-21:00＠まもり山\n参加費1,500円（税込）・ラケットは無料で貸すよ\n\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 7
-  },
-  {
     "id": "2026-10-19-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-19T12:00:00+09:00",
@@ -801,22 +769,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 11
-  },
-  {
-    "id": "2026-10-20-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-20T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "",
-    "text": "「一人で行って浮かないかな」って不安な人へ。\n\nMacachette Sportsは参加者の8割が一人参加。\nみんな「はじめまして」から始まるから大丈夫だよ。\n\n初参加の流れはnoteにまとめたよ\nhttps://note.com/gifted_canna4865",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://note.com/gifted_canna4865",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 12
   },
   {
     "id": "2026-10-20-threads-01",
@@ -1203,22 +1155,6 @@
     "sheet_row": 16
   },
   {
-    "id": "2026-10-21-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-21T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-22-badminton バドミントン＠まもり山",
-    "text": "明日10/22(木)はバドミントン🏸\n18:00-21:00＠まもり山\n\nラケットは無料で貸すから、室内シューズと動きやすい服装でおいで。\n来てる人の8割は一人参加だよ\n\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 18
-  },
-  {
     "id": "2026-10-21-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-21T12:00:00+09:00",
@@ -1595,22 +1531,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 22
-  },
-  {
-    "id": "2026-10-22-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-22T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-22-badminton バドミントン＠まもり山",
-    "text": "今日18:00からバドミントンだよ🏸＠まもり山\n\n仕事帰りにそのまま来てね。\nラケットは貸すから、室内シューズだけ忘れずに\n\n気になる人は公式LINEで聞いてね\nhttps://lin.ee/VwtzoAm",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://lin.ee/VwtzoAm",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 23
   },
   {
     "id": "2026-10-22-threads-01",
@@ -2003,22 +1923,6 @@
     "sheet_row": 27
   },
   {
-    "id": "2026-10-23-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-23T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-24-futsal フットサル＠新宿中央公園",
-    "text": "明日10/24(土)はフットサル⚽\n14:00-16:00＠新宿中央公園\n\nボールとビブスは用意してるよ。運動靴（スパイク不可）だけ持ってきてね\n参加費1,800円（税込）\n\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 28
-  },
-  {
     "id": "2026-10-23-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-23T12:00:00+09:00",
@@ -2344,22 +2248,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 32
-  },
-  {
-    "id": "2026-10-24-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-24T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-24-futsal フットサル＠新宿中央公園",
-    "text": "今日14:00からフットサルだよ⚽＠新宿中央公園\n\nボール・ビブスは用意してるから、運動靴（スパイク不可）だけ持ってきてね。\n一人参加の人も多いよ\n\n質問は公式LINEへ\nhttps://lin.ee/VwtzoAm",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://lin.ee/VwtzoAm",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 33
   },
   {
     "id": "2026-10-24-threads-01",
@@ -2758,22 +2646,6 @@
     "sheet_row": 37
   },
   {
-    "id": "2026-10-25-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-25T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
-    "text": "10月最後の土曜はバレーボール🏐\n10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n\n参加費1,500円（税込）・定員18名\n体育館シューズだけ持ってきてね\n\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 38
-  },
-  {
     "id": "2026-10-25-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-25T12:00:00+09:00",
@@ -3099,22 +2971,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 42
-  },
-  {
-    "id": "2026-10-26-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-26T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "",
-    "text": "休日に気軽に会える人、いる？\n\n職場以外のつながりって、大人になると作りにくいよね。\nMacachette Sportsは、一人で来て体を動かしながら自然に話せる場所だよ\n\n雰囲気はInstagramで見てね\nhttps://www.instagram.com/macachette_sports",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://www.instagram.com/macachette_sports",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 43
   },
   {
     "id": "2026-10-26-threads-01",
@@ -3492,22 +3348,6 @@
     "sheet_row": 47
   },
   {
-    "id": "2026-10-27-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-27T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
-    "text": "「運動不足だけど、ジムは続かなかった」って人へ。\n\n一人で黙々より、みんなでワイワイのほうが続くかも。\n10/31(土)はバレーボールだよ🏐\n11:45-13:45＠中野区中部コミュニティプラザ\n\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 48
-  },
-  {
     "id": "2026-10-27-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-27T12:00:00+09:00",
@@ -3878,22 +3718,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 52
-  },
-  {
-    "id": "2026-10-28-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-28T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
-    "text": "10/31(土)のバレーボール、定員18名で受付中🏐\n11:45-13:45＠中野区中部コミュニティプラザ\n参加費1,500円（税込）\n\n一人参加・初心者さん大歓迎だよ\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 53
   },
   {
     "id": "2026-10-28-threads-01",
@@ -4268,22 +4092,6 @@
     "sheet_row": 57
   },
   {
-    "id": "2026-10-29-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-29T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
-    "text": "バレーの持ち物は4つだけ🏐\n\n・動きやすい服装\n・室内シューズ\n・タオル\n・飲み物\n\n10/31(土) 11:45-13:45＠中野区中部コミュニティプラザ\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 58
-  },
-  {
     "id": "2026-10-29-threads-01",
     "platform": "threads",
     "scheduled_at": "2026-10-29T12:00:00+09:00",
@@ -4654,22 +4462,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 62
-  },
-  {
-    "id": "2026-10-30-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-30T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
-    "text": "明日10/31(土)はバレーボール🏐\n11:45-13:45＠中野区中部コミュニティプラザ\n\n体育館シューズだけ忘れずにね。\n一人参加・初心者さん大歓迎だよ\n\n申込👇\nhttps://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 63
   },
   {
     "id": "2026-10-30-threads-01",
@@ -5063,22 +4855,6 @@
     "link": "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
     "board": "Macachette Sports｜東京の社会人スポーツ会",
     "sheet_row": 67
-  },
-  {
-    "id": "2026-10-31-x-01",
-    "platform": "x",
-    "scheduled_at": "2026-10-31T07:30:00+09:00",
-    "funnel_stage": "集客",
-    "event": "2026-10-31-volleyball バレーボール＠中野区中部コミュニティプラザ",
-    "text": "今日11:45からバレーボールだよ🏐\n＠中野区中部コミュニティプラザ\n\n体育館シューズを忘れずにね。\n一人で来る人も多いから、気楽においで\n\n質問は公式LINEへ\nhttps://lin.ee/VwtzoAm",
-    "thread": [],
-    "title": "",
-    "hashtags": [],
-    "media": [],
-    "cta_url": "https://lin.ee/VwtzoAm",
-    "status": "ready",
-    "hold_reason": "",
-    "sheet_row": 68
   },
   {
     "id": "2026-10-31-tiktok-01",

@@ -5,9 +5,9 @@
 
 make/ フォルダに次のファイルを書き出す（APIトークンは含めない）。
   - config.json                     接続先・スプレッドシート・キャッシュ回避などの設定一覧
-  - 01_post_queue.blueprint.json    X / Threads / TikTok / Shorts / Pinterest の投稿キュー（15分ごと）
+  - 01_post_queue.blueprint.json    Threads / TikTok / Shorts / Pinterest の投稿キュー（15分ごと。X は手動予約のため対象外）
   - 02_failure_notify.blueprint.json 投稿失敗の ChatWork 通知（Webhook で受ける）
-  - 03_twitch_live.blueprint.json   Twitch の配信開始で X / Threads に告知（EventSub Webhook）
+  - 03_twitch_live.blueprint.json   Twitch の配信開始で Threads に告知（EventSub Webhook）
   - 04_wordpress_queue.blueprint.json WordPress 記事の予約投稿（15分ごと）
 
 ChatWork の APIトークンは Make の「HTTP ➔ API key」接続に入れ、Blueprint には書かない。
@@ -27,10 +27,8 @@ COL = {name: str(i) for i, name in enumerate(base.SHEET_COLUMNS)}  # 列番号�
 INTERVAL_MIN = 15
 CACHE_BUSTER = {"name": "t", "value": '{{formatDate(now; "x")}}'}  # ミリ秒のUNIX時刻
 # 投稿キュー（01）のルート：platform ➔ (表示名, 追加する投稿モジュール)
-# Make に公式の投稿モジュールがない X・Threads・TikTok・Instagramストーリーズは Zernio（make-nodes-late）を使う
+# Make に公式の投稿モジュールがない Threads・TikTok・Instagramストーリーズは Zernio（make-nodes-late）を使う
 ROUTES = {
-    # X は Zernio を使わず、HTTP モジュールで X API v2 に直接投稿する（無料枠の範囲で運用）
-    "x": ("X", "HTTP「Make a request」で X API に直接投稿（画像あり：先に POST https://api.x.com/2/media/upload で media_id を取得 ➔ POST https://api.x.com/2/tweets に text・media.media_ids を送る。認証は X の OAuth 2.0 接続（tweet.write・media.write）。無料枠の投稿上限を超えない）"),
     "threads": ("Threads", "Zernio「Add a Threads Post」(make-nodes-late:addThreadsPost)"),
     "linkedin": ("LinkedIn", "LinkedIn「Create a Company Text Post」(linkedin:CreateTextShare)"),
     "tiktok": ("TikTok", "Zernio「Add a Post to Tiktok」(make-nodes-late:addTiktokPost)"),
@@ -41,6 +39,7 @@ ROUTES = {
 }
 # API がなく自動投稿できない媒体（ルートは作り、配信管理表に「手動」と記録する）
 MANUAL_ROUTES = {"note": "note（無料・有料）は投稿APIがないため手動で投稿する。投稿したら status を manual_posted にする"}
+# X は API が従量課金で無料枠がないため送らない（auto_posts.json にも入らない。x_reserve_posts.md で手動予約する）
 
 # 投稿失敗の分類（build_ai_employees.ERROR_CLASSES と同じ）を Make の switch() で表す
 STATUS_TO_CLASS = [(401, "auth"), (403, "auth"), (429, "rate_limit"), (400, "content"), (422, "content"),
@@ -124,7 +123,7 @@ def post_queue(ym):
             sheet_update(30 + n, "{{2.sheet_row}}", "skipped", "", note),
             filter=window_filter(2, [{"a": "{{2.platform}}", "o": "text:equal", "b": key}],
                                  f"platform = {key}（手動）"))]})
-    return {"name": "01 投稿キュー（X / Threads / LinkedIn / TikTok / Shorts / Instagram / Pinterest / note）",
+    return {"name": "01 投稿キュー（Threads / LinkedIn / TikTok / Shorts / Instagram / Pinterest / note）",
             "flow": [http_get(1, raw_url(ym, "auto_posts.json")),
                      iterator(2, "{{1.data}}"),
                      {"id": 3, "module": "builtin:BasicRouter", "version": 1, "routes": routes,
@@ -174,9 +173,9 @@ def twitch_live():
                                          COL["status"]: "module_missing", COL["posted_at"]: "",
                                          COL["log"]: text}},
                    "metadata": {"designer": {"x": 900, "y": 150},
-                                "note": "この後に X・Threads の投稿モジュールを追加し、本文に log と同じ文面（TWITCH_LIVE_TEXT）を入れる"}}]},
+                                "note": "この後に Threads の投稿モジュールを追加し、本文に log と同じ文面（TWITCH_LIVE_TEXT）を入れる"}}]},
     ]
-    return {"name": "03 Twitch 配信開始 ➔ X / Threads 告知",
+    return {"name": "03 Twitch 配信開始 ➔ Threads 告知",
             "flow": [{"id": 1, "module": "gateway:CustomWebHook", "version": 1,
                       "parameters": {"hook": None, "maxResults": 1},
                       "metadata": {"designer": {"x": 0, "y": 0},

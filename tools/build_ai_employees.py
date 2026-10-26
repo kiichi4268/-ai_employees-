@@ -7,7 +7,7 @@
 - LINE・予約フォーム等のURLを変える → LINKS
 - WordPress・ChatWork・Pinterest・Twitch の接続先 → INTEGRATIONS（APIトークンは書かない。環境変数で渡す）
 - 翌月のイベント日程に差し替える    → EVENT_YEAR / EVENT_MONTH / EVENTS（毎月25日〜末日に更新）
-- 手動投稿／自動投稿の媒体を変える  → MANUAL_CHANNELS / AUTO_CHANNELS
+- 手動投稿／手動予約／自動投稿の媒体を変える  → MANUAL_CHANNELS / RESERVE_CHANNELS / AUTO_CHANNELS
 - 投稿失敗時のChatWork通知の分類     → ERROR_CLASSES（tools/chatwork_notify.py も同じ定義を使う）
 直したら `python3 tools/build_ai_employees.py` を再実行すれば、28人全員に反映される。
 """
@@ -56,7 +56,7 @@ INTEGRATIONS = {
         note="ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ"),
     "twitch": dict(
         name="Twitch（ライブ配信）", url="https://www.twitch.tv/", settings="https://www.twitch.tv/settings/profile",
-        note="配信開始（EventSub stream.online）を Make の Webhook で受け、X・Threads に告知する。チャンネルURLは通知の broadcaster_user_login から組み立てる"),
+        note="配信開始（EventSub stream.online）を Webhook で受け、Threads に自動で告知する（X は手動予約のため対象外）。チャンネルURLは通知の broadcaster_user_login から組み立てる"),
     "sheets": dict(
         name="配信管理表（Googleスプレッドシート）",
         url="https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit",
@@ -72,6 +72,7 @@ SHEET_COLUMNS = ["id", "platform", "scheduled_at", "status", "posted_at", "log"]
 SHEET_STATUSES = [
     ("ready", "送信待ち（auto_posts.json の status が ready）"),
     ("hold", "保留中（素材待ち・開催後確認など。hold_reason を見る）"),
+    ("posting", "送信中（tools/run_queue.py が送る直前に付ける印。二重投稿を防ぐ。残ったままなら送信結果を確認する）"),
     ("posted", "送信成功（posted_at に送信日時、log に投稿URL）"),
     ("failed", "送信失敗（log にエラー内容。ChatWork に通知済み）"),
     ("retrying", "自動リトライ待ち（rate_limit・server のとき）"),
@@ -79,6 +80,7 @@ SHEET_STATUSES = [
     ("manual_posted", "運営が手動で投稿した"),
     ("skipped", "見送り（log に理由）"),
     ("module_missing", "Make にこの媒体の投稿モジュールがまだない（接続後に追加する）"),
+    ("manual", "手動予約の媒体（X）。人が予約投稿したら manual_posted に変える。自動投稿ツールは送らない"),
 ]
 TWITCH_LIVE_TEXT = ("ライブ配信スタート！🎥\n今Twitchで配信中だよ。気軽にのぞいてね\n"
                     "https://www.twitch.tv/{login}\n\nスポーツ会の申込はこちら👇\n{form}")
@@ -114,9 +116,13 @@ MANUAL_CHANNELS = [
     ("note", "note（長文のオープン教育記事）"),
     ("youtube", "YouTube（長尺動画）"),
 ]
-# API・外部自動化ツール（Make / Zapier / Python連携など）で投稿まで完結させる媒体
-AUTO_CHANNELS = [
+# 文章・画像は AI が完成させ、人が X の予約投稿機能などで手動予約する媒体
+# （X API は従量課金で無料枠がないため、費用0円を守るために自動投稿しない）
+RESERVE_CHANNELS = [
     ("x", "X（旧Twitter）", "本文は全角140字（半角280字）以内、URLは1つ23字換算。スレッドは thread 配列で分割"),
+]
+# API・外部自動化ツール（GitHub Actions ＋ Python）で投稿まで完結させる媒体（すべて無料のAPI枠で運用）
+AUTO_CHANNELS = [
     ("threads", "Threads", "本文は500字以内"),
     ("tiktok", "TikTok", "動画ファイル必須。キャプション内のURLはタップできない"),
     ("youtube_shorts", "YouTube Shorts", "動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内"),
@@ -265,17 +271,21 @@ def build_operations_header() -> str:
 def build_posting_rules() -> str:
     """手動投稿／自動投稿の切り分けルールと、それぞれの出力形式を作る。"""
     manual = "\n".join(f"| {name} | 手動 | 手動投稿用フォーマット（チェックリスト付き） |" for _, name in MANUAL_CHANNELS)
+    reserve = "\n".join(f"| {name}（`{key}`） | 手動予約 | 自動投稿用JSONで作り、X予約投稿用フォーマットに変換（{note}） |"
+                        for key, name, note in RESERVE_CHANNELS)
     auto = "\n".join(f"| {name}（`{key}`） | 自動 | 自動投稿用JSON（{note}） |" for key, name, note in AUTO_CHANNELS)
-    keys = " / ".join(f'"{key}"' for key, _, _ in AUTO_CHANNELS if key != "wordpress")
+    keys = " / ".join(f'"{key}"' for key, _, _ in RESERVE_CHANNELS + AUTO_CHANNELS if key != "wordpress")
     return f"""\
-## 🚦 【投稿運用ルール（手動投稿 vs 自動投稿）】
+## 🚦 【投稿運用ルール（手動投稿 vs 手動予約 vs 自動投稿）】
 | 媒体 | 投稿方法 | 出力形式 |
 |---|---|---|
 {manual}
+{reserve}
 {auto}
 
 - **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
-- **自動投稿媒体**は、API・外部自動化ツール（Make / Zapier / Python連携など）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
+- **手動予約媒体（X）**は、X API が有料（従量課金）のため自動投稿しない。AI社員は他の自動投稿媒体と同じ自動投稿用JSONで作り（文字数・リンク・事実の自動検証を通すため）、`tools/build_content.py` が人がそのまま予約できる「X予約投稿用フォーマット」（`x_reserve_posts.md`：予約日時・コピペ用本文・添付画像・チェックリスト）に変換する。自動投稿ツールは `platform: "x"` を絶対に送らない。
+- **自動投稿媒体**は、API・外部自動化ツール（GitHub Actions ＋ Python。すべて無料のAPI枠）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
 - 1つの依頼で両方の媒体を扱うときは、手動分と自動分を見出しで分けて出す。
 
 ### 手動投稿用フォーマット（Instagram／公式LINE／note／YouTube長尺）
@@ -296,7 +306,7 @@ def build_posting_rules() -> str:
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 
-### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts／Pinterest）
+### 自動投稿用JSON（Threads／TikTok／YouTube Shorts／Pinterest。手動予約の X も同じ形式で作る）
 ```json
 [
   {{
@@ -677,7 +687,7 @@ EMPLOYEES = [
         no=9, dir="02_planning", file="funnel_architect", emoji="🛤",
         ja="CTA・導線設計AI", en="Funnel Architect AI", dept="企画・設計系",
         posting="""\
-- 導線は「自動投稿媒体（X／Threads／TikTok／Shorts）で集客 ➔ 手動投稿媒体（Instagram）で教育 ➔ 手動配信（公式LINE）で成約」の順に組む。
+- 導線は「フロント媒体（X〈手動予約〉／Threads／TikTok／Shorts）で集客 ➔ 手動投稿媒体（Instagram）で教育 ➔ 手動配信（公式LINE）で成約」の順に組む。
 - 自動投稿媒体のCTAは人の手直しが入らない前提で、そのまま使える完成文にする（Instagramへ送る／予約フォーム・公式LINEのURLを直接書く）。
 - **プロモーション統括**：WordPress（ブログ）記事は「検索で見つけた人をLINE・予約へ送る」オープン教育の入口として設計する。記事ごとに `categories`・`tags`・`slug` の方針と、本文の途中と最後に置くCTA（公式LINE・予約フォーム）を決めて、キャプション作成AIに渡す。""",
         role="「フロント拡散 ➔ 本陣（Instagram/YouTube/note）➔ 公式LINE ➔ 予約フォーム」の導線で、どのタイミングでどの特典を出し、どう自然かつ強く行動を促すか（CTA）を設計する、マーケティングの要です。",
@@ -785,7 +795,7 @@ EMPLOYEES = [
         ja="キャプション作成AI", en="Caption Writer AI", dept="制作・ライティング系",
         posting="""\
 - **Instagram／公式LINE／note（手動投稿）**：手動投稿用フォーマットで出す。コピペ用本文はコードブロックに入れ、そのまま貼れる完成形にする。投稿前チェックリストを必ず付ける。
-- **X／Threads／TikTok／YouTube Shorts（自動投稿）**：自動投稿用JSONで出す。`text` は文字数制限内の完成形（URL・ハッシュタグ込み）にし、`status` は `"draft"` にする。
+- **X（手動予約）／Threads／TikTok／YouTube Shorts（自動投稿）**：自動投稿用JSONで出す。X には予約時に添付する画像を `media` に必ず1つ以上入れる（画像付きの方が伸びるため）。`text` は文字数制限内の完成形（URL・ハッシュタグ込み）にし、`status` は `"draft"` にする。
 - 自動投稿は人が読まずに出ていくため、【要確認】が残る投稿は `"hold"` にし、手動投稿以上に事実とリンクを厳しく確認する。
 - **WordPress（ブログ記事・自動投稿）**：ブログ記事作成AIとして、WordPress投稿用JSONで出す。`content_html` は `<h2>`・`<h3>`・`<ul>`／`<ol>`・`<table>`・`<strong>`・`<a>` で組み、`categories`・`tags`・`slug`・`excerpt` をそろえる。リンクは【実運用リンク】のURLだけ。
 - **Pinterest（自動投稿）**：`title`（100字以内）・説明文（500字以内・URLなし）・`link`・`board` をそろえる。""",
@@ -1065,7 +1075,8 @@ EMPLOYEES = [
         ja="投稿管理AI", en="Posting Manager AI", dept="運用・分析・改善系",
         posting="""\
 - **手動投稿媒体（Instagram／公式LINE／note／YouTube長尺）**：配信管理表で「担当者・投稿予定日時・チェックリスト完了」を管理し、人が投稿したら「投稿済み」に更新する。
-- **自動投稿媒体（X／Threads／TikTok／YouTube Shorts）**：品質確認AIのPassで `"ready"` になった自動投稿用JSONを日付ごとの配列にまとめ、自動化ツール（Make／Zapier／Python連携など）のキューに渡す。送信結果（成功・失敗・投稿URL）を配信管理表に記録し、失敗したものは原因を書いて再送か手動投稿に切り替える。
+- **手動予約媒体（X）**：`x_reserve_posts.md` を前日までに X の予約投稿機能で予約し、配信管理表の status を `manual` ➔ `manual_posted` に変える。
+- **自動投稿媒体（Threads／TikTok／YouTube Shorts／Pinterest／WordPress）**：品質確認AIのPassで `"ready"` になった自動投稿用JSONを日付ごとの配列にまとめ、自動化ツール（GitHub Actions ＋ Python）のキューに渡す。送信結果（成功・失敗・投稿URL）を配信管理表に記録し、失敗したものは原因を書いて再送か手動投稿に切り替える。
 - 配信管理表には「投稿方法（手動／自動）」の列を必ず入れる。
 - 音声の指示は `video_specs.voiceover`（`text`・`voice`・`speed`）と `video_specs.bgm`（`mood`・`bpm`）の形で出す。音声合成ツールにそのまま渡せるよう、`voiceover.text` は読み上げ順の完成文にする。
 - 自動投稿ツールでAPIエラーが起きたら、エラーログをそのまま品質確認AIに渡し、ChatWork通知（原因・AIの修正案・次の対応）を作ってもらう。自動リトライの結果と最終的な対応（再送・手動投稿・中止）を配信管理表に記録する。

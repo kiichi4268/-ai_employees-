@@ -1,0 +1,57 @@
+# 自動投稿キュー（tools/run_queue.py）を投稿時刻にだけ動かす。
+# - 定期実行は、リポジトリの Settings ➔ Secrets and variables ➔ Actions ➔ Variables で
+#   QUEUE_ENABLED=true にするまで何もしない（ジョブがスキップされ、実行時間はほぼ0分）。
+# - 本番送信は Variables の DRY_RUN=0 のときだけ。未設定なら DRY_RUN=1（送らずに予定を表示するだけ）。
+# - X は手動予約のため送らない。鍵はすべて Secrets から渡す。
+name: post-queue
+
+on:
+  schedule:
+    # 投稿時刻（日本時間 10:00 / 12:00 / 18:00 / 20:00 / 21:00）の2分後と17分後。cron は UTC
+    - cron: "2,17 1,3,9,11,12 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "1 = 送らずに確認だけ / 0 = 本番送信"
+        default: "1"
+        type: choice
+        options: ["1", "0"]
+      now:
+        description: "この時刻として実行（例 2026-10-26T12:05。空ならいま）"
+        required: false
+
+concurrency:
+  group: post-queue
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  queue:
+    if: github.event_name == 'workflow_dispatch' || vars.QUEUE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography==44.0.0
+      - name: run queue
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || vars.DRY_RUN || '1' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          WORDPRESS_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
+          CHATWORK_API_TOKEN: ${{ secrets.CHATWORK_API_TOKEN }}
+          CHATWORK_ROOM_ID: ${{ vars.CHATWORK_ROOM_ID }}
+          NOW_AT: ${{ inputs.now }}
+        run: |
+          python3 tools/run_queue.py --self-test
+          if [ -n "$NOW_AT" ]; then
+            python3 tools/run_queue.py --now "$NOW_AT"
+          else
+            python3 tools/run_queue.py
+          fi

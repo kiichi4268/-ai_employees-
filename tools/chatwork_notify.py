@@ -102,7 +102,7 @@ def build_message(log: dict, room_id: str) -> dict:
     platform = PLATFORM_LABELS.get(log.get("platform", ""), log.get("platform", ""))
     when = log.get("scheduled_at", "")[:16].replace("T", " ")
     retry_line = (f"あり（{after}分後に再送・{attempt}/{MAX_ATTEMPTS}回目の失敗）" if auto_retry
-                  else "なし" + ("（3回失敗したため停止。hold に戻しました）" if info["retry"] else ""))
+                  else "なし" + ("（3回失敗したため停止。配信管理表は failed）" if info["retry"] else ""))
     body = (f"[info][title]【投稿失敗】{platform} {when}（{log.get('post_id', '')}）[/title]"
             f"■ エラー：HTTP {err.get('http_status', '-')} {mask(str(err.get('message', '')))}\n"
             f"■ 原因（{error_class}）：{info['cause']}\n"

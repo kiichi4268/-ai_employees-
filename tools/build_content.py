@@ -5,7 +5,8 @@
 
 content/<年-月>/source.py（企画・台本・キャプションの元データ）を読み込み、
 同じフォルダに次のファイルを書き出す。検証エラーが1つでもあれば何も書き出さずに止まる。
-  - auto_posts.json  自動投稿用JSON（X / Threads / TikTok / YouTube Shorts / Pinterest）
+  - auto_posts.json  自動投稿用JSON（Threads / TikTok / YouTube Shorts / Pinterest）
+  - x_reserve_posts.md  X予約投稿用フォーマット（X は API が有料のため、人が予約投稿機能で手動予約する）
   - wordpress_posts.json  WordPress投稿用JSON（ブログ記事：WordPress REST API／Make連携）
   - manual_posts.md  手動投稿用フォーマット（Instagram / 公式LINE / note / YouTube長尺）
   - calendar.md      日別の企画・台本・配信カレンダー
@@ -41,6 +42,8 @@ LINK = {**base.LINK, "insta": base.LINK["instagram"]}  # 本文では {insta} �
 LINK_URLS = set(base.LINK.values())
 EVENTS = {ev["id"]: ev for ev in base.EVENTS}
 AUTO_KEYS = {key for key, _, _ in base.AUTO_CHANNELS}
+RESERVE_KEYS = {key for key, _, _ in base.RESERVE_CHANNELS}  # 手動予約（X）。自動投稿のキューには入れない
+X_DEFAULT_IMAGE = "告知画像1枚（同じ日の Instagram フィード・Threads と同じ画像を流用してよい）"
 MANUAL_LABELS = {
     "instagram": "Instagram", "instagram_story": "Instagramストーリーズ",
     "line": "公式LINE", "note": "note", "youtube": "YouTube長尺",
@@ -183,9 +186,9 @@ def build_auto(src, errors, media_ready):
         pid = f"{date}-{platform}-{counter[(date, platform)]:02d}"
         text = fill_links(text)
         at = scheduled(date, time)
-        status = "hold" if hold_reason else "ready"
-        if status == "ready" and PENDING_MARK in text + title:
-            errors.append(f"{pid}: 埋まっていない【】が残っているのに ready")
+        status = "hold" if hold_reason else ("manual" if platform in RESERVE_KEYS else "ready")
+        if status in ("ready", "manual") and PENDING_MARK in text + title:
+            errors.append(f"{pid}: 埋まっていない【】が残っているのに {status}")
         posts.append(dict(
             id=pid, platform=platform, scheduled_at=at.isoformat(), funnel_stage="集客",
             event=" / ".join(f"{e} {EVENTS[e]['sport']}＠{EVENTS[e]['venue']}" for e in events),
@@ -195,7 +198,9 @@ def build_auto(src, errors, media_ready):
             _kind=kind, _events=events))
 
     for p in src.TEXT_POSTS:
-        add(p["date"], p["time"], p["platform"], p["kind"], p["events"], p["text"], "", [],
+        # X は手動予約のときに添付する画像を media に入れる（source.py の image で上書きできる）
+        media = [{"type": "image", "file": p.get("image", X_DEFAULT_IMAGE)}] if p["platform"] in RESERVE_KEYS else []
+        add(p["date"], p["time"], p["platform"], p["kind"], p["events"], p["text"], "", media,
             p["cta"], p.get("hold_reason", ""))
         if LINK[p["cta"]] not in posts[-1]["text"]:
             errors.append(f"{posts[-1]['id']}: CTA（{p['cta']}）のURLが本文に入っていない")
@@ -220,7 +225,7 @@ def build_auto(src, errors, media_ready):
 
     for p in posts:
         where = p["id"]
-        if p["platform"] not in AUTO_KEYS:
+        if p["platform"] not in AUTO_KEYS | RESERVE_KEYS:
             errors.append(f"{where}: 未定義の platform {p['platform']}")
         if p["platform"] == "x":
             if x_weighted_length(p["text"]) > 280:
@@ -422,10 +427,35 @@ def render_manual(items):
     return "\n".join(out)
 
 
+def render_x_reserve(posts):
+    out = ["# 🐦 X予約投稿用フォーマット（2026/10/18〜10/31）", "",
+           "X は API が有料（従量課金）のため自動投稿しません。前日までに X の予約投稿機能（投稿画面の🗓アイコン）で予約してください。",
+           "文字数・リンク・日時・会場・参加費は `tools/build_content.py` が自動検証済みです。予約したら配信管理表の status を `manual` ➔ `manual_posted` に変えます。", ""]
+    current = None
+    for p in posts:
+        at = datetime.datetime.fromisoformat(p["scheduled_at"])
+        if at.date().isoformat() != current:
+            current = at.date().isoformat()
+            out += [f"## {at.month}/{at.day}({base.WEEKDAYS[at.weekday()]})", ""]
+        images = "、".join(m["file"] for m in p["media"]) or "なし"
+        checks = ["X の予約日時を上の「予約日時」に合わせた",
+                  f"画像を添付した（{images}）",
+                  "画像のデザイン、文字の誤字、掲載許可を人の目で確認した"]
+        if p["status"] == "hold":
+            checks.insert(0, f"保留中：{p['hold_reason']}。解消してから予約する")
+        checks.append("予約後、配信管理表を `manual_posted` に更新した")
+        out += [f"### {p['id']}｜{at:%H:%M}｜{x_weighted_length(p['text'])}/280字",
+                f"- **予約日時**：{at:%Y-%m-%d %H:%M}　**状態**：`{p['status']}`　**紐づくイベント**：{p['event'] or 'なし'}",
+                f"- **添付する画像**：{images}", "",
+                "**▼ コピペ用本文**", "```text", p["text"], "```", "",
+                "**▼ 予約前チェックリスト**", *[f"- [ ] {c}" for c in checks], ""]
+    return "\n".join(out)
+
+
 def render_calendar(src, auto, manual):
     out = ["# 📅 2026年10月 毎日投稿カレンダー（10/18〜10/31）", "",
            "企画立案AI ➔ 台本作成AI ➔ キャプション作成AI ➔ 品質確認AI の連携で作った、日別の配信計画です。",
-           "自動投稿の本文は `auto_posts.json`、手動投稿の本文は `manual_posts.md` にあります。", ""]
+           "自動投稿の本文は `auto_posts.json`、X の予約用本文は `x_reserve_posts.md`、手動投稿の本文は `manual_posts.md` にあります。", ""]
     videos = {v["date"]: v for v in src.VIDEOS}
     for date, theme, pain, events in src.PLAN:
         d = datetime.date.fromisoformat(date)
@@ -437,7 +467,8 @@ def render_calendar(src, auto, manual):
         for p in auto:
             if p["scheduled_at"].startswith(date):
                 first = p["title"] or p["text"].split("\n")[0]
-                rows.append((p["scheduled_at"][11:16], PLATFORM_LABELS[p["platform"]], "自動", first,
+                how = "手動予約" if p["platform"] in RESERVE_KEYS else "自動"
+                rows.append((p["scheduled_at"][11:16], PLATFORM_LABELS[p["platform"]], how, first,
                              f"`{p['status']}`"))
         for m in manual:
             if m["date"] == date:
@@ -467,11 +498,12 @@ def render_qc(auto, wordpress, manual, promoted):
            "- WordPress：`content_html` のタグが閉じていて `<h1>` を使っていないこと、`slug` が半角英小文字・数字・ハイフンだけ、`categories`・`tags` があること",
            "- ステータス：`ready` に【要確認】【開催後に記入】が残っていないこと、`hold` に理由があること", "",
            "## 結果：エラー 0件", "",
-           f"- 自動投稿 {len(posts)}件（ready {status['ready']}件／hold {status['hold']}件）",
+           f"- 自動投稿・X手動予約 {len(posts)}件（ready {status['ready']}件／X手動予約 {status['manual']}件／hold {status['hold']}件）",
            f"- 手動投稿 {len(manual)}件",
            f"- 素材連携の完了で `ready` に上がった動画：{len(promoted)}本" + (f"（{', '.join(promoted)}）" if promoted else ""), "",
-           "| 媒体 | ready | hold |", "|---|---|---|",
-           *[f"| {PLATFORM_LABELS[k]} | {by_platform[(k, 'ready')]} | {by_platform[(k, 'hold')]} |" for k in PLATFORM_LABELS], "",
+           "| 媒体 | ready | X手動予約 | hold |", "|---|---|---|---|",
+           *[f"| {PLATFORM_LABELS[k]} | {by_platform[(k, 'ready')]} | {by_platform[(k, 'manual')]} | {by_platform[(k, 'hold')]} |"
+             for k in PLATFORM_LABELS], "",
            "## 品質確認AIの判定（自動投稿）", "",
            "| ID | 投稿日時 | 文字数 | 判定 | 理由 |", "|---|---|---|---|---|"]
     for p in sorted(posts, key=lambda p: (p["scheduled_at"], p["id"])):
@@ -481,7 +513,7 @@ def render_qc(auto, wordpress, manual, promoted):
             n = f"タイトル{len(p['title'])}字"
         else:
             n = f"{len(p['text'])}/{LIMITS[p['platform']]}"
-        verdict = "Pass ➔ `ready`" if p["status"] == "ready" else "保留 ➔ `hold`"
+        verdict = {"ready": "Pass ➔ `ready`", "manual": "Pass ➔ `manual`（X手動予約）"}.get(p["status"], "保留 ➔ `hold`")
         reason = p["hold_reason"] or "フック・保存トリガー・トーン・事実・CTAを確認済み"
         out.append(f"| {p['id']} | {p['scheduled_at'][5:16].replace('T', ' ')} | {n} | {verdict} | {reason} |")
     return "\n".join(out) + "\n"
@@ -495,13 +527,13 @@ def main():
     spec.loader.exec_module(src)
 
     errors = []
-    auto, promoted = build_auto(src, errors, load_media_status(folder))
+    posts, promoted = build_auto(src, errors, load_media_status(folder))
+    auto = [p for p in posts if p["platform"] in AUTO_KEYS]
+    reserve = [p for p in posts if p["platform"] in RESERVE_KEYS]
     wordpress = build_wordpress(src, errors)
     manual = build_manual(src, errors)
-    payload = json.dumps([public(p) for p in auto], ensure_ascii=False, indent=2)
-    wp_payload = json.dumps(wordpress, ensure_ascii=False, indent=2)
-    rows = assign_sheet_rows(folder, auto + wordpress)
-    for p in auto + wordpress:
+    rows = assign_sheet_rows(folder, posts + wordpress)
+    for p in posts + wordpress:
         p["sheet_row"] = rows[p["id"]]
     payload = json.dumps([public(p) for p in auto], ensure_ascii=False, indent=2)
     wp_payload = json.dumps(wordpress, ensure_ascii=False, indent=2)
@@ -514,16 +546,17 @@ def main():
     (folder / "auto_posts.json").write_text(payload + "\n", encoding="utf-8")
     (folder / "wordpress_posts.json").write_text(wp_payload + "\n", encoding="utf-8")
     with (folder / "sheet_seed.csv").open("w", encoding="utf-8", newline="") as f:
-        csv.writer(f).writerows([base.SHEET_COLUMNS] + sheet_values(auto + wordpress))
+        csv.writer(f).writerows([base.SHEET_COLUMNS] + sheet_values(posts + wordpress))
     (folder / "sheet_seed.json").write_text(
-        json.dumps({"columns": base.SHEET_COLUMNS, "values": sheet_values(auto + wordpress)},
+        json.dumps({"columns": base.SHEET_COLUMNS, "values": sheet_values(posts + wordpress)},
                    ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    (folder / "x_reserve_posts.md").write_text(render_x_reserve(reserve), encoding="utf-8")
     (folder / "manual_posts.md").write_text(render_manual(manual), encoding="utf-8")
-    (folder / "calendar.md").write_text(render_calendar(src, auto + wordpress, manual), encoding="utf-8")
-    (folder / "qc_report.md").write_text(render_qc(auto, wordpress, manual, promoted), encoding="utf-8")
+    (folder / "calendar.md").write_text(render_calendar(src, posts + wordpress, manual), encoding="utf-8")
+    (folder / "qc_report.md").write_text(render_qc(posts, wordpress, manual, promoted), encoding="utf-8")
     status = Counter(p["status"] for p in auto + wordpress)
     print(f"OK: 自動投稿 {len(auto) + len(wordpress)}件（ready {status['ready']}／hold {status['hold']}）、"
-          f"手動投稿 {len(manual)}件、素材連携で ready に上がった動画 {len(promoted)}本")
+          f"X手動予約 {len(reserve)}件、手動投稿 {len(manual)}件、素材連携で ready に上がった動画 {len(promoted)}本")
 
 
 if __name__ == "__main__":

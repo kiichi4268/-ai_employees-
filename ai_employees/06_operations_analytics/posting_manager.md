@@ -89,7 +89,7 @@
 | WordPress（ブログ） | https://sportsbackstage1.wordpress.com | https://public-api.wordpress.com/wp/v2/sites/sportsbackstage1.wordpress.com/posts | WordPress.com のサイト。初期記事 https://sportsbackstage1.wordpress.com/2026/09/04/hello-world/ は公開前に削除する |
 | ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | https://api.chatwork.com/v2/rooms/363171715/messages | ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す |
 | Pinterest | https://jp.pinterest.com/ | ― | ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ |
-| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 配信開始（EventSub stream.online）を Make の Webhook で受け、X・Threads に告知する。チャンネルURLは通知の broadcaster_user_login から組み立てる |
+| Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 配信開始（EventSub stream.online）を Webhook で受け、Threads に自動で告知する（X は手動予約のため対象外）。チャンネルURLは通知の broadcaster_user_login から組み立てる |
 | 配信管理表（Googleスプレッドシート） | https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit | ― | A〜F列：id / platform / scheduled_at / status / posted_at / log。Make が送信結果を書き戻す |
 | 投稿データ（GitHub Raw） | https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/ | ― | Make の取得時に ?t={{formatDate(now; "x")}}（ミリ秒のUNIX時刻）を付けてキャッシュを避ける |
 
@@ -112,14 +112,14 @@
 - このスケジュールは毎月25日〜末日に、翌月分へ差し替える（企画立案AI・投稿管理AIの【月間スケジュールの受け取り】を参照）。
 
 ---
-## 🚦 【投稿運用ルール（手動投稿 vs 自動投稿）】
+## 🚦 【投稿運用ルール（手動投稿 vs 手動予約 vs 自動投稿）】
 | 媒体 | 投稿方法 | 出力形式 |
 |---|---|---|
 | Instagram（フィード／カルーセル／リール／ストーリーズ） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | 公式LINE（メッセージ配信・オファー） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | note（長文のオープン教育記事） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | YouTube（長尺動画） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
-| X（旧Twitter）（`x`） | 自動 | 自動投稿用JSON（本文は全角140字（半角280字）以内、URLは1つ23字換算。スレッドは thread 配列で分割） |
+| X（旧Twitter）（`x`） | 手動予約 | 自動投稿用JSONで作り、X予約投稿用フォーマットに変換（本文は全角140字（半角280字）以内、URLは1つ23字換算。スレッドは thread 配列で分割） |
 | Threads（`threads`） | 自動 | 自動投稿用JSON（本文は500字以内） |
 | TikTok（`tiktok`） | 自動 | 自動投稿用JSON（動画ファイル必須。キャプション内のURLはタップできない） |
 | YouTube Shorts（`youtube_shorts`） | 自動 | 自動投稿用JSON（動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内） |
@@ -127,7 +127,8 @@
 | WordPress（ブログ）（`wordpress`） | 自動 | 自動投稿用JSON（WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す） |
 
 - **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
-- **自動投稿媒体**は、API・外部自動化ツール（Make / Zapier / Python連携など）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
+- **手動予約媒体（X）**は、X API が有料（従量課金）のため自動投稿しない。AI社員は他の自動投稿媒体と同じ自動投稿用JSONで作り（文字数・リンク・事実の自動検証を通すため）、`tools/build_content.py` が人がそのまま予約できる「X予約投稿用フォーマット」（`x_reserve_posts.md`：予約日時・コピペ用本文・添付画像・チェックリスト）に変換する。自動投稿ツールは `platform: "x"` を絶対に送らない。
+- **自動投稿媒体**は、API・外部自動化ツール（GitHub Actions ＋ Python。すべて無料のAPI枠）が投稿まで完結させる。AI社員は、ツールがそのまま読み取って送信できる「自動投稿用JSON」で出す（ツール側がプレーンテキストしか受け付けない場合は、JSONの `text` だけを1投稿ずつ `---` で区切って出す）。
 - 1つの依頼で両方の媒体を扱うときは、手動分と自動分を見出しで分けて出す。
 
 ### 手動投稿用フォーマット（Instagram／公式LINE／note／YouTube長尺）
@@ -148,7 +149,7 @@
 - [ ] 投稿後、投稿管理AIの配信管理表を「投稿済み」に更新した
 ````
 
-### 自動投稿用JSON（X／Threads／TikTok／YouTube Shorts／Pinterest）
+### 自動投稿用JSON（Threads／TikTok／YouTube Shorts／Pinterest。手動予約の X も同じ形式で作る）
 ```json
 [
   {
@@ -298,7 +299,8 @@ X・Threads・TikTok・YouTube Shorts（フロント）とInstagram・YouTube・
 
 ## 🚦 【この役割の投稿運用】
 - **手動投稿媒体（Instagram／公式LINE／note／YouTube長尺）**：配信管理表で「担当者・投稿予定日時・チェックリスト完了」を管理し、人が投稿したら「投稿済み」に更新する。
-- **自動投稿媒体（X／Threads／TikTok／YouTube Shorts）**：品質確認AIのPassで `"ready"` になった自動投稿用JSONを日付ごとの配列にまとめ、自動化ツール（Make／Zapier／Python連携など）のキューに渡す。送信結果（成功・失敗・投稿URL）を配信管理表に記録し、失敗したものは原因を書いて再送か手動投稿に切り替える。
+- **手動予約媒体（X）**：`x_reserve_posts.md` を前日までに X の予約投稿機能で予約し、配信管理表の status を `manual` ➔ `manual_posted` に変える。
+- **自動投稿媒体（Threads／TikTok／YouTube Shorts／Pinterest／WordPress）**：品質確認AIのPassで `"ready"` になった自動投稿用JSONを日付ごとの配列にまとめ、自動化ツール（GitHub Actions ＋ Python）のキューに渡す。送信結果（成功・失敗・投稿URL）を配信管理表に記録し、失敗したものは原因を書いて再送か手動投稿に切り替える。
 - 配信管理表には「投稿方法（手動／自動）」の列を必ず入れる。
 - 音声の指示は `video_specs.voiceover`（`text`・`voice`・`speed`）と `video_specs.bgm`（`mood`・`bpm`）の形で出す。音声合成ツールにそのまま渡せるよう、`voiceover.text` は読み上げ順の完成文にする。
 - 自動投稿ツールでAPIエラーが起きたら、エラーログをそのまま品質確認AIに渡し、ChatWork通知（原因・AIの修正案・次の対応）を作ってもらう。自動リトライの結果と最終的な対応（再送・手動投稿・中止）を配信管理表に記録する。
