@@ -111,7 +111,7 @@ WEEKDAYS = "月火水木金土日"
 # ---------------------------------------------------------------------------
 # 人がデザイン・クローズド教育・記事品質を確認して、手で投稿・配信する媒体
 MANUAL_CHANNELS = [
-    ("instagram", "Instagram（フィード／カルーセル／リール／ストーリーズ）"),
+    ("instagram", "Instagram（フィード／カルーセル／スタンプ付き・実況・シェアのストーリーズ）"),
     ("line", "公式LINE（メッセージ配信・オファー）"),
     ("note", "note（長文のオープン教育記事）"),
     ("youtube", "YouTube（長尺動画）"),
@@ -127,6 +127,8 @@ AUTO_CHANNELS = [
     ("tiktok", "TikTok", "動画ファイル必須。キャプション内のURLはタップできない"),
     ("youtube_shorts", "YouTube Shorts", "動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内"),
     ("pinterest", "Pinterest", "動画または画像必須。title は100字以内、説明文は500字以内。リンク先は link に入れる（説明文のURLはタップできない）"),
+    ("instagram_reel", "Instagramリール", "動画必須（TikTok・Shorts の動画を転用）。キャプション2,200字以内・ハッシュタグ30個以内。URLは書かず「プロフィールのリンクから公式LINEへ」"),
+    ("instagram_story", "Instagramストーリーズ（スタンプなしの画像・動画だけ）", "画像または動画必須。API ではリンク・質問スタンプを付けられないため、LINE・予約へ誘導するストーリーズは手動のまま。文字は画像に入れる"),
     ("wordpress", "WordPress（ブログ）", "WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す"),
 ]
 VIDEO_PLATFORMS = ("tiktok", "youtube_shorts", "pinterest")

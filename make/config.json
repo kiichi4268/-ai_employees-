@@ -24,6 +24,7 @@
     "statuses": {
       "ready": "送信待ち（auto_posts.json の status が ready）",
       "hold": "保留中（素材待ち・開催後確認など。hold_reason を見る）",
+      "posting": "送信中（tools/run_queue.py が送る直前に付ける印。二重投稿を防ぐ。残ったままなら送信結果を確認する）",
       "posted": "送信成功（posted_at に送信日時、log に投稿URL）",
       "failed": "送信失敗（log にエラー内容。ChatWork に通知済み）",
       "retrying": "自動リトライ待ち（rate_limit・server のとき）",

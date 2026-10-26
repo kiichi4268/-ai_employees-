@@ -476,16 +476,21 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 | Threads | ✅（文章のみ。`thread` は返信でつなぐ） | `THREADS_ACCESS_TOKEN` |
 | Pinterest | ✅（動画・画像。ボードは `board` の名前で探す） | `PINTEREST_ACCESS_TOKEN` |
 | WordPress | ✅（カテゴリ・タグは名前でIDに変換。同じ slug があれば送らない） | `WORDPRESS_TOKEN` |
+| Instagram リール | ✅（TikTok・Shorts の動画を転用。動画は Meta に直接アップロード） | `INSTAGRAM_ACCESS_TOKEN`・`INSTAGRAM_USER_ID` |
+| Instagram ストーリーズ | ✅ スタンプなしの画像・動画だけ（画像は WordPress のメディアに上げた公開URLを使う）。リンク・質問スタンプ付き、シェア、実況は手動のまま | 上と同じ＋画像のときは `WORDPRESS_TOKEN` |
 | TikTok・YouTube Shorts | まだ作っていない（`module_missing` と記録） | トークン取得後に追加 |
 | X | **送らない**（手動予約。`x_reserve_posts.md`） | なし |
 | 配信管理表・ChatWork | 送信結果の書き戻し・失敗通知 | `GOOGLE_SERVICE_ACCOUNT_JSON`・`CHATWORK_API_TOKEN` |
 
 **動かし方**
-1. トークンをご自身のPCで取得する：`python3 tools/get_tokens.py wordpress`（`youtube`／`tiktok`／`threads` も同じ）。ブラウザで「許可」を押すと `.env` に保存されます。
+1. トークンをご自身のPCで取得する：`python3 tools/get_tokens.py wordpress`（`youtube`／`tiktok`／`threads` も同じ）。ブラウザで「許可」を押すと `.env` に保存されます。Instagram は `python3 tools/get_tokens.py instagram`（`.env` の `META_APP_ID`・`META_APP_SECRET`・`META_ACCESS_TOKEN` から、期限なしのページトークンと Instagram のIDを作ります。ブラウザ操作は不要）。
 2. GitHub の **Settings ➔ Secrets and variables ➔ Actions** に、上の表の Secrets を同じ名前で登録する（チャットには貼らない）。サービスアカウントのメールアドレスを、配信管理表の「共有」に編集者で追加する。
-3. **Actions ➔ post-queue ➔ Run workflow** を `dry_run=1` で実行し、送る予定の投稿が正しく表示されるか確認する（何も送られません）。
+3. **Actions ➔ post-queue ➔ Run workflow** を `dry_run=1` で実行する（何も送られません）。最初に `--check` が鍵ごとに ✓ OK／－ 未設定／✗ NG を表示し、続けて送る予定の投稿を表示します。✗ があれば、その鍵を作り直して Secrets を更新します。
 4. 問題なければ、**Variables** に `QUEUE_ENABLED=true`（定期実行を開始）と `DRY_RUN=0`（本番送信）を追加する。止めたいときは `QUEUE_ENABLED` を消すだけです。
 
 - 送る前に配信管理表を `posting` にして二重投稿を防ぎます。成功すると `posted`・`posted_at`・投稿URL、失敗すると `failed`・エラー内容を書き戻し、ChatWork に通知します（`rate_limit`・`server` は3回まで再送）。
-- 予定時刻を30分以上過ぎた `ready` は送らずに `expired` にします。
+- 予定時刻を30分以上過ぎた `ready` は送らずに `expired` にします。鍵が未設定の媒体は送らずに `module_missing` と記録します。
+- `posting` のまま残った行（送信中に止まった）は自動では送り直しません。SNS を見て `posted` か `ready` に手で直します。
+- 配信管理表の1行目が `id, platform, scheduled_at, status, posted_at, log` でないとき・読めないときは、何も送らずに止まり ChatWork に知らせます。
+- 配信管理表の行番号：2〜72行目は10月の初期分、73〜77行目は自動化した Instagram（リール4件・ストーリーズ1件）。行番号は `sheet_rows.json` で固定し、あとから足した投稿は末尾に追加します。
 - 手元での確認：`python3 tools/run_queue.py --self-test`、`python3 tools/run_queue.py --now 2026-10-26T12:05`（`DRY_RUN=1` が既定）。

@@ -49,8 +49,11 @@ MANUAL_LABELS = {
     "line": "公式LINE", "note": "note", "youtube": "YouTube長尺",
 }
 PLATFORM_LABELS = {"x": "X", "threads": "Threads", "tiktok": "TikTok", "youtube_shorts": "YouTube Shorts",
-                   "pinterest": "Pinterest", "wordpress": "WordPress"}
-LIMITS = {"threads": 500, "tiktok": 2200, "youtube_shorts": 5000, "pinterest": 500}  # X は重み付きで別計算
+                   "pinterest": "Pinterest", "instagram_reel": "Instagramリール",
+                   "instagram_story": "Instagramストーリーズ", "wordpress": "WordPress"}
+LIMITS = {"threads": 500, "tiktok": 2200, "youtube_shorts": 5000, "pinterest": 500,
+          "instagram_reel": 2200, "instagram_story": 2200}
+INSTAGRAM_PLATFORMS = {"instagram": "instagram_reel", "instagram_story": "instagram_story"}  # 手動の channel ➔ 自動の platform  # X は重み付きで別計算
 TITLE_LIMITS = {"youtube_shorts": 100, "pinterest": 100}
 HIGHLIGHT_WORDS = ["8割", "無料", "体育以来", "一人参加", "手ぶら", "スパイク不可", "体育館シューズ"]
 PENDING_MARK = "【"  # 【要確認】【開催後に記入】など、埋まっていない印
@@ -223,8 +226,26 @@ def build_auto(src, errors, media_ready):
             v["title"], media, v.get("pin_link", "form"), reason, video_specs=specs,
             link=LINK[v.get("pin_link", "form")], board=src.PINTEREST_BOARD)
 
+    # Instagram のうち INSTAGRAM_AUTO にあるもの（リール・スタンプなしのストーリーズ）は自動投稿にする
+    for m in src.MANUAL:
+        file = getattr(src, "INSTAGRAM_AUTO", {}).get((m["date"], m["channel"]))
+        if not file:
+            continue
+        kind = "video" if file.endswith(".mp4") else "image"
+        reason = ("【開催後に記入】を当日の様子に書き換え、掲載許可を確認してから ready にする"
+                  if PENDING_MARK in m["body"] else "")
+        if not reason and file not in media_ready:
+            reason = f"{'動画' if kind == 'video' else '画像'} {file} の書き出し・確認後に ready にする"
+        add(m["date"], m["time"], INSTAGRAM_PLATFORMS[m["channel"]], m["kind"], m["events"], m["body"], "",
+            [{"type": kind, "file": file}], "line", reason)
+
     for p in posts:
         where = p["id"]
+        if p["platform"] in INSTAGRAM_PLATFORMS.values():
+            if not p["media"]:
+                errors.append(f"{where}: Instagram に動画・画像ファイルが指定されていない")
+            if len(p["hashtags"]) > 30:
+                errors.append(f"{where}: ハッシュタグが30個を超えている（{len(p['hashtags'])}個）")
         if p["platform"] not in AUTO_KEYS | RESERVE_KEYS:
             errors.append(f"{where}: 未定義の platform {p['platform']}")
         if p["platform"] == "x":
@@ -378,7 +399,8 @@ def public(post):
 
 def build_manual(src, errors):
     items = []
-    for i, m in enumerate(src.MANUAL, 1):
+    auto = getattr(src, "INSTAGRAM_AUTO", {})
+    for i, m in enumerate([m for m in src.MANUAL if (m["date"], m["channel"]) not in auto], 1):
         body = fill_links(m["body"])
         where = f"手動#{i} {m['date']} {m['label']}"
         check_links(where, body, m["channel"] in ("line", "note", "youtube"), errors)
