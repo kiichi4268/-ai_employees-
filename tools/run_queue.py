@@ -7,6 +7,7 @@
   python3 tools/run_queue.py --now 2026-10-26T12:05  # 時刻を指定して動作確認（日本時間）
   python3 tools/run_queue.py --self-test             # 通信なしで動作確認
   python3 tools/run_queue.py --check                 # 鍵・配信管理表が使えるかを読み取りだけで確認（何も送らない）
+  python3 tools/run_queue.py --test-post threads     # 接続テストとして1件だけ実際に投稿する（下の TEST_TARGETS）
 
 送る条件（すべて満たすものだけ）:
   - auto_posts.json / wordpress_posts.json の status が ready
@@ -465,6 +466,45 @@ def check(folder):
 
 
 # ---------------------------------------------------------------------------
+# 接続テスト投稿（配信管理表は使わない。1件だけ実際に送り、あとで人が消す）
+# ---------------------------------------------------------------------------
+TEST_TEXT = "【接続テスト】Macachette Sports の自動投稿の接続テストです。確認後に削除します。"
+TEST_TARGETS = {
+    "chatwork": "ChatWork のルームにテストメッセージを送る（いちばん安全。最初にこれを試す）",
+    "wordpress": "WordPress に「下書き」を1件作る（公開されない）",
+    "threads": "Threads に文章だけのテスト投稿を1件公開する（確認後に Threads のアプリで削除）",
+    "pinterest": "Pinterest にテストのピンを1件作る（--file に画像が必要。確認後に削除）",
+    "instagram": "Instagram ストーリーズにテストを1件出す（--file に画像か動画が必要。24時間で消える）",
+}
+
+
+def test_post(target, file=None):
+    if target == "chatwork":
+        msg = {"room_id": chatwork_notify.room_id(), "body": f"[info][title]接続テスト[/title]{TEST_TEXT}[/info]"}
+        chatwork_notify.send(msg, need("CHATWORK_API_TOKEN"))
+        return f"ルーム {msg['room_id']} に送信"
+    if target == "wordpress":
+        res = http("POST", f"{WORDPRESS_SITE_API}/posts", headers={"Authorization": f"Bearer {need('WORDPRESS_TOKEN')}"},
+                   body={"title": "【接続テスト】自動投稿の確認", "content": f"<p>{TEST_TEXT}</p>", "status": "draft"})
+        return f"下書き ID {res.get('id')}（WordPress の「投稿 ➔ 下書き」から削除）"
+    if target == "threads":
+        return post_threads({"text": TEST_TEXT, "media": [], "thread": []}, None)
+    if not file or not Path(file).exists():
+        raise ApiError(400, f"{target} のテストには --file で画像（または動画）を指定してください", "media")
+    path = Path(file).resolve()
+    folder = path.parent.parent  # 送信側は <folder>/media/<file> を読むため、一時的に合わせる
+    media = [{"type": "video" if path.suffix.lower() in (".mp4", ".mov") else "image", "file": path.name}]
+    if path.parent.name != "media":
+        raise ApiError(400, "テスト用のファイルは content/<年-月>/media/ に置いてから指定してください", "media")
+    if target == "pinterest":
+        posts = load_posts(ROOT / "content" / sorted(d.name for d in (ROOT / "content").iterdir() if d.is_dir())[-1])
+        board = next(p["board"] for p in posts if p["platform"] == "pinterest")
+        return post_pinterest({"board": board, "media": media, "title": "【接続テスト】", "text": TEST_TEXT,
+                               "link": base.LINK["line"]}, folder)
+    return post_instagram({"platform": "instagram_story", "text": "", "media": media}, folder)
+
+
+# ---------------------------------------------------------------------------
 # 通信なしの動作確認
 # ---------------------------------------------------------------------------
 def self_test():
@@ -535,6 +575,8 @@ def main():
     parser.add_argument("--now", help="この時刻として実行する（例 2026-10-26T12:05。日本時間）")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--check", action="store_true", help="鍵と配信管理表を読み取りだけで確認する")
+    parser.add_argument("--test-post", choices=sorted(TEST_TARGETS), help="接続テストとして1件だけ実際に投稿する")
+    parser.add_argument("--file", help="--test-post pinterest / instagram で使う画像・動画（content/<年-月>/media/ に置く）")
     args = parser.parse_args()
     if args.self_test:
         return self_test()
@@ -547,6 +589,13 @@ def main():
         sys.exit(f"{folder} がありません")
     if args.check:
         sys.exit(1 if check(folder) else 0)
+    if args.test_post:
+        print(f"接続テスト：{TEST_TARGETS[args.test_post]}")
+        try:
+            print(f"✓ {args.test_post}: 成功 {test_post(args.test_post, args.file)}")
+        except ApiError as err:
+            sys.exit(f"✗ {args.test_post}: 失敗 {err}")
+        return
     print(f"投稿キュー {now:%Y-%m-%d %H:%M}（{'DRY_RUN：送信しない' if dry else '本番：送信する'}）")
     try:
         summary = run(folder, now, make_sheet(folder, dry), dry)

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """自動投稿の初期設定をまとめて行う（ご本人のPCで、リポジトリ直下から実行する）。
 
-使い方:
-  python3 tools/setup_all.py --google-json ~/Downloads/xxxx.json   # 鍵の取得 ➔ 確認 ➔ Secrets 用ファイルを作る
-  python3 tools/setup_all.py --upload                              # さらに GitHub Secrets へ一括登録（gh CLI が必要）
+使い方（くわしくは SETUP.md）:
+  python3 tools/setup_all.py            # 質問に答えていくだけ（足りない鍵を聞かれたら貼り付けて Enter。分からなければ Enter で飛ばす）
+  python3 tools/setup_all.py --upload   # さらに GitHub Secrets へ一括登録（gh CLI が必要）
+  python3 tools/setup_all.py --google-json ~/Downloads/xxxx.json   # サービスアカウントの JSON を先に指定する
 
 やること（足りないものだけ。すでに .env にある鍵はそのまま使う）:
   1. サービスアカウントの JSON ファイルを読み、1行にして .env の GOOGLE_SERVICE_ACCOUNT_JSON に入れる
@@ -19,6 +20,7 @@ META_ACCESS_TOKEN、PINTEREST_ACCESS_TOKEN、CHATWORK_API_TOKEN（.env.example �
 """
 
 import argparse
+import getpass
 import json
 import os
 import shutil
@@ -33,6 +35,8 @@ import get_tokens  # noqa: E402
 SECRETS = ["GOOGLE_SERVICE_ACCOUNT_JSON", "THREADS_ACCESS_TOKEN", "PINTEREST_ACCESS_TOKEN", "WORDPRESS_TOKEN",
            "INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_USER_ID", "CHATWORK_API_TOKEN"]
 UPLOAD = ROOT / ".secrets.upload.env"
+# Threads は https のリダイレクトURIしか登録できないため、Threads のときだけ自分のサイトのURLを使う
+HTTPS_REDIRECT = "https://sportsbackstage1.wordpress.com/"
 # (取得したい鍵, 取得に必要な鍵, get_tokens の手順, 説明)
 STEPS = [
     (["WORDPRESS_TOKEN"], ["WORDPRESS_CLIENT_ID", "WORDPRESS_CLIENT_SECRET"], get_tokens.wordpress, "WordPress"),
@@ -40,6 +44,47 @@ STEPS = [
     (["INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_USER_ID"], ["META_APP_ID", "META_APP_SECRET", "META_ACCESS_TOKEN"],
      get_tokens.instagram, "Instagram"),
 ]
+
+
+# 質問する鍵：(名前, 画面に出す説明, 入力を隠すか)
+ASK = [
+    ("PINTEREST_ACCESS_TOKEN", "Pinterest のアクセストークン（pina_ で始まる）", True),
+    ("CHATWORK_API_TOKEN", "ChatWork の API トークン", True),
+    ("WORDPRESS_CLIENT_ID", "WordPress アプリの Client ID（数字）", False),
+    ("WORDPRESS_CLIENT_SECRET", "WordPress アプリの Client Secret", True),
+    ("THREADS_APP_ID", "Threads のアプリID（Meta の画面「Threads の設定」にある数字）", False),
+    ("THREADS_APP_SECRET", "Threads のApp Secret", True),
+    ("META_APP_ID", "Meta（Facebook）アプリのアプリID（数字）", False),
+    ("META_APP_SECRET", "Meta（Facebook）アプリの app secret", True),
+    ("META_ACCESS_TOKEN", "Graph API エクスプローラーで作ったトークン（EAA… / EAB… で始まる）", True),
+]
+TOKEN_FOR = {"WORDPRESS_CLIENT_ID": "WORDPRESS_TOKEN", "WORDPRESS_CLIENT_SECRET": "WORDPRESS_TOKEN",
+             "THREADS_APP_ID": "THREADS_ACCESS_TOKEN", "THREADS_APP_SECRET": "THREADS_ACCESS_TOKEN",
+             "META_APP_ID": "INSTAGRAM_ACCESS_TOKEN", "META_APP_SECRET": "INSTAGRAM_ACCESS_TOKEN",
+             "META_ACCESS_TOKEN": "INSTAGRAM_ACCESS_TOKEN"}
+
+
+def ask_missing(interactive):
+    """足りない鍵を1つずつ聞いて .env に保存する。Enter だけなら飛ばす（あとで聞き直せる）。"""
+    if not interactive:
+        return
+    for name, label, hidden in ASK:
+        if env_value(name) or env_value(TOKEN_FOR.get(name, "")):
+            continue  # すでにある／それで作るトークンがもうある
+        prompt = f"  {label}\n  ➔ 貼り付けて Enter（{'画面には表示されません。' if hidden else ''}分からなければ Enter だけ）："
+        value = (getpass.getpass(prompt) if hidden else input(prompt)).strip()
+        if value:
+            get_tokens.save({name: value})
+            os.environ[name] = value
+
+
+def ask_google_json(interactive):
+    if env_value("GOOGLE_SERVICE_ACCOUNT_JSON") or not interactive:
+        return
+    path = input("  サービスアカウントの JSON ファイルを、この画面にドラッグ＆ドロップして Enter（なければ Enter だけ）：")
+    path = path.strip().strip("'\"").replace("\\ ", " ")
+    if path:
+        google_json(path)
 
 
 def env_value(name):
@@ -75,10 +120,16 @@ def fetch_missing():
             print(f"－ {label}: 取得に必要な {', '.join(absent)} が .env にないため飛ばす")
             continue
         print(f"▶ {label}: トークンを取得します")
+        default = get_tokens.REDIRECT
+        if label == "Threads" and not os.environ.get("OAUTH_REDIRECT_URI"):
+            get_tokens.REDIRECT = HTTPS_REDIRECT
+            print(f"  リダイレクトURI：{HTTPS_REDIRECT}（Meta の画面に登録したものと同じであること）")
         try:
             step()
         except SystemExit as e:  # 1つ失敗しても残りは続ける
             print(f"✗ {label}: {e}")
+        finally:
+            get_tokens.REDIRECT = default
         reload_env()
 
 
@@ -106,20 +157,28 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--google-json", help="ダウンロードしたサービスアカウントの JSON ファイル")
     parser.add_argument("--upload", action="store_true", help="gh CLI で GitHub Secrets に一括登録する")
+    parser.add_argument("--no-input", action="store_true", help="質問せずに .env の値だけで進める")
     args = parser.parse_args()
+    if sys.version_info < (3, 9):
+        sys.exit("Python 3.9 以上が必要です。https://www.python.org/downloads/ から新しいものを入れてください")
+    interactive = not args.no_input and sys.stdin.isatty()
     if not get_tokens.ENV.exists():
         shutil.copy(ROOT / ".env.example", get_tokens.ENV)
         get_tokens.ENV.chmod(0o600)
-        sys.exit(".env がなかったので .env.example から作りました。鍵を入れてから、もう一度実行してください")
+        print(".env がなかったので作りました（鍵はこのファイルに保存されます。人に見せない・送らない）")
+        if not interactive:
+            sys.exit("鍵を .env に入れてから、もう一度実行してください")
     reload_env()
 
-    print("== 1. サービスアカウント")
+    print("== 1. サービスアカウント（配信管理表）")
     if args.google_json:
         google_json(args.google_json)
-        reload_env()
+    ask_google_json(interactive)
+    reload_env()
     print("✓ 配信管理表: .env にある" if env_value("GOOGLE_SERVICE_ACCOUNT_JSON")
           else "－ 配信管理表: --google-json でファイルを指定してください")
-    print("== 2. トークンの取得")
+    print("== 2. 鍵の入力とトークンの取得")
+    ask_missing(interactive)
     fetch_missing()
     print("== 3. 確認（読み取りだけ。何も投稿しない）")
     ng = check()
