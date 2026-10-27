@@ -6,6 +6,7 @@
   DRY_RUN=0 python3 tools/run_queue.py               # 本番（実際に送信し、配信管理表に書き戻す）
   python3 tools/run_queue.py --now 2026-10-26T12:05  # 時刻を指定して動作確認（日本時間）
   python3 tools/run_queue.py --self-test             # 通信なしで動作確認
+  python3 tools/run_queue.py --check                 # 鍵・配信管理表が使えるかを読み取りだけで確認（何も送らない）
 
 送る条件（すべて満たすものだけ）:
   - auto_posts.json / wordpress_posts.json の status が ready
@@ -19,6 +20,7 @@ X は API が有料のため手動予約（x_reserve_posts.md）にしており�
 鍵は環境変数（GitHub Secrets、手元では .env）だけで渡す:
   GOOGLE_SERVICE_ACCOUNT_JSON  配信管理表の読み書き（サービスアカウントのJSON全文）。ないときは sheet_seed.json を読むだけ
   THREADS_ACCESS_TOKEN / PINTEREST_ACCESS_TOKEN / WORDPRESS_TOKEN / CHATWORK_API_TOKEN
+  INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID（tools/get_tokens.py instagram で取得。Facebook ページのトークン）
 """
 
 import argparse
@@ -47,6 +49,10 @@ NEVER_SEND = {key for key, _, _ in base.RESERVE_CHANNELS}  # X（手動予約）
 SHEET = base.INTEGRATIONS["sheets"]
 THREADS_API = "https://graph.threads.net/v1.0"
 PINTEREST_API = "https://api.pinterest.com/v5"
+META_VERSION = "v23.0"
+META_API = f"https://graph.facebook.com/{META_VERSION}"
+META_UPLOAD = f"https://rupload.facebook.com/ig-api-upload/{META_VERSION}"
+WORDPRESS_SITE_API = base.INTEGRATIONS["wordpress"]["api"].rsplit("/posts", 1)[0]
 
 
 class ApiError(Exception):
@@ -130,9 +136,12 @@ class GoogleSheet:
         return urllib.parse.quote(f"{SHEET['sheet']}!{a1}", safe="")
 
     def read(self):
-        res = http("GET", self.base_url + self._range("A2:F1000"),
+        res = http("GET", self.base_url + self._range("A1:F1000"),
                    headers={"Authorization": f"Bearer {self._token()}"})
-        return {i: (row + [""] * 6)[:6] for i, row in enumerate(res.get("values", []), 2)}
+        values = res.get("values", [])
+        if not values or values[0][:6] != base.SHEET_COLUMNS:
+            raise ApiError(400, f"配信管理表の1行目が {base.SHEET_COLUMNS} ではない（列がずれている。invalid）", "sheet")
+        return {i: (row + [""] * 6)[:6] for i, row in enumerate(values[1:], 2)}
 
     def write(self, row, status, posted_at="", log=""):
         http("PUT", self.base_url + self._range(f"D{row}:F{row}"), params={"valueInputOption": "RAW"},
@@ -240,7 +249,56 @@ def post_wordpress(p, folder):
     return res.get("link", str(res.get("id", "")))
 
 
-POSTERS = {"threads": post_threads, "pinterest": post_pinterest, "wordpress": post_wordpress}
+def wordpress_media_url(path):
+    """画像のストーリーズ用：画像を WordPress のメディアに上げて公開URLを得る（Instagram は画像を公開URLで受け取るため）。"""
+    ctype = "image/png" if path.suffix == ".png" else "image/jpeg"
+    res = http("POST", f"{WORDPRESS_SITE_API}/media", raw=path.read_bytes(), headers={
+        "Authorization": f"Bearer {need('WORDPRESS_TOKEN')}", "Content-Type": ctype,
+        "Content-Disposition": f'attachment; filename="{path.name}"'})
+    return res["source_url"]
+
+
+def post_instagram(p, folder, poll_sec=10, poll_max=60):
+    """リール・ストーリーズ：コンテナを作る ➔ 動画は rupload に直接アップロード ➔ 処理完了を待つ ➔ 公開する。"""
+    token, ig = need("INSTAGRAM_ACCESS_TOKEN"), need("INSTAGRAM_USER_ID")
+    item = p["media"][0]
+    path = folder / "media" / item["file"]
+    if not path.exists():
+        raise ApiError(400, f"media file {item['file']} が content/<年-月>/media/ にありません", "media")
+    params = {"access_token": token,
+              "media_type": "REELS" if p["platform"] == "instagram_reel" else "STORIES"}
+    if p["platform"] == "instagram_reel":
+        params.update(caption=p["text"], share_to_feed="true")
+    if item["type"] == "video":
+        params["upload_type"] = "resumable"
+        container = http("POST", f"{META_API}/{ig}/media", params=params)["id"]
+        data = path.read_bytes()
+        http("POST", f"{META_UPLOAD}/{container}", raw=data, headers={
+            "Authorization": f"OAuth {token}", "offset": "0", "file_size": str(len(data))})
+    else:
+        params["image_url"] = wordpress_media_url(path)
+        container = http("POST", f"{META_API}/{ig}/media", params=params)["id"]
+    for _ in range(poll_max):
+        state = http("GET", f"{META_API}/{container}", params={"fields": "status_code", "access_token": token})
+        if state.get("status_code") == "FINISHED":
+            break
+        if state.get("status_code") in ("ERROR", "EXPIRED"):
+            raise ApiError(400, f"Instagram の動画・画像処理に失敗（media {item['file']}・{state.get('status_code')}）", "media")
+        time.sleep(poll_sec)
+    else:
+        raise ApiError(504, "Instagram の動画処理が時間内に終わらない（timeout）", "media")
+    media_id = http("POST", f"{META_API}/{ig}/media_publish",
+                    params={"creation_id": container, "access_token": token})["id"]
+    return http("GET", f"{META_API}/{media_id}", params={"fields": "permalink", "access_token": token}).get(
+        "permalink", media_id)
+
+
+POSTERS = {"threads": post_threads, "pinterest": post_pinterest, "wordpress": post_wordpress,
+           "instagram_reel": post_instagram, "instagram_story": post_instagram}
+# 媒体ごとに必要な鍵。未設定なら送らずに module_missing と記録する（failed の通知を毎回出さないため）
+REQUIRED = {"threads": ["THREADS_ACCESS_TOKEN"], "pinterest": ["PINTEREST_ACCESS_TOKEN"],
+            "wordpress": ["WORDPRESS_TOKEN"], "instagram_reel": ["INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_USER_ID"],
+            "instagram_story": ["INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_USER_ID"]}
 # まだ送信を作っていない媒体（トークン取得後に追加する）。配信管理表に module_missing と記録する
 NOT_YET = {"tiktok": "TikTok（審査とアクセストークン待ち）", "youtube_shorts": "YouTube Shorts（更新用トークン待ち）"}
 
@@ -287,7 +345,11 @@ def send_with_retry(p, folder, sleep=time.sleep):
 
 def run(folder, now, sheet, dry, sleep=time.sleep):
     rows = sheet.read()
-    summary = {"sent": [], "failed": [], "expired": [], "missing": [], "planned": []}
+    summary = {"sent": [], "failed": [], "expired": [], "missing": [], "planned": [], "warnings": []}
+    for row, v in rows.items():
+        if v[3] == "posting":  # 前回の実行が送信中に止まった。送れたか分からないので自動では送り直さない
+            summary["warnings"].append(v[0])
+            print(f"! {v[0]}: {row} 行目が posting のまま。SNS に投稿されたか確認し、posted か ready に手で直す")
     for p in load_posts(folder):
         row = p.get("sheet_row")
         current = rows.get(row)
@@ -295,6 +357,7 @@ def run(folder, now, sheet, dry, sleep=time.sleep):
             continue
         if not current or current[0] != p["id"]:
             print(f"! {p['id']}: 配信管理表の {row} 行目の id が一致しないため送らない（{current[0] if current else '空'}）")
+            summary["warnings"].append(p["id"])
             continue
         if current[3] != "ready":
             continue
@@ -313,6 +376,15 @@ def run(folder, now, sheet, dry, sleep=time.sleep):
             print(f"- {p['id']}: {NOT_YET[p['platform']]} の送信はまだ作っていないため module_missing")
             if not dry:
                 sheet.write(row, "module_missing", "", f"{stamp} {NOT_YET[p['platform']]}")
+            continue
+        absent = [n for n in REQUIRED.get(p["platform"], []) if not os.environ.get(n)]
+        if p["platform"] == "instagram_story" and p["media"][0]["type"] == "image" and not os.environ.get("WORDPRESS_TOKEN"):
+            absent.append("WORDPRESS_TOKEN（画像の公開URL用）")
+        if absent:
+            summary["missing"].append(p["id"])
+            print(f"- {p['id']}: 鍵が未設定（{', '.join(absent)}）のため送らない")
+            if not dry:
+                sheet.write(row, "module_missing", "", f"{stamp} 鍵が未設定：{', '.join(absent)}")
             continue
         if dry:
             summary["planned"].append(p["id"])
@@ -335,11 +407,61 @@ def run(folder, now, sheet, dry, sleep=time.sleep):
 def make_sheet(folder, dry):
     raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
     if raw:
-        return GoogleSheet(json.loads(raw))
+        try:
+            info = json.loads(raw)
+            missing = [k for k in ("client_email", "private_key", "token_uri") if not info.get(k)]
+        except ValueError:
+            info, missing = None, ["JSONとして読めない"]
+        if missing:
+            sys.exit(f"GOOGLE_SERVICE_ACCOUNT_JSON が正しくありません（{', '.join(missing)}）。"
+                     "ダウンロードした JSON ファイルの中身を丸ごと Secrets に貼り直してください")
+        return GoogleSheet(info)
     if not dry:
         sys.exit("本番（DRY_RUN=0）には GOOGLE_SERVICE_ACCOUNT_JSON が必要です（配信管理表に書き戻せないため止めます）")
     print("（GOOGLE_SERVICE_ACCOUNT_JSON がないため、配信管理表の代わりに sheet_seed.json を読みます）")
     return SeedSheet(folder)
+
+
+# ---------------------------------------------------------------------------
+# 鍵の確認（読み取りだけ。何も投稿・書き込みしない）
+# ---------------------------------------------------------------------------
+CHECKS = [
+    # (表示名, 必要な環境変数, 確認のための GET)
+    ("配信管理表", ["GOOGLE_SERVICE_ACCOUNT_JSON"], None),
+    ("Threads", ["THREADS_ACCESS_TOKEN"], lambda: http("GET", f"{THREADS_API}/me", params={
+        "fields": "username", "access_token": os.environ["THREADS_ACCESS_TOKEN"]}).get("username")),
+    ("Pinterest", ["PINTEREST_ACCESS_TOKEN"], lambda: http("GET", f"{PINTEREST_API}/user_account", headers={
+        "Authorization": f"Bearer {os.environ['PINTEREST_ACCESS_TOKEN']}"}).get("username")),
+    ("WordPress", ["WORDPRESS_TOKEN"], lambda: http("GET", f"{WORDPRESS_SITE_API}/users/me", headers={
+        "Authorization": f"Bearer {os.environ['WORDPRESS_TOKEN']}"}).get("name")),
+    ("Instagram", ["INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_USER_ID"], lambda: http(
+        "GET", f"{META_API}/{os.environ['INSTAGRAM_USER_ID']}", params={
+            "fields": "username", "access_token": os.environ["INSTAGRAM_ACCESS_TOKEN"]}).get("username")),
+    ("ChatWork", ["CHATWORK_API_TOKEN"], lambda: http("GET", "https://api.chatwork.com/v2/me", headers={
+        "X-ChatWorkToken": os.environ["CHATWORK_API_TOKEN"]}).get("name")),
+]
+
+
+def check(folder):
+    """鍵ごとに OK／未設定／NG を表示する。未設定は「その媒体はまだ使わない」なのでエラーにしない。"""
+    ng = 0
+    for label, names, probe in CHECKS:
+        absent = [n for n in names if not os.environ.get(n)]
+        if absent:
+            what = "本番（DRY_RUN=0）は動かない" if probe is None else "この媒体は送らずに module_missing と記録する"
+            print(f"－ {label}: 未設定（{', '.join(absent)}）。{what}")
+            continue
+        try:
+            if probe is None:
+                rows = make_sheet(folder, dry=False).read()
+                result = f"{len(rows)}行を読み込み、1行目の列もOK"
+            else:
+                result = probe()
+            print(f"✓ {label}: OK（{result}）")
+        except ApiError as err:
+            ng += 1
+            print(f"✗ {label}: NG {err}")
+    return ng
 
 
 # ---------------------------------------------------------------------------
@@ -412,6 +534,7 @@ def main():
     parser.add_argument("ym", nargs="?", help="対象の年-月（省略時は今月）")
     parser.add_argument("--now", help="この時刻として実行する（例 2026-10-26T12:05。日本時間）")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--check", action="store_true", help="鍵と配信管理表を読み取りだけで確認する")
     args = parser.parse_args()
     if args.self_test:
         return self_test()
@@ -422,8 +545,14 @@ def main():
     folder = ROOT / "content" / (args.ym or f"{now:%Y-%m}")
     if not folder.exists():
         sys.exit(f"{folder} がありません")
+    if args.check:
+        sys.exit(1 if check(folder) else 0)
     print(f"投稿キュー {now:%Y-%m-%d %H:%M}（{'DRY_RUN：送信しない' if dry else '本番：送信する'}）")
-    summary = run(folder, now, make_sheet(folder, dry), dry)
+    try:
+        summary = run(folder, now, make_sheet(folder, dry), dry)
+    except ApiError as err:  # 配信管理表が読めない・書けないときは何も送らずに止め、ChatWork に知らせる
+        notify({"id": "配信管理表", "platform": "sheets", "scheduled_at": now.isoformat()}, err, MAX_ATTEMPTS, dry)
+        sys.exit(f"配信管理表にアクセスできないため止めました：{err}")
     print("結果: " + "、".join(f"{k} {len(v)}件" for k, v in summary.items()))
     if summary["failed"]:
         sys.exit(1)

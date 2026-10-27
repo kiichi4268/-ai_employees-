@@ -7,6 +7,8 @@
   python3 tools/get_tokens.py tiktok      # TIKTOK_ACCESS_TOKEN・TIKTOK_REFRESH_TOKEN（更新用は365日）
   python3 tools/get_tokens.py threads     # THREADS_ACCESS_TOKEN（60日。期限前に threads-refresh で延長）
   python3 tools/get_tokens.py threads-refresh
+  python3 tools/get_tokens.py instagram   # INSTAGRAM_ACCESS_TOKEN（Facebook ページのトークン・期限なし）・INSTAGRAM_USER_ID
+                                          #   ブラウザ操作なし。.env の META_ACCESS_TOKEN（EAA…/EAB…）から作る
 
 流れ:
   1. 各アプリの設定画面に「リダイレクトURI」を登録しておく（既定は http://localhost:8080/callback。
@@ -15,7 +17,8 @@
   3. localhost のときは自動で受け取る。それ以外は、許可したあとのブラウザのアドレス欄のURLを丸ごとコピーして貼り付ける
   4. トークンを .env に書き込む（画面には伏せ字で表示。チャットやリポジトリには貼らない）
 
-必要な鍵（.env）: WORDPRESS_CLIENT_ID/SECRET、YOUTUBE_CLIENT_ID/SECRET、TIKTOK_CLIENT_KEY/SECRET、THREADS_APP_ID/SECRET
+必要な鍵（.env）: WORDPRESS_CLIENT_ID/SECRET、YOUTUBE_CLIENT_ID/SECRET、TIKTOK_CLIENT_KEY/SECRET、THREADS_APP_ID/SECRET、
+                 META_APP_ID/SECRET・META_ACCESS_TOKEN（Instagram）
 取得したトークンは GitHub の Settings ➔ Secrets and variables ➔ Actions に、同じ名前でご自身で登録する。
 """
 
@@ -34,6 +37,9 @@ ROOT = Path(__file__).resolve().parent.parent
 ENV = ROOT / ".env"
 REDIRECT = os.environ.get("OAUTH_REDIRECT_URI", "http://localhost:8080/callback")
 WORDPRESS_SITE = "sportsbackstage1.wordpress.com"
+META_API = "https://graph.facebook.com/v23.0"
+INSTAGRAM_USERNAME = "macachette_sports"
+INSTAGRAM_SCOPES = {"instagram_basic", "instagram_content_publish", "pages_show_list", "pages_read_engagement"}
 
 
 def load_env():
@@ -174,8 +180,31 @@ def threads_refresh():
     save({"THREADS_ACCESS_TOKEN": res["access_token"]})
 
 
+def instagram():
+    """Graph API エクスプローラーなどで発行したユーザートークンから、期限なしのページトークンと Instagram のIDを作る。"""
+    app_id, secret, short = need("META_APP_ID"), need("META_APP_SECRET"), need("META_ACCESS_TOKEN")
+    user = get(f"{META_API}/oauth/access_token", {"grant_type": "fb_exchange_token", "client_id": app_id,
+                                                  "client_secret": secret, "fb_exchange_token": short})["access_token"]
+    granted = {x["permission"] for x in get(f"{META_API}/me/permissions", {"access_token": user})["data"]
+               if x.get("status") == "granted"}
+    if INSTAGRAM_SCOPES - granted:
+        sys.exit(f"権限が足りません：{', '.join(sorted(INSTAGRAM_SCOPES - granted))}。"
+                 "Graph API エクスプローラーでこの権限にチェックを入れてトークンを作り直し、META_ACCESS_TOKEN に入れてください")
+    pages = get(f"{META_API}/me/accounts", {"access_token": user,
+                                            "fields": "name,access_token,instagram_business_account{id,username}"})["data"]
+    linked = [pg for pg in pages if pg.get("instagram_business_account")]
+    pick = [pg for pg in linked if pg["instagram_business_account"].get("username") == INSTAGRAM_USERNAME] or linked
+    if not pick:
+        sys.exit("Instagram ビジネスアカウントにつながった Facebook ページが見つかりません。"
+                 "Instagram をプロアカウント（ビジネス）にし、Facebook ページとリンクしてください")
+    page = pick[0]
+    print(f"  Facebook ページ「{page['name']}」 ➔ Instagram @{page['instagram_business_account'].get('username')}")
+    save({"INSTAGRAM_ACCESS_TOKEN": page["access_token"], "INSTAGRAM_USER_ID": page["instagram_business_account"]["id"]})
+    print("  ※ 長期ユーザートークンから作ったページトークンは期限がありません（パスワード変更・権限の取り消しで無効になります）")
+
+
 COMMANDS = {"wordpress": wordpress, "youtube": youtube, "tiktok": tiktok, "threads": threads,
-            "threads-refresh": threads_refresh}
+            "threads-refresh": threads_refresh, "instagram": instagram}
 
 if __name__ == "__main__":
     if len(sys.argv) != 2 or sys.argv[1] not in COMMANDS:

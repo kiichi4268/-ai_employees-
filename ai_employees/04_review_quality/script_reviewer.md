@@ -115,7 +115,7 @@
 ## 🚦 【投稿運用ルール（手動投稿 vs 手動予約 vs 自動投稿）】
 | 媒体 | 投稿方法 | 出力形式 |
 |---|---|---|
-| Instagram（フィード／カルーセル／リール／ストーリーズ） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
+| Instagram（フィード／カルーセル／スタンプ付き・実況・シェアのストーリーズ） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | 公式LINE（メッセージ配信・オファー） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | note（長文のオープン教育記事） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
 | YouTube（長尺動画） | 手動 | 手動投稿用フォーマット（チェックリスト付き） |
@@ -124,6 +124,8 @@
 | TikTok（`tiktok`） | 自動 | 自動投稿用JSON（動画ファイル必須。キャプション内のURLはタップできない） |
 | YouTube Shorts（`youtube_shorts`） | 自動 | 自動投稿用JSON（動画ファイル必須。縦型9:16・3分以内（基本は20〜30秒）。title は100字以内） |
 | Pinterest（`pinterest`） | 自動 | 自動投稿用JSON（動画または画像必須。title は100字以内、説明文は500字以内。リンク先は link に入れる（説明文のURLはタップできない）） |
+| Instagramリール（`instagram_reel`） | 自動 | 自動投稿用JSON（動画必須（TikTok・Shorts の動画を転用）。キャプション2,200字以内・ハッシュタグ30個以内。URLは書かず「プロフィールのリンクから公式LINEへ」） |
+| Instagramストーリーズ（スタンプなしの画像・動画だけ）（`instagram_story`） | 自動 | 自動投稿用JSON（画像または動画必須。API ではリンク・質問スタンプを付けられないため、LINE・予約へ誘導するストーリーズは手動のまま。文字は画像に入れる） |
 | WordPress（ブログ）（`wordpress`） | 自動 | 自動投稿用JSON（WordPress REST API／Make連携。専用のWordPress投稿用JSONで出す） |
 
 - **手動投稿媒体**は、人がデザイン確認・クローズド教育・記事品質を担保して手で投稿・配信する。AI社員は、人がそのままコピペできる「手動投稿用フォーマット」で出す。
@@ -169,7 +171,7 @@
   }
 ]
 ```
-- `platform` は "x" / "threads" / "tiktok" / "youtube_shorts" / "pinterest" のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
+- `platform` は "x" / "threads" / "tiktok" / "youtube_shorts" / "pinterest" / "instagram_reel" / "instagram_story" のどれか。`scheduled_at` は日本時間（+09:00）のISO 8601形式。
 - `thread` はX／Threadsで続けて投稿するときだけ使う（2投稿目以降の本文を順に入れる）。`title` はYouTube Shortsだけで使う。
 - `media.file` は動画編集AI・画像生成AIが書き出したファイル名。TikTok・YouTube Shortsは動画が必須。
 - JSONは必ず有効な形式にする（ダブルクォート・コメントなし・最後のカンマなし）。```json のコードブロックに配列で入れ、前後に説明文を混ぜない。

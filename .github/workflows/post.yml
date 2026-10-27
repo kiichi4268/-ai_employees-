@@ -45,11 +45,15 @@ jobs:
           THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           WORDPRESS_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
           CHATWORK_API_TOKEN: ${{ secrets.CHATWORK_API_TOKEN }}
           CHATWORK_ROOM_ID: ${{ vars.CHATWORK_ROOM_ID }}
           NOW_AT: ${{ inputs.now }}
         run: |
           python3 tools/run_queue.py --self-test
+          # 送らない確認のときは、鍵と配信管理表が使えるかも読み取りだけで確かめる
+          if [ "$DRY_RUN" != "0" ]; then python3 tools/run_queue.py --check; fi
           if [ -n "$NOW_AT" ]; then
             python3 tools/run_queue.py --now "$NOW_AT"
           else

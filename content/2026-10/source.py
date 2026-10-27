@@ -239,6 +239,16 @@ VIDEO_TIMES = {"tiktok": "12:00", "youtube_shorts": "18:00", "pinterest": "20:00
 # video_specs（CapCut／Remotion／Canva に渡す自動生成パラメータ）の共通設定
 VIDEO_DEFAULTS = dict(tool="capcut", voice="明るく温かい声・ややゆっくり", speed=1.0,
                       bgm={"mood": "明るいアコースティックポップ", "bpm": 110})
+# 自動投稿にする Instagram（(日付, channel) ➔ 素材ファイル）。ほかの Instagram は手動のまま
+# - リール：TikTok・Shorts と同じ動画を転用する
+# - ストーリーズ：リンクスタンプ・質問スタンプ・シェア・実況のない画像だけ（API ではスタンプを付けられないため）
+INSTAGRAM_AUTO = {
+    ("2026-10-19", "instagram"): "2026-10-19_V02.mp4",
+    ("2026-10-23", "instagram"): "2026-10-23_V06.mp4",
+    ("2026-10-25", "instagram"): "2026-10-25_V08.mp4",
+    ("2026-10-28", "instagram"): "2026-10-24_V07.mp4",
+    ("2026-10-29", "instagram_story"): "2026-10-29_story_items.png",
+}
 PINTEREST_BOARD = "Macachette Sports｜東京の社会人スポーツ会"
 
 # ---------------------------------------------------------------------------
