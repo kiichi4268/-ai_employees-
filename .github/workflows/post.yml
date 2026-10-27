@@ -19,6 +19,11 @@ on:
       now:
         description: "この時刻として実行（例 2026-10-26T12:05。空ならいま）"
         required: false
+      test_post:
+        description: "接続テストとして1件だけ実際に投稿する（none ならしない。chatwork ➔ wordpress ➔ threads の順に試す）"
+        default: "none"
+        type: choice
+        options: ["none", "chatwork", "wordpress", "threads"]
 
 concurrency:
   group: post-queue
@@ -50,8 +55,13 @@ jobs:
           CHATWORK_API_TOKEN: ${{ secrets.CHATWORK_API_TOKEN }}
           CHATWORK_ROOM_ID: ${{ vars.CHATWORK_ROOM_ID }}
           NOW_AT: ${{ inputs.now }}
+          TEST_POST: ${{ inputs.test_post }}
         run: |
           python3 tools/run_queue.py --self-test
+          if [ -n "$TEST_POST" ] && [ "$TEST_POST" != "none" ]; then
+            python3 tools/run_queue.py --test-post "$TEST_POST"
+            exit 0
+          fi
           # 送らない確認のときは、鍵と配信管理表が使えるかも読み取りだけで確かめる
           if [ "$DRY_RUN" != "0" ]; then python3 tools/run_queue.py --check; fi
           if [ -n "$NOW_AT" ]; then

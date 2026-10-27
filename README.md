@@ -1,5 +1,7 @@
 # 🤖 Macachette Sports × 沢田流SNS自動化AI組織（28人体制）
 
+> 🔰 **初期設定（鍵の準備・テスト）は [SETUP.md](SETUP.md) を上から順に。** はじめての人向けに書いてあります。
+
 「フロント拡散媒体（X / Threads / TikTok / YouTube Shorts）」から「本陣（Instagram / YouTube / note）」、そして「クローズド教育（公式LINE ➔ 予約フォーム）」へ、集客・教育・成約を毎日まわし続けるための、28人のAI社員プロンプト集と実行手順書です。
 
 ---
