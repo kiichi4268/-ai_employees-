@@ -482,7 +482,14 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 | X | **送らない**（手動予約。`x_reserve_posts.md`） | なし |
 | 配信管理表・ChatWork | 送信結果の書き戻し・失敗通知 | `GOOGLE_SERVICE_ACCOUNT_JSON`・`CHATWORK_API_TOKEN` |
 
-**動かし方**
+**まとめて設定する（おすすめ）**：ご本人のPCで、リポジトリ直下から1回実行するだけです。
+```bash
+cp .env.example .env    # 集めた鍵（Client ID・Secret、Meta のトークン、Pinterest・ChatWork のトークン）を入れる
+python3 tools/setup_all.py --google-json ~/Downloads/サービスアカウント.json --upload
+```
+足りないトークンの取得（WordPress・Threads はブラウザで「許可」を1回）➔ 読み取りだけの確認 ➔ GitHub Secrets への登録（gh CLI。値は画面に出ない）まで行います。✗ が1つでもあれば Secrets には登録しません。gh CLI がないときは `--upload` を外すと、登録する7つを `.secrets.upload.env` に書き出します（画面から登録したら消す）。
+
+**動かし方（1つずつ行う場合）**
 1. トークンをご自身のPCで取得する：`python3 tools/get_tokens.py wordpress`（`youtube`／`tiktok`／`threads` も同じ）。ブラウザで「許可」を押すと `.env` に保存されます。Instagram は `python3 tools/get_tokens.py instagram`（`.env` の `META_APP_ID`・`META_APP_SECRET`・`META_ACCESS_TOKEN` から、期限なしのページトークンと Instagram のIDを作ります。ブラウザ操作は不要）。
 2. GitHub の **Settings ➔ Secrets and variables ➔ Actions** に、上の表の Secrets を同じ名前で登録する（チャットには貼らない）。サービスアカウントのメールアドレスを、配信管理表の「共有」に編集者で追加する。
 3. **Actions ➔ post-queue ➔ Run workflow** を `dry_run=1` で実行する（何も送られません）。最初に `--check` が鍵ごとに ✓ OK／－ 未設定／✗ NG を表示し、続けて送る予定の投稿を表示します。✗ があれば、その鍵を作り直して Secrets を更新します。
