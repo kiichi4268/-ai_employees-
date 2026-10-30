@@ -10,9 +10,9 @@
   },
   "cache_buster": "取得URLに ?t={{formatDate(now; \"x\")}}（ミリ秒のUNIX時刻）を付け、Cache-Control: no-cache を送る",
   "sheet": {
-    "spreadsheet_id": "1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk",
+    "spreadsheet_id": "19jGf5YypvpJOV8AtEpByoL6u5mPDGetQpLM-n6Kl53A",
     "sheet": "配信管理表",
-    "url": "https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit",
+    "url": "https://docs.google.com/spreadsheets/d/19jGf5YypvpJOV8AtEpByoL6u5mPDGetQpLM-n6Kl53A/edit",
     "columns": [
       "id",
       "platform",
