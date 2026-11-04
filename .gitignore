@@ -1,3 +1,9 @@
 __pycache__/
 .env
 .secrets.upload.env
+# 制作スタジオの重い素材と出力（Google ドライブ・Mac に保管。リポジトリには入れない）
+studio/fonts/
+studio/clips/
+studio/photos/
+studio/out/
+studio/inputs/

@@ -1,0 +1,5 @@
+Pillow>=10.0
+numpy>=1.24
+opencv-python>=4.8
+# 別途 ffmpeg が必要（PATH に通す）
+# tools/build_list.py を使う場合のみ: playwright
