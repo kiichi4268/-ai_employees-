@@ -90,7 +90,7 @@
 | ChatWork（投稿失敗の通知先） | https://www.chatwork.com/#!rid363171715 | https://api.chatwork.com/v2/rooms/363171715/messages | ルームIDは環境変数 CHATWORK_ROOM_ID で上書きできる。APIトークンは環境変数 CHATWORK_API_TOKEN だけで渡す |
 | Pinterest | https://jp.pinterest.com/ | ― | ピンの投稿先。ボードは Make の Pinterest 接続で選ぶ |
 | Twitch（ライブ配信） | https://www.twitch.tv/ | https://www.twitch.tv/settings/profile | 配信開始（EventSub stream.online）を Webhook で受け、Threads に自動で告知する（X は手動予約のため対象外）。チャンネルURLは通知の broadcaster_user_login から組み立てる |
-| 配信管理表（Googleスプレッドシート） | https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit | ― | A〜F列：id / platform / scheduled_at / status / posted_at / log。Make が送信結果を書き戻す |
+| 配信管理表（Googleスプレッドシート「大元の配信先」） | https://docs.google.com/spreadsheets/d/19jGf5YypvpJOV8AtEpByoL6u5mPDGetQpLM-n6Kl53A/edit | ― | A〜F列：id / platform / scheduled_at / status / posted_at / log。tools/run_queue.py（GitHub Actions）が送信結果を書き戻す。同じスプレッドシートのイベント状況・週次結果タブとあわせて管理する |
 | 投稿データ（GitHub Raw） | https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/ | ― | Make の取得時に ?t={{formatDate(now; "x")}}（ミリ秒のUNIX時刻）を付けてキャッシュを避ける |
 
 **CTAのルール**

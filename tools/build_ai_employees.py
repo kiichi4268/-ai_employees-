@@ -58,10 +58,10 @@ INTEGRATIONS = {
         name="Twitch（ライブ配信）", url="https://www.twitch.tv/", settings="https://www.twitch.tv/settings/profile",
         note="配信開始（EventSub stream.online）を Webhook で受け、Threads に自動で告知する（X は手動予約のため対象外）。チャンネルURLは通知の broadcaster_user_login から組み立てる"),
     "sheets": dict(
-        name="配信管理表（Googleスプレッドシート）",
-        url="https://docs.google.com/spreadsheets/d/1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk/edit",
-        spreadsheet_id="1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk", sheet="配信管理表",
-        note="A〜F列：id / platform / scheduled_at / status / posted_at / log。Make が送信結果を書き戻す"),
+        name="配信管理表（Googleスプレッドシート「大元の配信先」）",
+        url="https://docs.google.com/spreadsheets/d/19jGf5YypvpJOV8AtEpByoL6u5mPDGetQpLM-n6Kl53A/edit",
+        spreadsheet_id="19jGf5YypvpJOV8AtEpByoL6u5mPDGetQpLM-n6Kl53A", sheet="配信管理表",
+        note="A〜F列：id / platform / scheduled_at / status / posted_at / log。tools/run_queue.py（GitHub Actions）が送信結果を書き戻す。同じスプレッドシートのイベント状況・週次結果タブとあわせて管理する"),
     "github_raw": dict(
         name="投稿データ（GitHub Raw）",
         url="https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/",

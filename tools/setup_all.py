@@ -23,6 +23,7 @@ import argparse
 import getpass
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -46,36 +47,74 @@ STEPS = [
 ]
 
 
-# 質問する鍵：(名前, 画面に出す説明, 入力を隠すか)
+# 質問する鍵：(名前, 画面に出す説明, 入力を隠すか, 正しい形)
+ID = r"\d{3,20}"
+SECRET = r"[A-Za-z0-9]{16,128}"
 ASK = [
-    ("PINTEREST_ACCESS_TOKEN", "Pinterest のアクセストークン（pina_ で始まる）", True),
-    ("CHATWORK_API_TOKEN", "ChatWork の API トークン", True),
-    ("WORDPRESS_CLIENT_ID", "WordPress アプリの Client ID（数字）", False),
-    ("WORDPRESS_CLIENT_SECRET", "WordPress アプリの Client Secret", True),
-    ("THREADS_APP_ID", "Threads のアプリID（Meta の画面「Threads の設定」にある数字）", False),
-    ("THREADS_APP_SECRET", "Threads のApp Secret", True),
-    ("META_APP_ID", "Meta（Facebook）アプリのアプリID（数字）", False),
-    ("META_APP_SECRET", "Meta（Facebook）アプリの app secret", True),
-    ("META_ACCESS_TOKEN", "Graph API エクスプローラーで作ったトークン（EAA… / EAB… で始まる）", True),
+    ("PINTEREST_ACCESS_TOKEN", "Pinterest のアクセストークン（pina_ で始まる）", True, r"pina_[A-Za-z0-9_\-]{20,}"),
+    ("CHATWORK_API_TOKEN", "ChatWork の API トークン（英数字30文字くらい）", True, r"[A-Za-z0-9]{20,64}"),
+    ("WORDPRESS_CLIENT_ID", "WordPress アプリの Client ID（数字）", False, ID),
+    ("WORDPRESS_CLIENT_SECRET", "WordPress アプリの Client Secret", True, SECRET),
+    ("THREADS_APP_ID", "Threads のアプリID（Meta の画面「Threads の設定」にある数字）", False, ID),
+    ("THREADS_APP_SECRET", "Threads のApp Secret", True, SECRET),
+    ("META_APP_ID", "Meta（Facebook）アプリのアプリID（数字）", False, ID),
+    ("META_APP_SECRET", "Meta（Facebook）アプリの app secret", True, SECRET),
+    ("META_ACCESS_TOKEN", "Graph API エクスプローラーで作ったトークン（EAA… / EAB… で始まる）", True, r"EA[A-Za-z0-9]{50,}"),
 ]
+TRIES = 3
 TOKEN_FOR = {"WORDPRESS_CLIENT_ID": "WORDPRESS_TOKEN", "WORDPRESS_CLIENT_SECRET": "WORDPRESS_TOKEN",
              "THREADS_APP_ID": "THREADS_ACCESS_TOKEN", "THREADS_APP_SECRET": "THREADS_ACCESS_TOKEN",
              "META_APP_ID": "INSTAGRAM_ACCESS_TOKEN", "META_APP_SECRET": "INSTAGRAM_ACCESS_TOKEN",
              "META_ACCESS_TOKEN": "INSTAGRAM_ACCESS_TOKEN"}
 
 
+def flush_input():
+    """貼り付けた文字が多すぎたとき、あふれた分が次の質問に流れ込まないよう捨てる。"""
+    try:
+        import termios
+        termios.tcflush(sys.stdin, termios.TCIFLUSH)
+    except Exception:  # Windows（termios なし）や、画面以外からの入力では何もしない
+        pass
+
+
+def read_answer(prompt, hidden):
+    try:
+        raw = getpass.getpass(prompt) if hidden else input(prompt)
+    except UnicodeDecodeError:
+        raw = "\ufffd"  # 文字化けした入力は「形がおかしい」として聞き直す
+    flush_input()
+    return raw.encode("utf-8", "replace").decode("utf-8").strip()
+
+
 def ask_missing(interactive):
-    """足りない鍵を1つずつ聞いて .env に保存する。Enter だけなら飛ばす（あとで聞き直せる）。"""
+    """足りない鍵を1つずつ聞いて .env に保存する。Enter だけなら飛ばす（あとで聞き直せる）。
+    鍵の形がおかしいとき（余計な文字まで貼り付けた等）は保存せずに聞き直す。前に保存した値の形がおかしいときも聞き直す。"""
     if not interactive:
         return
-    for name, label, hidden in ASK:
-        if env_value(name) or env_value(TOKEN_FOR.get(name, "")):
-            continue  # すでにある／それで作るトークンがもうある
+    for name, label, hidden, pattern in ASK:
+        current = env_value(name)
+        if current and re.fullmatch(pattern, current):
+            continue  # すでに正しい形で入っている
+        if not current and env_value(TOKEN_FOR.get(name, "")):
+            continue  # それで作るトークンがもうある
+        if current:
+            print(f"  ⚠ 前に入れた {label} の形が正しくないので、もう一度聞きます")
         prompt = f"  {label}\n  ➔ 貼り付けて Enter（{'画面には表示されません。' if hidden else ''}分からなければ Enter だけ）："
-        value = (getpass.getpass(prompt) if hidden else input(prompt)).strip()
-        if value:
-            get_tokens.save({name: value})
-            os.environ[name] = value
+        for attempt in range(TRIES):
+            value = read_answer(prompt, hidden)
+            if not value:
+                break
+            if re.fullmatch(pattern, value):
+                get_tokens.save({name: value})
+                os.environ[name] = value
+                break
+            print(f"  ✗ 形が正しくありません（{len(value)}文字・余計な文字やスペースが入っているかも）。"
+                  "鍵だけをコピーし直して、もう一度貼り付けてください")
+        else:
+            print(f"  － {label} は飛ばします（あとでもう一度このコマンドを打てば、また聞きます）")
+        if current and env_value(name) == current:  # 聞き直しても直らなかった値は消す（まちがった鍵で ✗ にしないため）
+            get_tokens.save({name: ""})
+            os.environ[name] = ""
 
 
 def ask_google_json(interactive):

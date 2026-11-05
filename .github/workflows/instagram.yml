@@ -1,0 +1,57 @@
+# Instagram の承認制投稿（tools/ig_queue.py）。
+# - PR（Claude が出す下書き）では、下書きの形だけを確かめる（何も投稿しない）。
+# - PR を Merge ＝ 承認。main に入った下書きを、毎時5分（日本時間 8:05〜23:05）に確認して、予定時刻を過ぎたものを投稿する。
+# - 定期実行は Settings ➔ Secrets and variables ➔ Actions ➔ Variables に IG_ENABLED=true を入れるまで何もしない。
+# - 鍵は Secrets：INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・WORDPRESS_TOKEN・CHATWORK_API_TOKEN
+name: instagram
+
+on:
+  pull_request:
+    paths: ["content/instagram/**", "tools/ig_queue.py"]
+  schedule:
+    - cron: "5 23,0-14 * * *"  # UTC。日本時間 8:05〜23:05 の毎時
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "1 = 送らずに確認だけ / 0 = 本当に投稿"
+        default: "1"
+        type: choice
+        options: ["1", "0"]
+
+concurrency:
+  group: instagram
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/ig_queue.py --self-test && python3 tools/ig_queue.py --check
+
+  post:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && vars.IG_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: post to Instagram
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || '0' }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+          WORDPRESS_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
+          CHATWORK_API_TOKEN: ${{ secrets.CHATWORK_API_TOKEN }}
+          CHATWORK_ROOM_ID: ${{ vars.CHATWORK_ROOM_ID }}
+        run: python3 tools/ig_queue.py

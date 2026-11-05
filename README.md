@@ -1,6 +1,7 @@
 # 🤖 Macachette Sports × 沢田流SNS自動化AI組織（28人体制）
 
 > 🔰 **初期設定（鍵の準備・テスト）は [SETUP.md](SETUP.md) を上から順に。** はじめての人向けに書いてあります。
+> 📸 **Instagram の運用（承認制の自動投稿）は [INSTAGRAM.md](INSTAGRAM.md)。** 新しいチャットではこれを読めば続きができます。
 
 「フロント拡散媒体（X / Threads / TikTok / YouTube Shorts）」から「本陣（Instagram / YouTube / note）」、そして「クローズド教育（公式LINE ➔ 予約フォーム）」へ、集客・教育・成約を毎日まわし続けるための、28人のAI社員プロンプト集と実行手順書です。
 
@@ -431,7 +432,7 @@ Make を例にした接続の順番です。上から順に設定し、最後に
 | Make | eu1.make.com／チーム「My Team」 |
 | 投稿データ | `https://raw.githubusercontent.com/kiichi4268/-ai_employees-/main/content/2026-10/auto_posts.json`（WordPress は `wordpress_posts.json`） |
 | キャッシュ回避 | 取得のたびに `?t={{formatDate(now; "x")}}`（ミリ秒のUNIX時刻）を付け、`Cache-Control: no-cache` を送る |
-| 配信管理表 | スプレッドシート `1m7VCzodX8U3xzuTzFYOXQX8IWfExvXXvo6T3Xq3Gstk` のシート「配信管理表」 |
+| 配信管理表 | スプレッドシート `19jGf5YypvpJOV8AtEpByoL6u5mPDGetQpLM-n6Kl53A` のシート「配信管理表」 |
 | 配信管理表の列 | A `id`／B `platform`／C `scheduled_at`／D `status`／E `posted_at`／F `log`（G列以降は人が使う欄：配信日・配信内容・対象者・媒体・ステータス・担当者・備考） |
 | ChatWork | ルーム 363171715（https://www.chatwork.com/#!rid363171715）。トークンは `.env` の `CHATWORK_API_TOKEN` と、Make の「HTTP ➔ API key」接続（ヘッダー `X-ChatWorkToken`）にだけ入れる |
 
