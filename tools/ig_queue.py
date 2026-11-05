@@ -170,6 +170,25 @@ def tell(text, dry):
         print(f"  ChatWork への通知に失敗: {chatwork_notify.mask(str(e))}")
 
 
+def check_keys():
+    """4つの鍵が GitHub Secrets に入っていて、本物として通るかを読み取りだけで確かめる（何も投稿しない）。"""
+    ng = 0
+    for label, names, probe in q.CHECKS:
+        if label not in ("Instagram", "WordPress", "ChatWork"):
+            continue
+        absent = [n for n in names if not os.environ.get(n)]
+        if absent:
+            ng += 1
+            print(f"✗ 鍵 {label}: 未登録（{', '.join(absent)}）")
+            continue
+        try:
+            print(f"✓ 鍵 {label}: OK（{probe()}）")
+        except q.ApiError as err:
+            ng += 1
+            print(f"✗ 鍵 {label}: NG {chatwork_notify.mask(str(err))}（401・190 なら値の貼り間違いか期限切れ）")
+    return ng
+
+
 def run(now, dry):
     posts = load()
     errors = validate(posts)
@@ -312,9 +331,10 @@ def main():
     now = datetime.datetime.fromisoformat(args.now) if args.now else datetime.datetime.now(JST)
     now = now if now.tzinfo else now.replace(tzinfo=JST)
     print(f"Instagram キュー {now:%Y-%m-%d %H:%M}（{'DRY_RUN：送信しない' if dry else '本番：送信する'}）")
+    bad_keys = check_keys() if dry and os.environ.get("GITHUB_ACTIONS") else 0
     summary = run(now, dry)
     print("結果: " + "、".join(f"{k} {len(v)}件" for k, v in summary.items()))
-    if summary.get("failed"):
+    if summary.get("failed") or bad_keys:
         sys.exit(1)
 
 
