@@ -152,9 +152,12 @@ def already_posted(p):
     token, ig = q.need("INSTAGRAM_ACCESS_TOKEN"), q.need("INSTAGRAM_USER_ID")
     at = datetime.datetime.fromisoformat(p["scheduled_at"])
     if p["type"] == "story":
+        # 同じ時刻のストーリーが3本あるとき：ID順で k 本目（0始まり）は、予定時刻以降に k+1 本以上出ていれば出し済み
         items = q.http("GET", f"{q.META_API}/{ig}/stories", params={"fields": "timestamp", "access_token": token})
-        return any(datetime.datetime.strptime(x["timestamp"], "%Y-%m-%dT%H:%M:%S%z") >= at - datetime.timedelta(minutes=5)
+        done = sum(datetime.datetime.strptime(x["timestamp"], "%Y-%m-%dT%H:%M:%S%z") >= at - datetime.timedelta(minutes=5)
                    for x in items.get("data", []))
+        same = sorted(x["id"] for x in load() if x["type"] == "story" and x["scheduled_at"] == p["scheduled_at"])
+        return done > (same.index(p["id"]) if p["id"] in same else 0)
     items = q.http("GET", f"{q.META_API}/{ig}/media", params={"fields": "caption", "limit": 25, "access_token": token})
     return any((x.get("caption") or "").strip() == p.get("caption", "").strip() for x in items.get("data", []))
 
