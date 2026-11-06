@@ -275,6 +275,8 @@ def self_test():
         if "rupload" in url:
             return {}
         if url.endswith("media_publish"):
+            if state.get("story_publish_ts"):  # 3本同時のテスト：出したストーリーを Instagram 側に積む
+                state["stories"].append({"timestamp": state["story_publish_ts"]})
             return {"id": "M1"}
         if params.get("fields") == "status_code":
             return {"status_code": "FINISHED"}
@@ -306,12 +308,27 @@ def self_test():
         s = run(datetime.datetime.fromisoformat("2026-11-10T14:30:00+09:00"), dry=False)
         assert s["expired"] == ["carousel", "feed", "reel", "story"], s
 
+        # 同じ時刻のストーリー3本：1本目が出たあとも、2本目・3本目を「出し済み」にしない
+        for f in POSTS.glob("*.json"):
+            f.unlink()
+        for k in (1, 2, 3):
+            write(f"2026-11-11-story-0800-{k}", "story", "2026-11-11T08:00:00+09:00", ["b.jpg"], "")
+        state.update(stories=[], posted_captions=[], story_publish_ts="2026-11-10T23:05:00+0000")
+        s = run(datetime.datetime.fromisoformat("2026-11-11T08:05:00+09:00"), dry=False)
+        assert s["sent"] == [f"2026-11-11-story-0800-{k}" for k in (1, 2, 3)] and len(state["stories"]) == 3, s
+        s = run(datetime.datetime.fromisoformat("2026-11-11T09:05:00+09:00"), dry=False)
+        assert len(s["skipped"]) == 3 and not s["sent"], s  # 次の回では3本とも出さない
+        state["stories"] = state["stories"][:1]  # 1本目だけ出て止まった場合：残りの2本だけ出す
+        s = run(datetime.datetime.fromisoformat("2026-11-11T09:05:00+09:00"), dry=False)
+        assert s["skipped"] == ["2026-11-11-story-0800-1"] and len(s["sent"]) == 2, s
+        state["story_publish_ts"] = None
+
         write("bad", "feed", "2026-11-11T12:00", ["none.png"], "https://lin.ee/x")
         errs = validate(load())
         assert any("+09:00" in e for e in errs) and any("PNG" in e for e in errs) and any("URL" in e for e in errs), errs
     finally:
         POSTS, MEDIA, q.http, chatwork_notify.send = real
-    print("self-test: 4種類の投稿・DRY_RUN・二重投稿の防止・期限切れ・下書きの形チェック すべて想定どおり")
+    print("self-test: 4種類の投稿・DRY_RUN・二重投稿の防止・同じ時刻のストーリー3本・期限切れ・下書きの形チェック すべて想定どおり")
 
 
 def main():
