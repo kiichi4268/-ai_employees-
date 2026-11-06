@@ -15,7 +15,7 @@
 
 ### 守るルール
 - 費用は0円（GitHub Actions の無料枠・Instagram の公式API・WordPress の画像置き場だけを使う）
-- GitHub へのアクセス（Claude の push・PR）は **1日2回まで**
+- GitHub へのアクセス（Claude の push・PR・結果の確認・数字の取得）は **普段は1日3回まで、困ったときだけ4回目。5回はしない**（11/6 決定。内訳の目安：23:55 の数字読み1回・下書きの push 1回・結果の確認1回・予備1回）
 - 鍵はチャットに貼らない（Mac の `.env` と GitHub Secrets にだけ置く）
 - X は自動投稿しない（手動予約）
 
