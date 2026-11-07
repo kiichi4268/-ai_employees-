@@ -65,7 +65,26 @@ class ApiError(Exception):
 # ---------------------------------------------------------------------------
 # 通信（テストでは差し替える）
 # ---------------------------------------------------------------------------
+RETRY_CODES = {"4", "17", "32", "613", "80001", "80002"}  # Meta のレート制限
+RETRY_WAIT = (5, 20, 60)
+
+
 def http(method, url, *, params=None, form=None, body=None, headers=None, raw=None):
+    """通信。レート制限（429・Meta の制限コード）と一時的な障害（5xx・接続エラー）は待ってやり直す（最大3回）。"""
+    for wait in RETRY_WAIT + (None,):
+        try:
+            return _http(method, url, params=params, form=form, body=body, headers=headers, raw=raw)
+        except ApiError as err:
+            limited = err.http_status == 429 or err.code in RETRY_CODES  # 断られただけなので、投稿でもやり直して二重にならない
+            flaky = method == "GET" and err.http_status in (0, 500, 502, 503, 504)  # 読むだけの通信は障害でもやり直す
+            temporary = limited or flaky
+            if wait is None or not temporary:
+                raise
+            print(f"  一時的なエラーのため {wait}秒待ってやり直します: HTTP {err.http_status} {err.code}")
+            time.sleep(wait)
+
+
+def _http(method, url, *, params=None, form=None, body=None, headers=None, raw=None):
     if params:
         url += ("&" if "?" in url else "?") + urllib.parse.urlencode(params)
     headers = dict(headers or {})

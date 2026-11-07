@@ -35,13 +35,14 @@ import run_queue as q  # noqa: E402
 JST = q.JST
 OUT = ROOT / "data" / "insights"
 ACCOUNT_METRICS = ["views", "reach", "accounts_engaged", "total_interactions", "likes", "comments",
-                   "saves", "shares", "replies", "profile_links_taps"]
+                   "saves", "shares", "replies", "profile_links_taps", "profile_views"]
 MEDIA_METRICS = {  # 種類ごとに取れる数字（取れないものは空欄になるだけで止まらない）
     "FEED": ["views", "reach", "saved", "shares", "likes", "comments", "total_interactions", "profile_visits", "follows"],
-    "REELS": ["views", "reach", "saved", "shares", "likes", "comments", "total_interactions"],
+    "REELS": ["views", "reach", "saved", "shares", "likes", "comments", "total_interactions",
+              "ig_reels_avg_watch_time", "ig_reels_video_view_total_time"],  # 滞留（平均視聴ミリ秒）
     "STORY": ["views", "reach", "replies", "shares", "total_interactions", "profile_visits", "follows"],
 }
-ACCOUNT_COLS = ["date", "followers"] + ACCOUNT_METRICS + ["fetched_at"]
+ACCOUNT_COLS = ["date", "followers"] + ACCOUNT_METRICS + ["reach_follower", "reach_non_follower", "home_rate", "fetched_at"]
 MEDIA_COLS = ["id", "kind", "posted_at", "permalink", "caption_head"] + sorted(
     {m for ms in MEDIA_METRICS.values() for m in ms}) + ["fetched_at"]
 WARN_DAYS = 14  # 鍵の期限がこれより近づいたら知らせる
@@ -138,6 +139,35 @@ def totals(metrics, since, until):
     return out
 
 
+def home_rate(since, until):
+    """ホーム率：その日のリーチのうちフォロワーの割合（follow_type の内訳）。取れなければ空欄。"""
+    ig = q.need("INSTAGRAM_USER_ID")
+    try:
+        res = api(f"{ig}/insights", metric="reach", period="day", metric_type="total_value", breakdown="follow_type",
+                  since=int(since.timestamp()), until=int(until.timestamp()))
+    except q.ApiError:
+        return {}
+    got = {}
+    for d in res.get("data", []):
+        for b in (d.get("total_value") or {}).get("breakdowns", []):
+            for r in b.get("results", []):
+                got[(r.get("dimension_values") or [""])[0].upper()] = r.get("value", 0)
+    f, n = got.get("FOLLOWER"), got.get("NON_FOLLOWER")
+    if f is None or n is None or f + n == 0:
+        return {}
+    return {"reach_follower": f, "reach_non_follower": n, "home_rate": round(f / (f + n), 3)}
+
+
+def online_followers():
+    """フォロワーがよく見ている時間帯（0〜23時の人数）。ストーリーの時刻を決める材料。取れなければ空。"""
+    try:
+        res = api(f"{q.need('INSTAGRAM_USER_ID')}/insights", metric="online_followers", period="lifetime")
+    except q.ApiError:
+        return []
+    vals = ((res.get("data") or [{}])[0].get("values") or [{}])[0].get("value") or {}
+    return [{"hour": f"{int(h):02d}", "followers": v} for h, v in sorted(vals.items(), key=lambda x: int(x[0]))]
+
+
 def account_rows(now, days):
     rows = []
     today = now.astimezone(JST).date()
@@ -152,6 +182,7 @@ def account_rows(now, days):
         until = min(since + datetime.timedelta(days=1), now)
         row = {"date": day.isoformat(), "followers": followers if i == 0 else None, "fetched_at": f"{now:%Y-%m-%d %H:%M}"}
         row.update(totals(ACCOUNT_METRICS, since, until))
+        row.update(home_rate(since, until))
         rows.append(row)
     return rows
 
@@ -266,6 +297,10 @@ def main():
     if not dry:
         upsert(OUT / "account_daily.csv", ACCOUNT_COLS, "date", acc)
         upsert(OUT / "media.csv", MEDIA_COLS, "id", media)
+        hours = online_followers()
+        if hours:
+            upsert(OUT / "online_followers.csv", ["hour", "followers", "fetched_at"], "hour",
+                   [dict(h, fetched_at=f"{now:%Y-%m-%d %H:%M}") for h in hours])
     tell(summary_text(now, acc, media), dry)
 
 
