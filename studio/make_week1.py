@@ -38,7 +38,16 @@ SRC = {
     "tt": TT,
     "cal": load(os.path.join(D, "cal", "cal11_fixed.png")),
 }
-def still_bg(key, blur=14, dark=0.42):
+# 人が写っていない部分だけを切り出した、くっきり使える背景（11/8 目視で確認。ぼかしは弱めでよい：still_bg(key, blur=2)）
+_B4 = load(os.path.join(D, "photos", "IMG_3754.jpg")); _B0 = load(os.path.join(D, "photos", "IMG_3750.jpg"))
+SRC.update({
+    "court": _B4.crop((0, 2760, _B4.width, _B4.height)),      # コートのライン（床）
+    "ceiling": _B4.crop((0, 0, _B4.width, 1270)),             # 体育館の天井と照明
+    "floor": _B0.crop((0, 2220, 2950, _B0.height)),           # 木の床の光の反射
+})
+CLEAR_BG = {"court", "ceiling", "floor"}  # 人が写らない背景（ぼかし2でよい）
+def still_bg(key, blur=None, dark=0.42):
+    if blur is None: blur = 2 if key in CLEAR_BG else 14  # 人が写る写真は強くぼかす（顔を隠す決まり）
     if key == "navy":
         im = Image.new("RGB", (W, H)); d = ImageDraw.Draw(im)
         for y in range(H): d.line([(0, y), (W, y)], fill=(11 + int(10 * y / H), 23 + int(16 * y / H), 51 + int(34 * y / H)))
