@@ -1,5 +1,6 @@
-date,followers,views,reach,accounts_engaged,total_interactions,likes,comments,saves,shares,replies,profile_links_taps,fetched_at
-2026-11-05,,568,82,0,0,0,0,0,0,0,0,2026-11-07 05:37
-2026-11-06,,1141,193,3,3,2,0,0,0,1,0,2026-11-08 04:04
-2026-11-07,281,308,46,1,1,0,0,1,0,0,0,2026-11-08 04:04
-2026-11-08,281,,,,,,,,,,,2026-11-08 04:04
+date,followers,views,reach,accounts_engaged,total_interactions,likes,comments,saves,shares,replies,profile_links_taps,profile_views,reach_follower,reach_non_follower,home_rate,fetched_at
+2026-11-05,,568,82,0,0,0,0,0,0,0,0,,,,,2026-11-07 05:37
+2026-11-06,,1141,193,3,3,2,0,0,0,1,0,,,,,2026-11-08 04:04
+2026-11-07,281,552,66,1,1,0,0,1,0,0,0,8,54,13,0.806,2026-11-09 04:11
+2026-11-08,281,333,48,0,0,0,0,0,0,0,0,5,43,5,0.896,2026-11-09 04:11
+2026-11-09,282,,,,,,,,,,,,,,,2026-11-09 04:11
