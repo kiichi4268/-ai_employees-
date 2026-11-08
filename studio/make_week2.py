@@ -88,14 +88,41 @@ SLOTS = [
   dict(kind="poll", h1="次に行きたい", h2="種目は？", opts="投票：バド／バレー／卓球／野球", bg="gym2")),
 ]
 
+# ---------- 11/8 作り直し：人が写らないくっきり背景＋リンクタップを増やす③（PIPELINE.md「デザインの決まり」） ----------
+BG = {"bad": "court", "gym": "floor", "gym2": "ceiling"}   # 人が写る写真の強いぼかし → 人が写っていない背景
+STEP3 = card_lines(["① プロフィールのリンクをタップ", "② 公式LINEを友だち追加", "③ イベントカレンダーから予約"], title="申し込みは3ステップ", color=LINE_GREEN)
+
+
+def restyle(img, vid, ix):
+    img = dict(img, bg=BG.get(img.get("bg", "gym"), img.get("bg", "gym")))
+    vid = dict(vid)
+    if vid["src"] in BG.values() or vid["src"] in BG:
+        vid.update(src=BG.get(vid["src"], vid["src"]), blur=1)
+    ix = dict(ix, bg=BG.get(ix.get("bg", "gym2"), ix.get("bg", "gym2")))
+    return img, vid, ix
+
+
+def make_line(spec, path):
+    """③（自動・スタンプなし）：リンクタップへの道筋を3ステップで見せる。"""
+    c = w1.still_bg(spec.get("bg", "ceiling"), dark=0.5)
+    w1.place(c, w1.hl(spec["h1"], spec.get("h2", ""), seed=spec.get("seed", 5), size=120), w1.W / 2, 270)
+    if spec.get("sub"):
+        w1.place(c, w1.fit(w1.shadowed(w1.pill([w1.text_img(spec["sub"], w1.F(w1.BLACK, 46), w1.NAVY)], h=90))), w1.W / 2, 560)
+    w1.place(c, STEP3, w1.W / 2, 720)
+    w1.place(c, w1.fit(w1.shadowed(w1.pill([w1.text_img("↖ プロフィールのリンクから", w1.F(w1.BLACK, 52), w1.WHITE)], h=110, bg=LINE_GREEN))), w1.W / 2, 1230)
+    w1.foot(c); c.convert("RGB").save(path, quality=93)
+
+
 if __name__ == "__main__":
     only = sys.argv[1:]
     rows = []
     for day, tm, img, vid, ix in SLOTS:
         if only and day not in only: continue
+        if os.environ.get("ONLY_AUTO") and tm not in ("0800", "1200"): continue  # 夜は作らない（11/6 決定）
         dd = os.path.join(OUT, day); os.makedirs(dd, exist_ok=True)
         p1 = os.path.join(dd, f"{day}_{tm}_1.jpg"); p2 = os.path.join(dd, f"{day}_{tm}_2.mp4"); p3 = os.path.join(dd, f"{day}_{tm}_3.jpg")
-        make_image(img, p1); make_video(vid, p2); make_ix(ix, p3)
+        img, vid, ix = restyle(img, vid, ix)
+        make_image(img, p1); make_video(vid, p2); (make_line if ix["kind"] == "line" else make_ix)(ix, p3)
         rows.append([day, f"{tm[:2]}:{tm[2:]}", os.path.basename(p1), os.path.basename(p2), os.path.basename(p3), ix["opts"]])
         print("done", day, tm, flush=True)
     if not only:

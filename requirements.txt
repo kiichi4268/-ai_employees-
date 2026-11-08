@@ -1,6 +1,6 @@
 Pillow>=10.0
 numpy>=1.24
-opencv-python>=4.8
+opencv-python<5  # 5 では顔の検出（CascadeClassifier）が無くなったため
 pyopenjtalk-plus>=0.4  # 読み上げ音声（tools/audio.py）
 # 別途 ffmpeg が必要（PATH に通す）
 # tools/build_list.py を使う場合のみ: playwright
