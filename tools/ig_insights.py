@@ -253,7 +253,11 @@ def upsert(path, cols, key, rows):
 
 
 def summary_text(now, acc, media):
-    today = acc[0] if acc else {}
+    # GitHub の定時実行は遅れることがある（23:50 の予定が翌朝になる等）。昼前に動いたときは前の日の数字を「今日の数字」として送る
+    late = now.hour < 12 and len(acc) > 1
+    today = (acc[1] if late else acc[0]) if acc else {}
+    if late:
+        now = now - datetime.timedelta(days=1)
     stories = [m for m in media if m["kind"] == "story" and m["posted_at"].startswith(f"{now:%Y-%m-%d}")]
     best = sorted([m for m in media if m["kind"] != "story" and str(m.get("saved", "")).isdigit()],
                   key=lambda m: -int(m["saved"]))[:3]
@@ -290,7 +294,7 @@ def main():
     acc = account_rows(now, args.days)
     media = media_rows(now)
     print(f"アカウント {len(acc)}日分・投稿 {len(media)}件")
-    if acc and all(acc[0].get(m) in ("", None) for m in ACCOUNT_METRICS):
+    if acc and all(r.get(m) in ("", None) for r in acc for m in ACCOUNT_METRICS):  # 取り直した数日分が全部空のときだけ（当日の朝は空で当たり前）
         tell("[info][title]【Instagram】数字が1つも取れませんでした[/title]鍵に instagram_manage_insights の権限が無い可能性があります。"
              "Meta のグラフAPIエクスプローラで instagram_manage_insights にチェックを入れて META_ACCESS_TOKEN を取り直し、"
              "`python3 tools/get_tokens.py instagram` ➔ GitHub Secrets を上書きしてください（フォロワー100人未満の数字・48時間以内の数字は空のことがあります）。[/info]", dry)
