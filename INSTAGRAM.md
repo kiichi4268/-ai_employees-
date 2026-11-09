@@ -1,5 +1,7 @@
 # 📸 Instagram 運用ガイド（引き継ぎメモ）
 
+> ⏰ **時刻どおりに投稿するために**：GitHub の定時実行は遅れることがあるので、外部タイマー cron-job.org から毎時5分に起動する（手順：`docs/外部タイマー_cron-job.org.md`）。予定から4時間を過ぎた下書きは送らない。
+
 新しいチャットでは、まず「`CLAUDE.md` と `INSTAGRAM.md` を読んで、続きをお願い」と伝えるだけで再開できます。**投稿の中身のルール（顔を隠す・会場のアクセスなど）は `CLAUDE.md`** にあります。
 長い会話はそのたびに読み直しが発生して Claude の使用量（Pro の上限）を使うため、**テーマが変わったら新しいチャット**で始めます。
 
@@ -25,14 +27,13 @@
 1. GitHub の **Settings ➔ Secrets and variables ➔ Actions ➔ Secrets** に4つ登録する
    値は Mac のターミナルで次の1行を実行すると、**自分の画面にだけ**表示されます（チャットには貼らない）。
    ```
-   cd ~/Desktop/-ai_employees--main && grep -E '^(INSTAGRAM_ACCESS_TOKEN|INSTAGRAM_USER_ID|WORDPRESS_TOKEN|CHATWORK_API_TOKEN)=' .env
+   cd ~/Desktop/-ai_employees--main && grep -E '^(INSTAGRAM_ACCESS_TOKEN|INSTAGRAM_USER_ID|CHATWORK_API_TOKEN)=' .env
    ```
    1行ずつ、`=` の左を **Name**、右を **Secret** に貼って「Add secret」。
    | Name | 使い道 |
    |---|---|
    | `INSTAGRAM_ACCESS_TOKEN` | Instagram に投稿する |
    | `INSTAGRAM_USER_ID` | 投稿先の Instagram（@macachette_sports） |
-   | `WORDPRESS_TOKEN` | 写真を Instagram に渡すための公開URLを作る |
    | `CHATWORK_API_TOKEN` | 「投稿しました」「失敗しました」を知らせる |
 2. 同じ画面の **Variables** タブで `IG_ENABLED` ＝ `true` を登録する（自動投稿のスイッチ。止めたいときは消す）
 

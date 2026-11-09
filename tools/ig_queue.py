@@ -19,7 +19,7 @@
 
 同じ投稿を2回出さないよう、投稿前に Instagram 側の最近の投稿を見て、同じキャプション
 （ストーリーズは予定時刻以降のもの）があれば送らない。予定時刻から WINDOW を過ぎた下書きは送らずに ChatWork に知らせる。
-鍵は環境変数（GitHub Secrets）: INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・WORDPRESS_TOKEN（写真の公開URL用）・CHATWORK_API_TOKEN
+鍵は環境変数（GitHub Secrets）: INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・CHATWORK_API_TOKEN
 """
 
 import argparse
@@ -39,7 +39,7 @@ import run_queue as q  # noqa: E402
 JST = q.JST
 POSTS = ROOT / "content" / "instagram" / "posts"
 MEDIA = ROOT / "content" / "instagram" / "media"
-WINDOW = datetime.timedelta(hours=2)  # cron の遅れを見込んだ、投稿してよい時間の幅
+WINDOW = datetime.timedelta(hours=4)  # 起動の遅れを見込んだ、投稿してよい時間の幅（GitHub の定時実行は数時間遅れることがあるため 11/9 に2→4時間）
 TYPES = {"feed", "carousel", "reel", "story"}
 IMAGE_EXT = {".jpg", ".jpeg"}
 VIDEO_EXT = {".mp4", ".mov"}
@@ -101,6 +101,14 @@ def validate(posts):
 # ---------------------------------------------------------------------------
 # Instagram への送信（q.http を使うのでテストで差し替えられる）
 # ---------------------------------------------------------------------------
+def public_url(path):
+    """写真の公開URL。リポジトリは公開なので、GitHub の raw URL をそのまま Instagram に渡す（WordPress は使わない・11/9）。
+    いま動いているコミット（GITHUB_SHA）を指すので、あとで main が進んでも同じ画像を指す。"""
+    repo = os.environ.get("GITHUB_REPOSITORY", "kiichi4268/-ai_employees-")
+    ref = os.environ.get("GITHUB_SHA", "main")
+    return f"https://raw.githubusercontent.com/{repo}/{ref}/content/instagram/media/{path.name}"
+
+
 def container(params, path=None):
     """コンテナを作る。動画は rupload に直接アップロードし、処理が終わるまで待つ。"""
     token, ig = q.need("INSTAGRAM_ACCESS_TOKEN"), q.need("INSTAGRAM_USER_ID")
@@ -113,7 +121,7 @@ def container(params, path=None):
                headers={"Authorization": f"OAuth {token}", "offset": "0", "file_size": str(len(data))})
     else:
         if path is not None:
-            params["image_url"] = q.wordpress_media_url(path)
+            params["image_url"] = public_url(path)
         cid = q.http("POST", f"{q.META_API}/{ig}/media", params=params)["id"]
     for _ in range(60):
         state = q.http("GET", f"{q.META_API}/{cid}", params={"fields": "status_code", "access_token": token})
@@ -257,7 +265,7 @@ def self_test():
     write("reel", "reel", "2026-11-10T12:00:00+09:00", ["v.mp4"], "リール")
     write("story", "story", "2026-11-10T12:00:00+09:00", ["b.jpg"], "")
     write("later", "feed", "2026-11-10T21:00:00+09:00", ["a.jpg"], "夜の投稿")
-    write("old", "feed", "2026-11-10T09:00:00+09:00", ["a.jpg"], "朝の投稿")
+    write("old", "feed", "2026-11-10T06:00:00+09:00", ["a.jpg"], "朝の投稿")
     calls, sent = [], []
     state = {"posted_captions": [], "stories": []}
 
@@ -305,7 +313,7 @@ def self_test():
         s = run(datetime.datetime.fromisoformat("2026-11-10T12:35:00+09:00"), dry=False)
         assert "feed" in s["skipped"] and "story" in s["skipped"], s  # 2回目の実行では同じ投稿を出さない
 
-        s = run(datetime.datetime.fromisoformat("2026-11-10T14:30:00+09:00"), dry=False)
+        s = run(datetime.datetime.fromisoformat("2026-11-10T16:30:00+09:00"), dry=False)
         assert s["expired"] == ["carousel", "feed", "reel", "story"], s
 
         # 同じ時刻のストーリー3本：1本目が出たあとも、2本目・3本目を「出し済み」にしない
