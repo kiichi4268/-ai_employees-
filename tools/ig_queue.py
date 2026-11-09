@@ -19,7 +19,7 @@
 
 同じ投稿を2回出さないよう、投稿前に Instagram 側の最近の投稿を見て、同じキャプション
 （ストーリーズは予定時刻以降のもの）があれば送らない。予定時刻から WINDOW を過ぎた下書きは送らずに ChatWork に知らせる。
-鍵は環境変数（GitHub Secrets）: INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・WORDPRESS_TOKEN（写真の公開URL用）・CHATWORK_API_TOKEN
+鍵は環境変数（GitHub Secrets）: INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・CHATWORK_API_TOKEN
 """
 
 import argparse
@@ -101,6 +101,14 @@ def validate(posts):
 # ---------------------------------------------------------------------------
 # Instagram への送信（q.http を使うのでテストで差し替えられる）
 # ---------------------------------------------------------------------------
+def public_url(path):
+    """写真の公開URL。リポジトリは公開なので、GitHub の raw URL をそのまま Instagram に渡す（WordPress は使わない・11/9）。
+    いま動いているコミット（GITHUB_SHA）を指すので、あとで main が進んでも同じ画像を指す。"""
+    repo = os.environ.get("GITHUB_REPOSITORY", "kiichi4268/-ai_employees-")
+    ref = os.environ.get("GITHUB_SHA", "main")
+    return f"https://raw.githubusercontent.com/{repo}/{ref}/content/instagram/media/{path.name}"
+
+
 def container(params, path=None):
     """コンテナを作る。動画は rupload に直接アップロードし、処理が終わるまで待つ。"""
     token, ig = q.need("INSTAGRAM_ACCESS_TOKEN"), q.need("INSTAGRAM_USER_ID")
@@ -113,7 +121,7 @@ def container(params, path=None):
                headers={"Authorization": f"OAuth {token}", "offset": "0", "file_size": str(len(data))})
     else:
         if path is not None:
-            params["image_url"] = q.wordpress_media_url(path)
+            params["image_url"] = public_url(path)
         cid = q.http("POST", f"{q.META_API}/{ig}/media", params=params)["id"]
     for _ in range(60):
         state = q.http("GET", f"{q.META_API}/{cid}", params={"fields": "status_code", "access_token": token})

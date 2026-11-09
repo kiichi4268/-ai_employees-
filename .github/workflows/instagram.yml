@@ -2,7 +2,7 @@
 # - PR（Claude が出す下書き）では、下書きの形だけを確かめる（何も投稿しない）。
 # - PR を Merge ＝ 承認。main に入った下書きを、毎時5分（日本時間 8:05〜23:05）に確認して、予定時刻を過ぎたものを投稿する。
 # - 定期実行は Settings ➔ Secrets and variables ➔ Actions ➔ Variables に IG_ENABLED=true を入れるまで何もしない。
-# - 鍵は Secrets：INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・WORDPRESS_TOKEN・CHATWORK_API_TOKEN
+# - 鍵は Secrets：INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・CHATWORK_API_TOKEN
 name: instagram
 
 on:
@@ -51,7 +51,6 @@ jobs:
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || '0' }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-          WORDPRESS_TOKEN: ${{ secrets.WORDPRESS_TOKEN }}
           CHATWORK_API_TOKEN: ${{ secrets.CHATWORK_API_TOKEN }}
           CHATWORK_ROOM_ID: ${{ vars.CHATWORK_ROOM_ID }}
         run: python3 tools/ig_queue.py
