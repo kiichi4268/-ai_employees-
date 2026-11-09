@@ -39,7 +39,7 @@ import run_queue as q  # noqa: E402
 JST = q.JST
 POSTS = ROOT / "content" / "instagram" / "posts"
 MEDIA = ROOT / "content" / "instagram" / "media"
-WINDOW = datetime.timedelta(hours=2)  # cron の遅れを見込んだ、投稿してよい時間の幅
+WINDOW = datetime.timedelta(hours=4)  # 起動の遅れを見込んだ、投稿してよい時間の幅（GitHub の定時実行は数時間遅れることがあるため 11/9 に2→4時間）
 TYPES = {"feed", "carousel", "reel", "story"}
 IMAGE_EXT = {".jpg", ".jpeg"}
 VIDEO_EXT = {".mp4", ".mov"}
@@ -257,7 +257,7 @@ def self_test():
     write("reel", "reel", "2026-11-10T12:00:00+09:00", ["v.mp4"], "リール")
     write("story", "story", "2026-11-10T12:00:00+09:00", ["b.jpg"], "")
     write("later", "feed", "2026-11-10T21:00:00+09:00", ["a.jpg"], "夜の投稿")
-    write("old", "feed", "2026-11-10T09:00:00+09:00", ["a.jpg"], "朝の投稿")
+    write("old", "feed", "2026-11-10T06:00:00+09:00", ["a.jpg"], "朝の投稿")
     calls, sent = [], []
     state = {"posted_captions": [], "stories": []}
 
@@ -305,7 +305,7 @@ def self_test():
         s = run(datetime.datetime.fromisoformat("2026-11-10T12:35:00+09:00"), dry=False)
         assert "feed" in s["skipped"] and "story" in s["skipped"], s  # 2回目の実行では同じ投稿を出さない
 
-        s = run(datetime.datetime.fromisoformat("2026-11-10T14:30:00+09:00"), dry=False)
+        s = run(datetime.datetime.fromisoformat("2026-11-10T16:30:00+09:00"), dry=False)
         assert s["expired"] == ["carousel", "feed", "reel", "story"], s
 
         # 同じ時刻のストーリー3本：1本目が出たあとも、2本目・3本目を「出し済み」にしない
