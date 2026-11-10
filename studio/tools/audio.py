@@ -44,13 +44,27 @@ def narrate(lines, speed=1.3, half_tone=1.0):
     return out / peak * 0.9, t_end
 
 
-def bgm(seconds, bpm=118, seed=7):
-    """明るいポップ調の BGM（I–V–vi–IV の和音＋分散和音＋軽いリズム）。"""
+# 音楽制作AI（No.33）が選ぶ雰囲気。和音の進行・速さ・調をそれぞれ変える（すべて自作の音なので無料・権利の心配なし）
+MOODS = {
+    "pop":    dict(bpm=118, prog=["C", "G", "Am", "F"]),    # いつもの明るいポップ（今までのBGM）
+    "happy":  dict(bpm=128, prog=["F", "G", "Em", "Am"]),   # わくわく：告知・当日募集
+    "gentle": dict(bpm=96,  prog=["C", "Am", "F", "G"]),    # やさしい：Q&A・1人参加の安心材料
+    "fresh":  dict(bpm=110, prog=["G", "D", "Em", "C"]),    # さわやか：振り返り・レポート
+}
+_ROOT = {"C": 261.63, "D": 293.66, "Em": 329.63, "F": 174.61, "G": 196.00, "Am": 220.00}
+
+
+def bgm(seconds, bpm=None, seed=7, mood="pop"):
+    """自作の BGM。mood で雰囲気（pop／happy／gentle／fresh）、seed で曲の番号を変える。"""
+    m = MOODS.get(mood, MOODS["pop"]); bpm = bpm or m["bpm"]
     rng = np.random.default_rng(seed)
     n = int(seconds * SR); t = np.arange(n) / SR
     beat = 60 / bpm; bar = beat * 4
-    root = {"C": 261.63, "G": 196.00, "Am": 220.00, "F": 174.61}
-    chords = [("C", [0, 4, 7]), ("G", [0, 4, 7]), ("Am", [0, 3, 7]), ("F", [0, 4, 7])]
+    vary = mood != "pop"  # pop は今までと同じ音のまま。ほかの雰囲気は seed ごとに調と進行の始まりを変える
+    shift = 2 ** (int(np.random.default_rng(seed + 100).integers(-2, 3)) / 12) if vary else 1
+    root = {k: v * shift for k, v in _ROOT.items()}
+    chords = [(c, [0, 3, 7] if c.endswith("m") else [0, 4, 7]) for c in m["prog"]]
+    if vary and seed % 2: chords = chords[2:] + chords[:2]
     out = np.zeros(n, dtype=np.float32)
 
     def tone(f, length, decay, harm=(1, .5, .25)):

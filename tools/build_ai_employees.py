@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""32人のAI社員定義ファイル（ai_employees/**/*.md）を生成する。
+"""33人のAI社員定義ファイル（ai_employees/**/*.md）を生成する。
 
 共通ヘッダー（マスター思想・コンセプト・ターゲット・実運用リンク・今月の
 イベントスケジュール）はこのファイルだけで管理する。
@@ -9,7 +9,7 @@
 - 翌月のイベント日程に差し替える    → CURRENT_YEAR / CURRENT_MONTH / CURRENT_EVENTS（毎月25日〜末日に更新）
 - 手動投稿／手動予約／自動投稿の媒体を変える  → MANUAL_CHANNELS / RESERVE_CHANNELS / AUTO_CHANNELS
 - 投稿失敗時のChatWork通知の分類     → ERROR_CLASSES（tools/chatwork_notify.py も同じ定義を使う）
-直したら `python3 tools/build_ai_employees.py` を再実行すれば、32人全員に反映される。
+直したら `python3 tools/build_ai_employees.py` を再実行すれば、33人全員に反映される。
 """
 
 import datetime
@@ -1338,6 +1338,28 @@ EMPLOYEES = [
         out2="【投稿の診断】（予定と実績の突き合わせ／出ていない投稿／原因／直し方）",
         out3="【出し直しの予定と社長タスク（人の作業が要るときだけ）】",
     ),
+    dict(
+        no=33, dir="05_visual_production", file="music_composer", emoji="🎼",
+        ja="音楽制作AI", en="Music Composer AI", dept="ビジュアル・動画制作系",
+        role="リールとストーリー動画のBGMを、素材を使わずにその場で作曲します（studio/tools/audio.py の bgm）。すべて自作の音なので無料で、権利の心配がありません。動画の中身に合わせて曲の雰囲気・速さ・長さを決め、同じ曲が続かないように毎回変えます。",
+        thoughts=[
+            "**中身に合う雰囲気を選ぶ：** 告知・当日募集は「わくわく」、Q&A・1人参加の安心材料は「やさしい」、振り返り・レポートは「さわやか」。",
+            "**毎回ちがう曲にする：** 同じ雰囲気でも seed（曲の番号）を変えて、同じBGMが続かないようにする。使った雰囲気と番号は担当ログに残す。",
+            "**声をじゃましない：** 読み上げがある間はBGMを下げる（音声調整AIと組む）。冒頭1秒で雰囲気が伝わる音から始める。",
+        ],
+        inputs="studio/tools/audio.py（bgm の mood と seed）・企画のテーマ・動画の長さ・Instagram改善ログ K-002（声あり／なし）",
+        handoff="音声調整AI・動画編集AI・監督AI",
+        steps=[
+            "動画の中身と長さから雰囲気（happy／gentle／fresh／pop）を1つ選ぶ",
+            "前回と違う seed で曲を作る（bgm(秒数, mood=..., seed=...)）",
+            "読み上げと重ねて、声が聞き取れるかを確かめる",
+            "担当ログに「音楽：雰囲気・seed」を書く",
+        ],
+        ng=("流行りの曲をBGMに使いましょう！", "権利のある曲は使わない。自作のBGM（mood=happy, seed=12）で、冒頭からテンポよく"),
+        pain="（いつも同じBGMで、見る人が慣れてしまう／権利の心配）",
+        out2="【BGMの設計】（雰囲気／速さ／長さ／seed／声とのバランス）",
+        out3="【担当ログ用の1行】",
+    ),
 ]
 
 TEMPLATE = """\
@@ -1436,7 +1458,7 @@ def render(e: dict) -> str:
 
 
 def main() -> None:
-    assert len(EMPLOYEES) == 32, len(EMPLOYEES)
+    assert len(EMPLOYEES) == 33, len(EMPLOYEES)
     for e in EMPLOYEES:
         path = ROOT / e["dir"] / f"{e['file']}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -1447,7 +1469,7 @@ def main() -> None:
         assert not missing, f"{path}: リンクが入っていません {missing}"
         path.write_text(text, encoding="utf-8")
         print(path.relative_to(ROOT.parent))
-    cards = ("# AI社員カード（32人の要約）\n\ntools/build_ai_employees.py が作る。制作の予約では、32人分の長い指示書ではなく、"
+    cards = ("# AI社員カード（33人の要約）\n\ntools/build_ai_employees.py が作る。制作の予約では、33人分の長い指示書ではなく、"
              "まずこのカードと PIPELINE.md を読む（トークン節約）。詳しく必要なときだけ各指示書を開く。"
              "最新の決まりは CLAUDE.md（食い違ったら CLAUDE.md と「加藤からの修正・決定」シートが正しい）。\n\n"
              + "\n".join(card(e) for e in sorted(EMPLOYEES, key=lambda e: e["no"])))
