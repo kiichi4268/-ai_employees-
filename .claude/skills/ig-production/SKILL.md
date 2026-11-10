@@ -7,7 +7,7 @@ description: Instagram のリール・カルーセル・開催日フィード・
 2. CLAUDE.md・ai_employees/PDCA.md・「Instagram改善ログ」・「加藤からの修正・決定」・「イベント状況」を読む（シートが優先）。
 3. ai_employees/PIPELINE.md「A. 制作」の順に回す（各段は CARDS.md の担当カードだけ）。デザインは「デザインの決まり」、リールの動きは「リールの動き（Remotion）」。動いている改善を入れ、note に `改善:K-00X`。
 4. **イベント後のレポートのカルーセルは、写真を待たずに AI 画像で作る**（11/10 加藤さん。※画像はイメージです・顔は描かない・見ていないことは書かない）。それ以外の写真は Drive「Macachette素材／2026-11」。無ければ AI 画像（※画像はイメージです・顔は描かない）か過去写真（※写真は過去の開催時のものです）。リールは読み上げ＋BGM（studio/tools/audio.py）とクレジット。カルーセル8枚・1080×1350・JPG。顔は必ず隠す。
-5. `--self-test`・`--check` → 30 監督の関所（PIPELINE.md 6.5）→ コミット（担当ログ）→ push（普段1日3回・最大4回）→ PR を作る（GitHub の create_pull_request：base `main`・head `claude/awesome-tesla-dbf5p1`。もう開いている PR があれば作らずにそのリンクを使う）→ **30 監督がOKなら Claude が merge_pull_request で Merge する**（先に承認・11/10。差し戻しが多くなったら案2に戻す）→ 加藤さんに「Merge しました」と PR のリンク・中身・投稿日時を送る（予定時刻より前）。「加藤からの修正・決定」に1行。報告は短く。
+5. `--self-test`・`--check`・`tools/quality_check.py`（100点未満は出さない）→ 30 監督の関所（QUALITY.md の2段目で採点し「AI社員の成績」タブへ）（PIPELINE.md 6.5）→ コミット（担当ログ）→ push（普段1日3回・最大4回）→ PR を作る（GitHub の create_pull_request：base `main`・head `claude/awesome-tesla-dbf5p1`。もう開いている PR があれば作らずにそのリンクを使う）→ **30 監督がOKなら Claude が merge_pull_request で Merge する**（先に承認・11/10。差し戻しが多くなったら案2に戻す）→ 加藤さんに「Merge しました」と PR のリンク・中身・投稿日時を送る（予定時刻より前）。「加藤からの修正・決定」に1行。報告は短く。
 
 ## 作業の終わり（11/9 仕組み化）
 - 作業の最後に、未 push のコミットが残っていれば必ず push する（停止フックが知らせる）。GitHub アクセスの数に入れる（普段1日3回・最大4回、5回はしない）。超えてしまうときは push せず、次の予約の回に回すと報告に書く。
