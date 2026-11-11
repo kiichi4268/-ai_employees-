@@ -28,10 +28,13 @@ NG = {  # 言葉 → 理由（CLAUDE.md の NG・表記ルール）
     "初心者8割": "表記は「初心者7割・経験者3割くらい」", "初心者6割": "表記は「初心者7割・経験者3割くらい」",
     "いかがでしたか": "AIっぽい言い回し", "ぜひぜひ": "AIっぽい言い回し", "〜しませんか？✨": "AIっぽい言い回し",
 }
+# AIっぽい言い回し（HUMAN_CRAFT.md の戒律2。1つ −3。「詳しくはDMでお気軽にどうぞ」は決まりの文なので対象外）
+AI_PHRASES = ["いかがでしたか", "ぜひ", "素敵な", "充実した", "最高の", "楽しいひととき", "ではないでしょうか",
+              "魅力", "ワクワク", "特別な", "盛りだくさん", "心を込めて", "大切な時間", "新しい自分", "一歩を踏み出"]
 SIZES = {"carousel": (1080, 1350), "feed": (1080, 1350), "story": (1080, 1920), "reel": (1080, 1920)}
 
 # 減点の担当（ai_employees の No.）
-OWNER = {"caption": "13 キャプション", "ng": "16 表現チェック", "fact": "15 事実確認", "cta": "09 CTA・導線",
+OWNER = {"human": "13 キャプション・16 表現チェック", "caption": "13 キャプション", "ng": "16 表現チェック", "fact": "15 事実確認", "cta": "09 CTA・導線",
          "size": "17 品質確認", "media": "24 投稿管理", "hashtag": "13 キャプション", "note": "25 進行管理",
          "time": "25 進行管理"}
 
@@ -67,6 +70,13 @@ def check_post(p, media_dir=MEDIA):
             if len(cap) > 2200: minus(30, "caption", "キャプションが2,200字を超える（Instagram の上限）", True)
             first = cap.strip().splitlines()[0]
             if len(first) > 40: minus(3, "caption", "1行目が長い（40字まで。最初の1行で中身が分かるように）")
+    # 人間らしさ（HUMAN_CRAFT.md）
+    for w in AI_PHRASES:
+        if w in cap: minus(3, "human", f"AIっぽい言い回し「{w}」→ 自分の言葉・具体的な場面に言い換える")
+    emo = len(re.findall(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", cap))
+    if emo > 5: minus(3, "human", f"絵文字が多い（{emo}個。5個まで）")
+    bullets = sum(1 for l in cap.splitlines() if l.strip().startswith(("・", "-", "✅", "✔")))
+    if bullets > 6: minus(3, "human", f"箇条書きが多い（{bullets}行。6行まで。文章で語る）")
     if not p.get("note"): minus(2, "note", "note（どのスクリプトで作ったか・改善ID）がない")
     # 素材
     try:
@@ -118,7 +128,9 @@ def self_test():
     s, iss = check_post(bad, d); assert s == 0 and sum(i[1] for i in iss) >= 4, iss
     small = dict(good); Image.new("RGB", (800, 800)).save(os.path.join(d, "b.jpg")); small["media"] = ["b.jpg"]
     s, iss = check_post(small, d); assert s == 90, iss
-    print("self-test: 良い下書き100点・違反だらけ0点・大きさ違い90点 すべて想定どおり")
+    ai = dict(good, caption=good["caption"] + "\nぜひ素敵な時間を！")
+    s, iss = check_post(ai, d); assert s == 94, iss
+    print("self-test: 良い下書き100点・違反だらけ0点・大きさ違い90点・AIっぽい言い回し94点 すべて想定どおり")
 
 
 if __name__ == "__main__":
