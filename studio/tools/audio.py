@@ -44,13 +44,37 @@ def narrate(lines, speed=1.3, half_tone=1.0):
     return out / peak * 0.9, t_end
 
 
-def bgm(seconds, bpm=118, seed=7):
-    """明るいポップ調の BGM（I–V–vi–IV の和音＋分散和音＋軽いリズム）。"""
+# 音楽制作AI（No.33）が選ぶ雰囲気。和音の進行・速さ・調をそれぞれ変える（すべて自作の音なので無料・権利の心配なし）
+MOODS = {
+    "pop":    dict(bpm=118, prog=["C", "G", "Am", "F"]),    # いつもの明るいポップ（今までのBGM）
+    "happy":  dict(bpm=128, prog=["F", "G", "Em", "Am"]),   # わくわく：告知・当日募集
+    "gentle": dict(bpm=96,  prog=["C", "Am", "F", "G"]),    # やさしい：Q&A・1人参加の安心材料
+    "fresh":  dict(bpm=110, prog=["G", "D", "Em", "C"]),    # さわやか：振り返り・レポート
+    # v3.0（11/11）：垢抜けた空気感。7th・9th の和音、スウィング、テープの揺れ、ノイズで「打ち込みっぽさ」を消す
+    "citypop": dict(bpm=104, prog=["F", "Em", "Am", "G"], ext=[0, 4, 7, 11], swing=.08, wow=.003),  # シティポップ：告知・夜の雰囲気
+    "lofi":    dict(bpm=82,  prog=["F", "Em", "Am", "C"], ext=[0, 4, 7, 11], swing=.16, wow=.006, noise=.012, lp=.6),  # ローファイ：Q&A・落ち着き
+    "ambient": dict(bpm=70,  prog=["C", "Am", "F", "G"], ext=[0, 7, 14], drums=False, noise=.004, lp=.5),  # アンビエント：余韻・振り返り
+    "indie":   dict(bpm=138, prog=["C", "G", "Am", "F"], ext=[0, 7, 12], swing=.03, drive=1.6),  # インディーロック：当日募集・勢い
+}
+_ROOT = {"C": 261.63, "D": 293.66, "Em": 329.63, "F": 174.61, "G": 196.00, "Am": 220.00}
+
+
+def bgm(seconds, bpm=None, seed=7, mood="pop", rests=()):
+    """自作の BGM。mood で雰囲気（pop／happy／gentle／fresh／citypop／lofi／ambient／indie）、seed で曲の番号を変える。
+    rests=[(開始秒, 終了秒), ...] の間は音を抜く（「間」の演出。前後0.15秒でなめらかに）。"""
+    m = MOODS.get(mood, MOODS["pop"]); bpm = bpm or m["bpm"]
     rng = np.random.default_rng(seed)
     n = int(seconds * SR); t = np.arange(n) / SR
     beat = 60 / bpm; bar = beat * 4
-    root = {"C": 261.63, "G": 196.00, "Am": 220.00, "F": 174.61}
-    chords = [("C", [0, 4, 7]), ("G", [0, 4, 7]), ("Am", [0, 3, 7]), ("F", [0, 4, 7])]
+    vary = mood != "pop"  # pop は今までと同じ音のまま。ほかの雰囲気は seed ごとに調と進行の始まりを変える
+    shift = 2 ** (int(np.random.default_rng(seed + 100).integers(-2, 3)) / 12) if vary else 1
+    root = {k: v * shift for k, v in _ROOT.items()}
+    def _iv(c):
+        if "ext" in m:  # 7th などの響き（短調は3度を下げる）
+            return [k - 1 if c.endswith("m") and k in (4, 11) else k for k in m["ext"]]
+        return [0, 3, 7] if c.endswith("m") else [0, 4, 7]
+    chords = [(c, _iv(c)) for c in m["prog"]]
+    if vary and seed % 2: chords = chords[2:] + chords[:2]
     out = np.zeros(n, dtype=np.float32)
 
     def tone(f, length, decay, harm=(1, .5, .25)):
@@ -65,22 +89,39 @@ def bgm(seconds, bpm=118, seed=7):
             seg = tone(f0 * 2 ** (k / 12), bar, 1.2, harm=(1, .3)) * 0.10
             i = int(t0 * SR); out[i:i + len(seg)] += seg[:max(0, n - i)]
         for s in range(8):  # 8分音符の分散和音
-            k = iv[s % 3] + (12 if s % 4 == 3 else 0)
+            k = iv[s % len(iv)] + (12 if s % 4 == 3 else 0)
             seg = tone(f0 * 2 * 2 ** (k / 12), beat / 2, 0.18) * 0.08
-            i = int((t0 + s * beat / 2) * SR); out[i:i + len(seg)] += seg[:max(0, n - i)]
+            sw = m.get("swing", 0) * beat if s % 2 else 0  # 裏の8分を少し遅らせる（人が弾いた揺れ）
+            i = int((t0 + s * beat / 2 + sw) * SR); out[i:i + len(seg)] += seg[:max(0, n - i)]
         bass = tone(f0 / 2, bar, 0.9, harm=(1, .2)) * 0.16
         i = int(t0 * SR); out[i:i + len(bass)] += bass[:max(0, n - i)]
-        for q in range(4):  # キック（1・3拍）とハイハット（裏拍）
+        for q in (range(4) if m.get("drums", True) else ()):  # キック（1・3拍）とハイハット（裏拍）
             i = int((t0 + q * beat) * SR)
             if q % 2 == 0:
                 kt = np.arange(int(0.25 * SR)) / SR
                 kick = np.sin(2 * np.pi * (50 + 90 * np.exp(-kt / 0.03)) * kt) * np.exp(-kt / 0.09) * 0.35
                 out[i:i + len(kick)] += kick[:max(0, n - i)]
-            j = int((t0 + (q + .5) * beat) * SR)
+            j = int((t0 + (q + .5 + m.get("swing", 0)) * beat) * SR)
             hat = rng.standard_normal(int(0.04 * SR)) * np.exp(-np.arange(int(0.04 * SR)) / SR / 0.01) * 0.04
             out[j:j + len(hat)] += hat[:max(0, n - j)]
+    if "drive" in m:  # ギターのような歪み（インディー）
+        out = np.tanh(out * m["drive"] / (np.abs(out).max() or 1)).astype(np.float32)
+    if "lp" in m:  # こもった音（ローファイ・アンビエント）：移動平均で高い音を落とす（numpy だけで動く）
+        w = max(2, int(m["lp"] * 20)); c = np.cumsum(np.concatenate([[0], out]))
+        out = ((c[w:] - c[:-w]) / w).astype(np.float32); out = np.concatenate([out, np.zeros(n - len(out), np.float32)])
+    if "wow" in m:  # テープの揺れ（音量がゆっくり波打つ）
+        out *= (1 + m["wow"] * 10 * np.sin(2 * np.pi * 0.7 * t)).astype(np.float32)
+    if "noise" in m:  # レコードのサーッという音とプチッという音
+        out += (rng.standard_normal(n) * m["noise"]).astype(np.float32)
+        for c in rng.integers(0, n, size=int(seconds * 3)):
+            out[c:c + 40] += (rng.standard_normal(min(40, n - c)) * m["noise"] * 8).astype(np.float32)
     fade = np.ones(n); f = int(1.0 * SR)
     fade[:f] = np.linspace(0, 1, f); fade[-f:] = np.linspace(1, 0, f)
+    for a0, a1 in rests:  # 「間」：その区間だけ音を抜く
+        i0, i1, r = int(a0 * SR), int(a1 * SR), int(0.15 * SR)
+        fade[i0:i1] = 0
+        fade[max(0, i0 - r):i0] = np.minimum(fade[max(0, i0 - r):i0], np.linspace(1, 0, i0 - max(0, i0 - r)))
+        fade[i1:i1 + r] = np.minimum(fade[i1:i1 + r], np.linspace(0, 1, len(fade[i1:i1 + r])))
     out *= fade
     return out / (np.abs(out).max() or 1) * 0.9
 
