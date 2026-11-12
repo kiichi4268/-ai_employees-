@@ -50,6 +50,8 @@ jobs:
         continue-on-error: true
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_CHANNEL_ID: ${{ secrets.LINE_CHANNEL_ID }}
+          LINE_CHANNEL_SECRET: ${{ secrets.LINE_CHANNEL_SECRET }}
         run: python3 tools/line_insights.py --days 2
       - name: save CSV to main
         if: success()
