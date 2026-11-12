@@ -1,7 +1,7 @@
 # Instagram の承認制投稿（tools/ig_queue.py）。
 # - PR（Claude が出す下書き）では、下書きの形だけを確かめる（何も投稿しない）。
 # - PR を Merge ＝ 承認。main に入った下書きを、毎時5分（日本時間 8:05〜23:05）に確認して、予定時刻を過ぎたものを投稿する。
-# - 定期実行は Settings ➔ Secrets and variables ➔ Actions ➔ Variables に IG_ENABLED=true を入れるまで何もしない。
+# - 定期実行は予備として常に動く（11/12 加藤さん承認。外部タイマーが止まっても投稿が出る）。止めたいときだけ Variables に IG_ENABLED=false。
 # - 鍵は Secrets：INSTAGRAM_ACCESS_TOKEN・INSTAGRAM_USER_ID・CHATWORK_API_TOKEN
 name: instagram
 
@@ -38,7 +38,7 @@ jobs:
       - run: python3 tools/ig_queue.py --self-test && python3 tools/ig_queue.py --check
 
   post:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && vars.IG_ENABLED == 'true')
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && vars.IG_ENABLED != 'false')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
