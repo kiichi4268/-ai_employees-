@@ -53,7 +53,7 @@
 
 ## 3. 場所
 
-- Instagram @macachette_sports ／ 公式LINE https://lin.ee/WIbLPFV ／ リンク一覧 https://fanme.link/@0966712221a41fa899c2
+- Instagram @macachette_sports ／ 公式LINE https://lin.ee/WIbLPFV（LINE ID **@827lnqaq**、QR は studio/assets/line_qr.png。11/12 からストーリー③に QR と ID を入れる）／ リンク一覧 https://fanme.link/@0966712221a41fa899c2
 - 設計書（claude.ai）：https://claude.ai/artifact/B2tHqPS45h9HtCVAHMJZXh
   - 控えは `docs/handover/設計書_*.md`。中身は「設計書／11月 投稿表／投稿企画（型とテーマ案）／ストーリー 11/2〜11/8／12月 告知デザイン・動画プロンプト」
 - Drive「Macachette素材」 `1zK_ThUGsYEbrzFdNArXtEI6pbOp2IVAL`
