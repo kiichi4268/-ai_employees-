@@ -89,7 +89,12 @@ SLOTS = [
 ]
 
 # ---------- 11/8 作り直し：人が写らないくっきり背景＋リンクタップを増やす③（PIPELINE.md「デザインの決まり」） ----------
-BG = {"bad": "court", "gym": "floor", "gym2": "ceiling"}   # 人が写る写真の強いぼかし → 人が写っていない背景
+BG = {"bad": "court", "gym": "floor", "gym2": "ceiling"}
+# 11/14 加藤さん「背景をやっている人に」：11/14・15 は人がプレーしている実写（顔が分からないぼかし）に
+import os as _os
+if _os.environ.get("PEOPLE_BG"):
+    from tools import people_bg as _pb; _pb.register(w1)
+    BG = {"bad": "play_bad", "gym": "play_gym", "gym2": "play_bad"}   # 人が写る写真の強いぼかし → 人が写っていない背景
 STEP3 = card_lines(["① プロフィールのリンクをタップ", "② 公式LINEを友だち追加", "③ イベントカレンダーから予約"], title="申し込みは3ステップ", color=LINE_GREEN)
 
 
@@ -123,6 +128,8 @@ if __name__ == "__main__":
         p1 = os.path.join(dd, f"{day}_{tm}_1.jpg"); p2 = os.path.join(dd, f"{day}_{tm}_2.mp4"); p3 = os.path.join(dd, f"{day}_{tm}_3.jpg")
         img, vid, ix = restyle(img, vid, ix)
         make_image(img, p1); make_video(vid, p2); (make_line if ix["kind"] == "line" else make_ix)(ix, p3)
+        if os.environ.get("PEOPLE_BG"):
+            from tools import people_bg as _pb2; _pb2.add_note_img(p1); _pb2.add_note_video(p2)
         rows.append([day, f"{tm[:2]}:{tm[2:]}", os.path.basename(p1), os.path.basename(p2), os.path.basename(p3), ix["opts"]])
         print("done", day, tm, flush=True)
     if not only:

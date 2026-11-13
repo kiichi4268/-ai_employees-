@@ -12,6 +12,8 @@ from make_week1 import card_lines, event_card, make_image, make_video, GREEN, OR
 from tools.editorial import split_story, list_ruled, CREAM, INK
 from tools.craft import finish
 from tools.audio import add_music, music_for
+from tools import people_bg
+people_bg.register(w1)
 
 OUT = os.path.join(D, "out", "week3"); os.makedirs(OUT, exist_ok=True)
 ROOT = os.path.dirname(D); MEDIA = os.path.join(ROOT, "content", "instagram", "media"); POSTS = os.path.join(ROOT, "content", "instagram", "posts")
@@ -48,7 +50,10 @@ def _play(p, r=6):
     return im.filter(ImageFilter.GaussianBlur(r))
 PLAY = {"play_bad": "IMG_3754.jpg", "play_gym": "IMG_3560.jpg", "play_bb": "S__66338826_0.jpg",
         "play_vb": ("vb_play.jpg", 9), "play_vb2": ("vb_sugamo_people.jpg", 7)}  # 11/14 加藤さんのバレー写真（顔が近いものは強めにぼかす）
-VSRC = {"1114": ("clipB", "clipA")}  # その日の②の動画（人が写る実写はぼかし4.6）
+VSRC = {"1114": ("clipB", "clipA")}
+# 8:00・12:00 の背景（その日の主な種目の実写）。11/14 加藤さん「8:00・12:00も作り直して」
+BASE_BG = {"1116": ("play_vb", "play_bb"), "1117": ("play_vb", "play_vb2"), "1118": ("play_bb", "play_vb"), "1119": ("play_vb2", "play_bb"),
+           "1120": ("play_vb", "play_vb2"), "1121": ("play_vb", "play_bb"), "1122": ("play_bb", "play_vb")}  # その日の②の動画（人が写る実写はぼかし4.6）
 
 
 def two(day, tm, a, b):
@@ -184,7 +189,11 @@ if __name__ == "__main__":
         files = []
         for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{n}.{e}") for n, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
+            if day in BASE_BG:  # 人がプレーしている実写に差し替え（②は写真をゆっくり寄る動画に）
+                k = BASE_BG[day][0 if tm == "0800" else 1]
+                img = dict(img, bg=k); vid = dict(vid, src=k, blur=1)
             make_image(dict(img), p1); make_video(dict(vid), p2)
+            if day in BASE_BG: people_bg.add_note_img(p1); people_bg.add_note_video(p2)
             add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
