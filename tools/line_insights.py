@@ -4,7 +4,9 @@ Instagram のリンクタップは「LINEに向かった人」まで。本当に
 LINE Messaging API の「友だち数」（GET /v2/bot/insight/followers?date=YYYYMMDD）を使う。
 LINE 側の集計は翌日にでき上がるので、毎晩、前日と前々日の分を取る（でき上がっていなければ次の晩に取り直す）。
 
-鍵（GitHub Secrets）: LINE_CHANNEL_ACCESS_TOKEN（無ければ何もせず終わる＝今の仕組みは止まらない）
+鍵（GitHub Secrets）: LINE_CHANNEL_ID と LINE_CHANNEL_SECRET（11/12：毎回15分だけ使える一時的な鍵＝stateless トークンを作る。
+  長期トークンの再発行をしないので、同じチャネルを使う AutoSNS などの連携に影響しない）。LINE_CHANNEL_ACCESS_TOKEN があればそれを使う。
+  どちらも無ければ何もせず終わる（今の仕組みは止まらない）
 使い方: python3 tools/line_insights.py [--days 2]   ／   python3 tools/line_insights.py --self-test
 CSV の列: date, followers（友だち数）, targeted_reaches（届く人数）, blocks（ブロック数）, new_friends（前日からの増加）, fetched_at
 """
@@ -42,10 +44,26 @@ def save(rows, path=CSV):
         for d in days: w.writerow({k: rows[d].get(k, "") for k in COLS})
 
 
+def stateless_token(cid, secret, opener=urllib.request.urlopen):
+    """チャネルIDとシークレットから、15分だけ使える一時的な鍵を作る（ほかの連携の鍵は切れない）。"""
+    import urllib.parse
+    body = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": cid, "client_secret": secret}).encode()
+    req = urllib.request.Request("https://api.line.me/oauth2/v3/token", data=body,
+                                 headers={"Content-Type": "application/x-www-form-urlencoded"})
+    with opener(req, timeout=30) as r:
+        return json.loads(r.read().decode())["access_token"]
+
+
 def run(days=2, token=None, path=CSV, today=None, opener=urllib.request.urlopen):
     token = token or os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+    cid, sec = os.environ.get("LINE_CHANNEL_ID"), os.environ.get("LINE_CHANNEL_SECRET")
+    if not token and cid and sec:
+        try:
+            token = stateless_token(cid, sec, opener)
+        except Exception as e:
+            print(f"LINE の一時的な鍵が作れません（{type(e).__name__}）。チャネルID・シークレットを確かめてください。"); return 0
     if not token:
-        print("LINE_CHANNEL_ACCESS_TOKEN が無いので、LINE の友だち数は取りません（社長タスク）。"); return 0
+        print("LINE の鍵（LINE_CHANNEL_ID・LINE_CHANNEL_SECRET）が無いので、LINE の友だち数は取りません（社長タスク）。"); return 0
     today = today or datetime.datetime.now(JST).date()
     rows = load(path); got = 0
     for k in range(1, days + 1):

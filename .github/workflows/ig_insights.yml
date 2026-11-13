@@ -2,7 +2,7 @@
 # - 毎晩 23:50（日本時間）。ストーリーの数字は24時間で消えるので、その日の分を必ずこの時間に取る。
 # - Claude のコネクタは使わない。投稿と同じ GitHub Secrets の鍵を使うので、設定し直しは要らない。
 # - 鍵が切れた・期限が近いときは ChatWork に直し方つきで知らせる。
-# - 止めたいときは Variables の IG_INSIGHTS_ENABLED を消す（または false）。
+# - 定時実行は予備として常に動く（11/12）。止めたいときは Variables に IG_INSIGHTS_ENABLED=false。
 name: ig_insights
 
 on:
@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   insights:
-    if: github.event_name == 'workflow_dispatch' || vars.IG_INSIGHTS_ENABLED == 'true'
+    if: github.event_name == 'workflow_dispatch' || vars.IG_INSIGHTS_ENABLED != 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -50,6 +50,8 @@ jobs:
         continue-on-error: true
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_CHANNEL_ID: ${{ secrets.LINE_CHANNEL_ID }}
+          LINE_CHANNEL_SECRET: ${{ secrets.LINE_CHANNEL_SECRET }}
         run: python3 tools/line_insights.py --days 2
       - name: save CSV to main
         if: success()

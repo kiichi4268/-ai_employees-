@@ -126,13 +126,13 @@ def bgm(seconds, bpm=None, seed=7, mood="pop", rests=()):
     return out / (np.abs(out).max() or 1) * 0.9
 
 
-def add_voice_and_bgm(video, lines, bgm_level=0.22, out=None, speed=1.3):
+def add_voice_and_bgm(video, lines, bgm_level=0.22, out=None, speed=1.3, mood="pop", seed=7, rests=()):
     """動画に読み上げと BGM を入れた版を書き出す（元の動画はそのまま）。"""
     dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", video],
                                capture_output=True, text=True).stdout)
     voice, v_end = narrate(lines, speed=speed)
     total = max(dur, v_end + 0.8)
-    mix = bgm(total) * bgm_level
+    mix = bgm(total, mood=mood, seed=seed, rests=rests) * bgm_level
     duck = np.ones(len(mix), dtype=np.float32)  # 声が出ている間は BGM を少し下げる
     env = np.convolve(np.abs(voice) > 0.02, np.ones(int(0.25 * SR)) / int(0.25 * SR), mode="same")[:len(mix)]
     duck[:len(env)] -= 0.45 * np.clip(env * 4, 0, 1)
