@@ -69,6 +69,13 @@ def as_video(b, src):
 
 
 WEEK = [
+ # 11/14(土)：毎日制作の1日目（--daily のみ。8:00・12:00 は週2の予約済み）。実験:D-1114＝①の1行目を「」の心の声にする（STORY_MODEL 3-1）
+ ("1114", None, None, None,
+  S("court", "今日 11/14(土) 15:00・新代田", ["「今日、少し", "動きたいな」"], "→ バドミントン まもりやまテラス（参加費1,500円）", GREEN, 81),
+  S("floor", "まだ参加枠あります", ["今日も明日も", "バドミントン"], "今日15:00 新代田／明日13:00 代々木", GREEN, 82),
+  None, None, None,
+  S("ceiling", "明日 11/15(日) 13:00・代々木", ["「明日の日曜、", "空いてる？」"], "→ バドミントン 代々木の杜（参加費1,500円）", GREEN, 83),
+  L("1人で行っても大丈夫？", [("ほとんどが1人参加", ""), ("初心者7割・経験者3割くらい", ""), ("ラケット貸出あり", "")], GREEN, 84)),
  ("1116", dict(h1="今週末は", h2="3連続開催", blocks=[VB21, BB22], bg="ceiling"),
   dict(src="ceiling", h1="11/21〜23", h2="3連続", lines=["土 バレー　日 野球", "月祝 バレー・卓球"]),
   ("今週末の", "予約は", "11/21〜23 受付中"),
@@ -160,15 +167,15 @@ if __name__ == "__main__":
         for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{n}.{e}") for n, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             make_image(dict(img), p1); make_video(dict(vid), p2)
-            add_music(p2, *music_for(tm, day))
+            add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         # 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①＝a の画像、②＝b の文で動画、③＝QR と ID
-        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "イベントカレンダーから予約"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約")) if mode != "base" else ()):
+        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "カレンダーから予約・参加費1,500円（当日）"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約・参加費1,500円（当日）")) if mode != "base" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             a[0](**a[1]).save(p1, quality=93)
             make_video(as_video(b, ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
-            add_music(p2, *music_for(tm, day))
+            add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
             qr_line("予約は", "公式LINEから", sub, p3, bg=("floor", "court")[n])
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         for tm, k, p in files:
