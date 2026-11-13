@@ -3,7 +3,7 @@
 - 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①は editorial（上下分割・罫線リスト）、②は同じ話の短い動画、③は QR と ID。
 - 週のテーマ（企画シート PLANNING.md）：だれ＝「行ってみたいが1人だと不安な社会人」、動かす数字＝リンクタップ（週26）。
   11/21 バレー・11/22 野球・11/23 バレー＋卓球の3連続を、1日1つの不安に答えながら予約へ。
-使い方: cd studio && python3 make_week3.py → out/week3/ と content/instagram（media・posts）
+使い方: cd studio && python3 make_week3.py --base（週の予約：8:00・12:00 だけ）／python3 make_week3.py --daily 1117（前の晩のPDCAのあと：その日の 10:00・19:00 だけ） → out/week3/ と content/instagram（media・posts）
 """
 import os, json, shutil
 from PIL import Image, ImageDraw
@@ -149,18 +149,20 @@ def post(day, tm, k, name, note):
 
 if __name__ == "__main__":
     import sys
-    only = sys.argv[1:]
+    args = sys.argv[1:]
+    mode = "daily" if "--daily" in args else "base" if "--base" in args else "all"
+    only = [a for a in args if not a.startswith("--")]
     for day, img8, vid8, l8, i10a, i10b, img12, vid12, l12, i19a, i19b in WEEK:
         if only and day not in only: continue
         dd = os.path.join(OUT, day); os.makedirs(dd, exist_ok=True)
         files = []
-        for tm, img, vid, line in (("0800", img8, vid8, l8), ("1200", img12, vid12, l12)):
+        for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{n}.{e}") for n, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             make_image(dict(img), p1); make_video(dict(vid), p2)
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         # 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①＝a の画像、②＝b の文で動画、③＝QR と ID
-        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "イベントカレンダーから予約"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約"))):
+        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "イベントカレンダーから予約"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約")) if mode != "base" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             a[0](**a[1]).save(p1, quality=93)
             make_video(as_video(b, ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
