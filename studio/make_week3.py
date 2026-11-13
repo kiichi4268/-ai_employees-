@@ -43,9 +43,11 @@ def qr_line(head1, head2, sub, path, bg="ceiling"):
 # 11/14 加藤さん「背景をやっている人に」：人がプレーしている写真を全体ぼかし（6）で顔が分からない形にして使う
 from PIL import ImageOps, ImageFilter
 def _play(p, r=6):
+    if isinstance(p, tuple): p, r = p
     im = ImageOps.exif_transpose(Image.open(os.path.join(D, "photos", p))).convert("RGB"); im.thumbnail((1080, 1440))
     return im.filter(ImageFilter.GaussianBlur(r))
-PLAY = {"play_bad": "IMG_3754.jpg", "play_gym": "IMG_3560.jpg", "play_bb": "S__66338826_0.jpg"}
+PLAY = {"play_bad": "IMG_3754.jpg", "play_gym": "IMG_3560.jpg", "play_bb": "S__66338826_0.jpg",
+        "play_vb": ("vb_play.jpg", 9), "play_vb2": ("vb_sugamo_people.jpg", 7)}  # 11/14 加藤さんのバレー写真（顔が近いものは強めにぼかす）
 VSRC = {"1114": ("clipB", "clipA")}  # その日の②の動画（人が写る実写はぼかし4.6）
 
 
