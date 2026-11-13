@@ -6,5 +6,5 @@
   "media": [
     "2026-11-14_story_1000_1.jpg"
   ],
-  "note": "毎日制作1日目（11/13夜のPDCA）。実験:D-1114 ①の1行目を「」の心の声に（STORY_MODEL 3-1）。②は曲入り（acoustic/pop）。③はQR・ID・参加費。studio/make_week3.py --daily 1114"
+  "note": "3週目ストーリー 11/14 10:00 の1本目。studio/make_week3.py（③はQR・ID、10時・19時は editorial）。改善:K-003"
 }

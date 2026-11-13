@@ -71,3 +71,7 @@
 - https://www.adobe.com/uk/express/learn/blog/story-sport
 - https://find-model.jp/insta-lab/instagram-event-promotion
 - https://www.planoly.com/blog/how-to-increase-your-instagram-story-views
+
+## 7. 背景（11/14 加藤さん「背景をやっている人に。体育館だけは…」）
+- ①の写真と②の動画は、**人がプレーしている実写**を使う（人のいない体育館だけは使わない）。写真は全体をぼかし6、動画はぼかし4.6で顔が分からない形にし、写真には「※写真は過去の開催時のものです」を入れる（make_week3.py の PLAY・VSRC）。
+- 種目に合う写真を使う（バド＝IMG_3754・3560、野球＝S__66338826、バレー・卓球は取り込みしだい）。顔が大きく写る写真（IMG_3764 など）は使わない。

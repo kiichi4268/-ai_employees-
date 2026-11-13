@@ -40,6 +40,15 @@ def qr_line(head1, head2, sub, path, bg="ceiling"):
     w1.foot(c); finish(c.convert("RGB"), seed=7).save(path, quality=93)
 
 
+# 11/14 加藤さん「背景をやっている人に」：人がプレーしている写真を全体ぼかし（6）で顔が分からない形にして使う
+from PIL import ImageOps, ImageFilter
+def _play(p, r=6):
+    im = ImageOps.exif_transpose(Image.open(os.path.join(D, "photos", p))).convert("RGB"); im.thumbnail((1080, 1440))
+    return im.filter(ImageFilter.GaussianBlur(r))
+PLAY = {"play_bad": "IMG_3754.jpg", "play_gym": "IMG_3560.jpg", "play_bb": "S__66338826_0.jpg"}
+VSRC = {"1114": ("clipB", "clipA")}  # その日の②の動画（人が写る実写はぼかし4.6）
+
+
 def two(day, tm, a, b):
     """10:00・19:00 の画像2枚（editorial）。a, b は (関数, 引数) 。"""
     out = []
@@ -49,7 +58,14 @@ def two(day, tm, a, b):
 
 
 def S(top, kicker, lines, foot, accent=ORANGE, seed=1):
-    return (split_story, dict(top_img=w1.SRC[top], kicker=kicker, headline_lines=lines, foot=foot, accent=accent, seed=seed))
+    if top in PLAY:  # 過去の写真には注記を入れる（CLAUDE.md「事実」）
+        def mk(**kw):
+            from PIL import ImageDraw
+            c = split_story(**kw); d = ImageDraw.Draw(c)
+            d.text((60, int(1920 * 0.58) - 64), "※写真は過去の開催時のものです", font=w1.F(w1.BOLD, 30), fill=(255, 255, 255), stroke_width=3, stroke_fill=(20, 42, 92))
+            return c
+        return (mk, dict(top_img=_play(PLAY[top]), kicker=kicker, headline_lines=lines, foot=foot, accent=accent, seed=seed))
+    return (split_story, dict(top_img=_play(PLAY[top]) if top in PLAY else w1.SRC[top], kicker=kicker, headline_lines=lines, foot=foot, accent=accent, seed=seed))
 
 
 def L(title, items, accent=ORANGE, seed=1):
@@ -64,17 +80,17 @@ def as_video(b, src):
     fn, kw = b
     if "headline_lines" in kw:
         hl_ = [x.rstrip("、。") for x in kw["headline_lines"]]
-        return dict(src=src, h1=hl_[0], h2=hl_[1] if len(hl_) > 1 else "", lines=[kw["kicker"], kw["foot"]][:2], blur=2)
-    return dict(src=src, h1=kw["title"], h2="", lines=[h for h, _ in kw["items"]][:3], blur=2)
+        return dict(src=src, h1=hl_[0], h2=hl_[1] if len(hl_) > 1 else "", lines=[kw["kicker"], kw["foot"]][:2], blur=2 if src in ("court", "floor", "ceiling") else 4.6)
+    return dict(src=src, h1=kw["title"], h2="", lines=[h for h, _ in kw["items"]][:3], blur=2 if src in ("court", "floor", "ceiling") else 4.6)
 
 
 WEEK = [
  # 11/14(土)：毎日制作の1日目（--daily のみ。8:00・12:00 は週2の予約済み）。実験:D-1114＝①の1行目を「」の心の声にする（STORY_MODEL 3-1）
  ("1114", None, None, None,
-  S("court", "今日 11/14(土) 15:00・新代田", ["「今日、少し", "動きたいな」"], "→ バドミントン まもりやまテラス（参加費1,500円）", GREEN, 81),
+  S("play_bad", "今日 11/14(土) 15:00・新代田", ["「今日、少し", "動きたいな」"], "→ バドミントン まもりやまテラス（参加費1,500円）", GREEN, 81),
   S("floor", "まだ参加枠あります", ["今日も明日も", "バドミントン"], "今日15:00 新代田／明日13:00 代々木", GREEN, 82),
   None, None, None,
-  S("ceiling", "明日 11/15(日) 13:00・代々木", ["「明日の日曜、", "空いてる？」"], "→ バドミントン 代々木の杜（参加費1,500円）", GREEN, 83),
+  S("play_gym", "明日 11/15(日) 13:00・代々木", ["「明日の日曜、", "空いてる？」"], "→ バドミントン 代々木の杜（参加費1,500円）", GREEN, 83),
   L("1人で行っても大丈夫？", [("ほとんどが1人参加", ""), ("初心者7割・経験者3割くらい", ""), ("ラケット貸出あり", "")], GREEN, 84)),
  ("1116", dict(h1="今週末は", h2="3連続開催", blocks=[VB21, BB22], bg="ceiling"),
   dict(src="ceiling", h1="11/21〜23", h2="3連続", lines=["土 バレー　日 野球", "月祝 バレー・卓球"]),
@@ -174,7 +190,7 @@ if __name__ == "__main__":
         for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "カレンダーから予約・参加費1,500円（当日）"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約・参加費1,500円（当日）")) if mode != "base" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             a[0](**a[1]).save(p1, quality=93)
-            make_video(as_video(b, ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
+            make_video(as_video(b, VSRC[day][n] if day in VSRC else ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
             add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
             qr_line("予約は", "公式LINEから", sub, p3, bg=("floor", "court")[n])
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
