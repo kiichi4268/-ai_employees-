@@ -132,7 +132,16 @@ def add_voice_and_bgm(video, lines, bgm_level=0.22, out=None, speed=1.3, mood="p
                                capture_output=True, text=True).stdout)
     voice, v_end = narrate(lines, speed=speed)
     total = max(dur, v_end + 0.8)
-    mix = bgm(total, mood=mood, seed=seed, rests=rests) * bgm_level
+    if mood in TRACKS:  # 作った曲（著作権フリー）を使う。rests の間は音を抜く
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str((seed * 7) % 30), "-i", os.path.join(MUSIC_DIR, f"{mood}.m4a"),
+                              "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
+        tr = np.frombuffer(raw, dtype=np.float32).copy()
+        n = int(total * SR); tr = np.tile(tr, n // max(len(tr), 1) + 1)[:n] if len(tr) else np.zeros(n)
+        for a0, a1 in rests:
+            i0, i1 = int(a0 * SR), int(a1 * SR); tr[i0:i1] *= 0.05
+        mix = tr / (np.abs(tr).max() or 1) * bgm_level * 2.2
+    else:
+        mix = bgm(total, mood=mood, seed=seed, rests=rests) * bgm_level
     duck = np.ones(len(mix), dtype=np.float32)  # 声が出ている間は BGM を少し下げる
     env = np.convolve(np.abs(voice) > 0.02, np.ones(int(0.25 * SR)) / int(0.25 * SR), mode="same")[:len(mix)]
     duck[:len(env)] -= 0.45 * np.clip(env * 4, 0, 1)
@@ -148,3 +157,37 @@ def add_voice_and_bgm(video, lines, bgm_level=0.22, out=None, speed=1.3, mood="p
                         "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out],
                        check=True)
     return out
+
+
+# ---------- 作った曲（著作権フリー）を動画に入れる（11/13 加藤さん「ストーリーにも楽曲を」） ----------
+MUSIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "music")
+TRACKS = {  # vidIQ で作った著作権フリーの曲（11/13）。時刻・雰囲気で選ぶ
+    "acoustic_morning": "朝（8:00）・明るく爽やか",
+    "pop_bright": "昼（10:00・12:00）・元気",
+    "lofi_evening": "夜（19:00）・仕事帰りに落ち着いて",
+    "citypop_night": "夜（19:00）・おしゃれ",
+}
+
+
+def add_music(video, track, out=None, level=0.55, start=0.0, fade=0.6):
+    """音のない動画に、作った曲を入れる。start＝曲の何秒目から使うか（日ごとに変えて同じに聞こえないように）。"""
+    path = track if os.path.exists(str(track)) else os.path.join(MUSIC_DIR, f"{track}.m4a")
+    dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", video],
+                               capture_output=True, text=True).stdout)
+    out = out or video
+    tmp = out + ".tmp.mp4"
+    af = f"volume={level},afade=t=in:d={fade},afade=t=out:st={max(0, dur - fade):.2f}:d={fade}"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", video, "-ss", f"{start:.2f}", "-i", path,
+                    "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "160k",
+                    "-t", f"{dur:.2f}", "-movflags", "+faststart", tmp], check=True)
+    os.replace(tmp, out)
+    return out
+
+
+def music_for(tm, day):
+    """時刻と日付から曲と開始位置を決める（毎日少しずつ違う所から流す）。"""
+    tm = str(tm)
+    if tm.startswith("08"): name = "acoustic_morning"
+    elif tm.startswith("19"): name = "lofi_evening" if int(day) % 2 else "citypop_night"
+    else: name = "pop_bright"
+    return name, (int(day) * 7) % 40

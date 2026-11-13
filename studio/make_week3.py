@@ -1,9 +1,9 @@
 """3週目（11/16〜11/22）ストーリー 1日10本（11/10 加藤さん：8:00×3・10:00×2・12:00×3・19:00×2）。全部自動投稿。
 - ③（8:00・12:00）は公式LINEの QR と ID（@827lnqaq）入り（11/12 加藤さん）。
-- 10:00・19:00 は画像2枚。組み方は studio/tools/editorial.py（上下分割・罫線リスト）＝中央の白いカードをやめる（11/12 デザインを上げる）。
+- 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①は editorial（上下分割・罫線リスト）、②は同じ話の短い動画、③は QR と ID。
 - 週のテーマ（企画シート PLANNING.md）：だれ＝「行ってみたいが1人だと不安な社会人」、動かす数字＝リンクタップ（週26）。
   11/21 バレー・11/22 野球・11/23 バレー＋卓球の3連続を、1日1つの不安に答えながら予約へ。
-使い方: cd studio && python3 make_week3.py → out/week3/ と content/instagram（media・posts）
+使い方: cd studio && python3 make_week3.py --base（週の予約：8:00・12:00 だけ）／python3 make_week3.py --daily 1117（前の晩のPDCAのあと：その日の 10:00・19:00 だけ） → out/week3/ と content/instagram（media・posts）
 """
 import os, json, shutil
 from PIL import Image, ImageDraw
@@ -11,6 +11,9 @@ import make_week1 as w1
 from make_week1 import card_lines, event_card, make_image, make_video, GREEN, ORANGE, TEAL, LINE_GREEN, D
 from tools.editorial import split_story, list_ruled, CREAM, INK
 from tools.craft import finish
+from tools.audio import add_music, music_for
+from tools import people_bg
+people_bg.register(w1)
 
 OUT = os.path.join(D, "out", "week3"); os.makedirs(OUT, exist_ok=True)
 ROOT = os.path.dirname(D); MEDIA = os.path.join(ROOT, "content", "instagram", "media"); POSTS = os.path.join(ROOT, "content", "instagram", "posts")
@@ -39,6 +42,20 @@ def qr_line(head1, head2, sub, path, bg="ceiling"):
     w1.foot(c); finish(c.convert("RGB"), seed=7).save(path, quality=93)
 
 
+# 11/14 加藤さん「背景をやっている人に」：人がプレーしている写真を全体ぼかし（6）で顔が分からない形にして使う
+from PIL import ImageOps, ImageFilter
+def _play(p, r=6):
+    if isinstance(p, tuple): p, r = p
+    im = ImageOps.exif_transpose(Image.open(os.path.join(D, "photos", p))).convert("RGB"); im.thumbnail((1080, 1440))
+    return im.filter(ImageFilter.GaussianBlur(r))
+PLAY = {"play_bad": "IMG_3754.jpg", "play_gym": "IMG_3560.jpg", "play_bb": "S__66338826_0.jpg",
+        "play_vb": ("vb_play.jpg", 9), "play_vb2": ("vb_sugamo_people.jpg", 7)}  # 11/14 加藤さんのバレー写真（顔が近いものは強めにぼかす）
+VSRC = {"1114": ("clipB", "clipA")}
+# 8:00・12:00 の背景（その日の主な種目の実写）。11/14 加藤さん「8:00・12:00も作り直して」
+BASE_BG = {"1116": ("play_vb", "play_bb"), "1117": ("play_vb", "play_vb2"), "1118": ("play_bb", "play_vb"), "1119": ("play_vb2", "play_bb"),
+           "1120": ("play_vb", "play_vb2"), "1121": ("play_vb", "play_bb"), "1122": ("play_bb", "play_vb")}  # その日の②の動画（人が写る実写はぼかし4.6）
+
+
 def two(day, tm, a, b):
     """10:00・19:00 の画像2枚（editorial）。a, b は (関数, 引数) 。"""
     out = []
@@ -48,7 +65,14 @@ def two(day, tm, a, b):
 
 
 def S(top, kicker, lines, foot, accent=ORANGE, seed=1):
-    return (split_story, dict(top_img=w1.SRC[top], kicker=kicker, headline_lines=lines, foot=foot, accent=accent, seed=seed))
+    if top in PLAY:  # 過去の写真には注記を入れる（CLAUDE.md「事実」）
+        def mk(**kw):
+            from PIL import ImageDraw
+            c = split_story(**kw); d = ImageDraw.Draw(c)
+            d.text((60, int(1920 * 0.58) - 64), "※写真は過去の開催時のものです", font=w1.F(w1.BOLD, 30), fill=(255, 255, 255), stroke_width=3, stroke_fill=(20, 42, 92))
+            return c
+        return (mk, dict(top_img=_play(PLAY[top]), kicker=kicker, headline_lines=lines, foot=foot, accent=accent, seed=seed))
+    return (split_story, dict(top_img=_play(PLAY[top]) if top in PLAY else w1.SRC[top], kicker=kicker, headline_lines=lines, foot=foot, accent=accent, seed=seed))
 
 
 def L(title, items, accent=ORANGE, seed=1):
@@ -58,7 +82,23 @@ def L(title, items, accent=ORANGE, seed=1):
     return (mk, dict(title=title, items=items, accent=accent, seed=seed))
 
 
+def as_video(b, src):
+    """10:00・19:00 の②：editorial の文（split_story／list_ruled）を、人の写らない背景の短い動画にする。"""
+    fn, kw = b
+    if "headline_lines" in kw:
+        hl_ = [x.rstrip("、。") for x in kw["headline_lines"]]
+        return dict(src=src, h1=hl_[0], h2=hl_[1] if len(hl_) > 1 else "", lines=[kw["kicker"], kw["foot"]][:2], blur=2 if src in ("court", "floor", "ceiling") else 4.6)
+    return dict(src=src, h1=kw["title"], h2="", lines=[h for h, _ in kw["items"]][:3], blur=2 if src in ("court", "floor", "ceiling") else 4.6)
+
+
 WEEK = [
+ # 11/14(土)：毎日制作の1日目（--daily のみ。8:00・12:00 は週2の予約済み）。実験:D-1114＝①の1行目を「」の心の声にする（STORY_MODEL 3-1）
+ ("1114", None, None, None,
+  S("play_bad", "今日 11/14(土) 15:00・新代田", ["「今日、少し", "動きたいな」"], "→ バドミントン まもりやまテラス（参加費1,500円）", GREEN, 81),
+  S("floor", "まだ参加枠あります", ["今日も明日も", "バドミントン"], "今日15:00 新代田／明日13:00 代々木", GREEN, 82),
+  None, None, None,
+  S("play_gym", "明日 11/15(日) 13:00・代々木", ["「明日の日曜、", "空いてる？」"], "→ バドミントン 代々木の杜（参加費1,500円）", GREEN, 83),
+  L("1人で行っても大丈夫？", [("ほとんどが1人参加", ""), ("初心者7割・経験者3割くらい", ""), ("ラケット貸出あり", "")], GREEN, 84)),
  ("1116", dict(h1="今週末は", h2="3連続開催", blocks=[VB21, BB22], bg="ceiling"),
   dict(src="ceiling", h1="11/21〜23", h2="3連続", lines=["土 バレー　日 野球", "月祝 バレー・卓球"]),
   ("今週末の", "予約は", "11/21〜23 受付中"),
@@ -140,18 +180,31 @@ def post(day, tm, k, name, note):
 
 if __name__ == "__main__":
     import sys
-    only = sys.argv[1:]
+    args = sys.argv[1:]
+    mode = "daily" if "--daily" in args else "base" if "--base" in args else "all"
+    only = [a for a in args if not a.startswith("--")]
     for day, img8, vid8, l8, i10a, i10b, img12, vid12, l12, i19a, i19b in WEEK:
         if only and day not in only: continue
         dd = os.path.join(OUT, day); os.makedirs(dd, exist_ok=True)
         files = []
-        for tm, img, vid, line in (("0800", img8, vid8, l8), ("1200", img12, vid12, l12)):
+        for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{n}.{e}") for n, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
+            if day in BASE_BG:  # 人がプレーしている実写に差し替え（②は写真をゆっくり寄る動画に）
+                k = BASE_BG[day][0 if tm == "0800" else 1]
+                img = dict(img, bg=k); vid = dict(vid, src=k, blur=1)
             make_image(dict(img), p1); make_video(dict(vid), p2)
+            if day in BASE_BG: people_bg.add_note_img(p1); people_bg.add_note_video(p2)
+            add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
-        for tm, (a, b) in (("1000", (i10a, i10b)), ("1900", (i19a, i19b))):
-            for k, p in enumerate(two(day, tm, a, b), 1): files.append((tm, k, p))
+        # 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①＝a の画像、②＝b の文で動画、③＝QR と ID
+        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "カレンダーから予約・参加費1,500円（当日）"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約・参加費1,500円（当日）")) if mode != "base" else ()):
+            p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
+            a[0](**a[1]).save(p1, quality=93)
+            make_video(as_video(b, VSRC[day][n] if day in VSRC else ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
+            add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
+            qr_line("予約は", "公式LINEから", sub, p3, bg=("floor", "court")[n])
+            files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         for tm, k, p in files:
             name = f"2026-11-{day[2:]}_story_{tm}_{k}" + os.path.splitext(p)[1]
             shutil.copy(p, os.path.join(MEDIA, name))
