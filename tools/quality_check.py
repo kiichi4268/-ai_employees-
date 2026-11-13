@@ -55,7 +55,7 @@ def check_post(p, media_dir=MEDIA):
     if "当日の流れ" in cap and re.search(r"\d{1,2}:\d{2}\s*(受付|ストレッチ|試合|片付け)", cap): minus(15, "fact", "当日の流れに時間を書かない", True)
     for v, st in VENUES.items():
         if v in cap and st not in cap and "DM" not in cap: minus(8, "fact", f"会場「{v}」にアクセス（{st}…）がない")
-    if "芝公園" in cap and re.search(r"芝公園駅から徒歩", cap): minus(5, "fact", "芝公園は会場未確定（要確認）。アクセスは書かずDMへ")
+    # 11/12 芝公園野球場（芝公園駅から徒歩約2分）は加藤さん確定。旧ルール「芝公園は未確定」は削除（11/14）
     if "写真" in cap and "過去" not in cap and "イメージ" not in cap and t in ("carousel", "feed"):
         pass
     # 型（キャプションがある種類）
