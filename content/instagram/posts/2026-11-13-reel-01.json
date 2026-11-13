@@ -6,5 +6,5 @@
   "media": [
     "2026-11-13_reel_01.mp4"
   ],
-  "note": "前日リール。絵コンテ studio/r1113/storyboard.md → HTML/SVG アニメ studio/r1113/anim.html → Playwright で書き出し（render.js）。声なし＝改善:K-002 の B。音楽：citypop・seed 13・12.4〜12.9秒に間"
+  "note": "前日リール。絵コンテ studio/r1113/storyboard.md → HTML/SVG アニメ studio/r1113/anim.html → Playwright で書き出し（render.js）。読み上げ＋BGM（11/13 加藤さん「声をつけて」＝リールは全部声つき）。音楽：citypop・seed 13・12.4〜12.9秒に間"
 }

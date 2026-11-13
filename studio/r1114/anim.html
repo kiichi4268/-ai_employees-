@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:NB;src:url("../fonts/NotoSansCJK-Black.ttc")}
+@font-face{font-family:NM;src:url("../fonts/NotoSansCJK-Bold.ttc")}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#142a5c}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:NM,sans-serif;color:#142a5c}
+#bg{position:absolute;inset:0;background:url("bg.jpg") center/cover}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,42,92,.15),rgba(20,42,92,.55))}
+.abs{position:absolute;will-change:transform,opacity}
+.hook{left:84px;top:520px;white-space:nowrap;font-family:NB;color:#fff;line-height:1.08;text-shadow:0 6px 0 rgba(20,42,92,.35)}
+.hook .s{font-size:92px;display:block}
+.hook .b{font-size:150px;display:block;color:#ffec1e}
+.hook .c{font-size:120px;display:block}
+.tag{left:84px;top:420px;background:#18a0b2;color:#fff;font-family:NB;font-size:44px;padding:10px 26px;transform-origin:left center}
+.card{width:820px;background:#fbfaf6;border-radius:10px;padding:46px 52px 50px;box-shadow:10px 12px 0 rgba(20,42,92,.35)}
+.card .d{font-family:NB;font-size:80px;color:#119141;letter-spacing:1px}
+.card .t{font-family:NB;font-size:64px;margin-top:4px}
+.card .v{font-size:52px;margin-top:22px}
+.card .a{font-size:40px;margin-top:6px;color:#4a5b7c}
+.chk{left:84px;font-family:NB;font-size:62px;color:#fff;display:flex;align-items:center;gap:26px;text-shadow:0 4px 0 rgba(20,42,92,.4)}
+.cta{left:84px;top:760px;width:900px;font-family:NB;color:#fff}
+.cta .l1{font-size:70px}
+.cta .l2{font-size:96px;color:#ffec1e;line-height:1.15;margin-top:10px}
+.cta .l3{font-size:46px;margin-top:40px;font-family:NM;background:#142a5c;display:inline-block;padding:14px 26px}
+.handle{left:60px;bottom:70px;color:#fff;font-size:34px;font-family:NM;opacity:.9}
+.note{right:60px;bottom:70px;color:#fff;font-size:30px;opacity:.8}
+svg{position:absolute;left:0;top:0;overflow:visible}
+</style></head>
+<body><div id="stage">
+<div id="bg"></div><div class="shade"></div>
+<div class="abs tag" id="tag">11/14 前日のお知らせ</div>
+<div class="abs hook" id="hook"><span class="s">明日の日曜、</span><span class="b">お昼から</span><span class="c">バドミントン。</span></div>
+<svg width="1080" height="1920"><path id="ul" d="M84 960 C 300 944, 560 976, 820 950" stroke="#ffec1e" stroke-width="16" fill="none" stroke-linecap="round"/></svg>
+<div class="abs card" id="c1"><div class="d">11/15(日)</div><div class="t">13:00-15:00</div><div class="v">代々木の杜</div><div class="a">JR代々木駅から徒歩5分</div></div>
+<svg width="1080" height="1920"><path id="circ1" d="M0 0" stroke="#e23c3c" stroke-width="9" fill="none" stroke-linecap="round"/></svg>
+<div class="abs card" id="c2"><div class="d" style="color:#18a0b2;font-size:68px">まだ参加枠あります</div><div class="v">参加費1,500円</div><div class="a">当日 現金・PayPay</div></div>
+<div class="abs chk" id="k1"><svg width="70" height="70" style="position:relative"><path id="m1" d="M8 38 L28 58 L64 12" stroke="#ffec1e" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>ほとんど1人参加</div>
+<div class="abs chk" id="k2"><svg width="70" height="70" style="position:relative"><path id="m2" d="M8 38 L28 58 L64 12" stroke="#ffec1e" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>初心者7割・経験者3割くらい</div>
+<div class="abs chk" id="k3"><svg width="70" height="70" style="position:relative"><path id="m3" d="M8 38 L28 58 L64 12" stroke="#ffec1e" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>ラケット貸出あり</div>
+<div class="abs cta" id="cta"><div class="l1">予約は</div><div class="l2">プロフィールの<br>リンクから<br>公式LINEへ</div><div class="l3">LINEで @827lnqaq を検索でもOK</div></div>
+<svg width="1080" height="1920"><path id="arrow" d="M960 1500 C 980 1100, 990 700, 960 330 M920 390 L960 330 L1000 390" stroke="#ffec1e" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="abs handle">@macachette_sports</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const ease=x=>x<0?0:x>1?1:1-Math.pow(1-x,3);           // 自然に減速
+const io=x=>x<0?0:x>1?1:(x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2);
+const seg=(t,a,b)=>(t-a)/(b-a);
+function draw(path,p){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L*(1-Math.max(0,Math.min(1,p)));}
+function show(el,o,x=0,y=0,s=1,r=0){el.style.opacity=o;el.style.transform=`translate(${x}px,${y}px) scale(${s}) rotate(${r}deg)`;}
+window.render=function(t){
+  // 背景：ゆっくり1方向にだけ寄る（ズームは1方向）
+  $('bg').style.transform=`scale(${1.10-0.06*t/15.6})`;
+  // 1 フック 0–2.6（2.6–3.1 で上に抜けて次へ）
+  const h=ease(seg(t,0.1,0.7)), hOut=io(seg(t,2.5,3.0));
+  show($('hook'),h*(1-hOut),-60*(1-h),-260*hOut);
+  show($('tag'),ease(seg(t,0,.5))*(1-hOut),0,-260*hOut,1,-2);
+  draw($('ul'),seg(t,0.8,1.7)); $('ul').style.opacity=1-hOut;
+  // 2 1日目 2.8–（6.0 からは上に詰めて小さく残す＝引き継ぎ）
+  const c1=ease(seg(t,2.8,3.4)), shrink=io(seg(t,6.0,6.6)), c1Out=io(seg(t,9.2,9.6));
+  $('c1').style.left='84px'; $('c1').style.top='660px';
+  show($('c1'),c1*(1-c1Out),-500*(1-c1)+0*shrink,-300*shrink, 1-0.18*shrink);
+  $('c1').style.transformOrigin='left top';
+  // 「14」に丸を描く（日付の上）
+  const cp=seg(t,3.5,4.3);
+  if(cp>0&&t<6.0){const cx=84+52+150,cy=660+46+52;$('circ1').setAttribute('d',`M${cx-160} ${cy} a160 70 0 1 0 320 0 a160 70 0 1 0 -320 0`);draw($('circ1'),cp);$('circ1').style.opacity=1-io(seg(t,5.6,6.0));} else {$('circ1').style.opacity=0;}
+  // 3 2日目 6.2–
+  const c2=ease(seg(t,6.3,6.9)), c2Out=io(seg(t,9.2,9.6));
+  $('c2').style.left='176px'; $('c2').style.top='1040px';
+  show($('c2'),c2*(1-c2Out),520*(1-c2),0);
+  // 4 安心 9.6–12.4（チェックが順に描かれる）
+  [[1,9.7],[2,10.4],[3,11.1]].forEach(([i,a])=>{const k=$('k'+i);k.style.top=(620+i*200)+'px';
+    const o=ease(seg(t,a,a+.4))*(1-io(seg(t,12.2,12.5)));show(k,o,-40*(1-ease(seg(t,a,a+.4))),0);draw($('m'+i),seg(t,a+.15,a+.55));});
+  // 5 CTA 12.9–（間の後に出る）
+  const c=ease(seg(t,12.9,13.5)); show($('cta'),c,0,40*(1-c));
+  draw($('arrow'),seg(t,13.4,14.4)); $('arrow').style.opacity=c;
+};
+window.render(0);
+</script></body></html>
