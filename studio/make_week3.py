@@ -11,6 +11,7 @@ import make_week1 as w1
 from make_week1 import card_lines, event_card, make_image, make_video, GREEN, ORANGE, TEAL, LINE_GREEN, D
 from tools.editorial import split_story, list_ruled, CREAM, INK
 from tools.craft import finish
+from tools.audio import add_music, music_for
 
 OUT = os.path.join(D, "out", "week3"); os.makedirs(OUT, exist_ok=True)
 ROOT = os.path.dirname(D); MEDIA = os.path.join(ROOT, "content", "instagram", "media"); POSTS = os.path.join(ROOT, "content", "instagram", "posts")
@@ -159,6 +160,7 @@ if __name__ == "__main__":
         for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{n}.{e}") for n, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             make_image(dict(img), p1); make_video(dict(vid), p2)
+            add_music(p2, *music_for(tm, day))
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         # 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①＝a の画像、②＝b の文で動画、③＝QR と ID
@@ -166,6 +168,7 @@ if __name__ == "__main__":
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             a[0](**a[1]).save(p1, quality=93)
             make_video(as_video(b, ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
+            add_music(p2, *music_for(tm, day))
             qr_line("予約は", "公式LINEから", sub, p3, bg=("floor", "court")[n])
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         for tm, k, p in files:

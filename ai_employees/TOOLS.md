@@ -17,5 +17,10 @@
 | Social Media Skills（プラグイン） | SNS の作り方の知識集 | 任意。今の決まりと重なる所が多い |
 | Posty・Ayrshare（投稿予約） | 他のサービスから投稿 | **入れない**（Merge を通らずに投稿できてしまうため） |
 
+## 作った曲（studio/assets/music・著作権フリー）
+- 11/13 vidIQ で4曲：acoustic_morning（朝）・pop_bright（昼）・lofi_evening（夜）・citypop_night（夜）。各約1分。
+- クレジットが戻ったら（12/13）、種目別・季節別の曲を足す。加藤さん：「著作権で大丈夫なら、いくらでも作ってよい」。
+- 曲のダウンロード先 ai-music-tracks.s3.us-east-1.amazonaws.com は、この作業環境の通信許可に足した（11/13）。
+
 ## 音楽の決まり
 - 使うのは自作（audio.py）か、vidIQ などで作った著作権フリーの曲だけ。**市販の曲・Instagram の音源は使わない**（API の自動投稿では Instagram の音源は付けられない。付けたいときは加藤さんの手動投稿だけ）。
