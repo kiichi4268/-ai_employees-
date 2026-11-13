@@ -1,6 +1,6 @@
 """3週目（11/16〜11/22）ストーリー 1日10本（11/10 加藤さん：8:00×3・10:00×2・12:00×3・19:00×2）。全部自動投稿。
 - ③（8:00・12:00）は公式LINEの QR と ID（@827lnqaq）入り（11/12 加藤さん）。
-- 10:00・19:00 は画像2枚。組み方は studio/tools/editorial.py（上下分割・罫線リスト）＝中央の白いカードをやめる（11/12 デザインを上げる）。
+- 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①は editorial（上下分割・罫線リスト）、②は同じ話の短い動画、③は QR と ID。
 - 週のテーマ（企画シート PLANNING.md）：だれ＝「行ってみたいが1人だと不安な社会人」、動かす数字＝リンクタップ（週26）。
   11/21 バレー・11/22 野球・11/23 バレー＋卓球の3連続を、1日1つの不安に答えながら予約へ。
 使い方: cd studio && python3 make_week3.py → out/week3/ と content/instagram（media・posts）
@@ -56,6 +56,15 @@ def L(title, items, accent=ORANGE, seed=1):
         body = list_ruled(size=(1080, 1350), **kw)
         c = Image.new("RGB", (1080, 1920), CREAM); c.paste(body, (0, 285)); return c
     return (mk, dict(title=title, items=items, accent=accent, seed=seed))
+
+
+def as_video(b, src):
+    """10:00・19:00 の②：editorial の文（split_story／list_ruled）を、人の写らない背景の短い動画にする。"""
+    fn, kw = b
+    if "headline_lines" in kw:
+        hl_ = [x.rstrip("、。") for x in kw["headline_lines"]]
+        return dict(src=src, h1=hl_[0], h2=hl_[1] if len(hl_) > 1 else "", lines=[kw["kicker"], kw["foot"]][:2], blur=2)
+    return dict(src=src, h1=kw["title"], h2="", lines=[h for h, _ in kw["items"]][:3], blur=2)
 
 
 WEEK = [
@@ -150,8 +159,13 @@ if __name__ == "__main__":
             make_image(dict(img), p1); make_video(dict(vid), p2)
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
-        for tm, (a, b) in (("1000", (i10a, i10b)), ("1900", (i19a, i19b))):
-            for k, p in enumerate(two(day, tm, a, b), 1): files.append((tm, k, p))
+        # 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①＝a の画像、②＝b の文で動画、③＝QR と ID
+        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "イベントカレンダーから予約"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約"))):
+            p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
+            a[0](**a[1]).save(p1, quality=93)
+            make_video(as_video(b, ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
+            qr_line("予約は", "公式LINEから", sub, p3, bg=("floor", "court")[n])
+            files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         for tm, k, p in files:
             name = f"2026-11-{day[2:]}_story_{tm}_{k}" + os.path.splitext(p)[1]
             shutil.copy(p, os.path.join(MEDIA, name))
