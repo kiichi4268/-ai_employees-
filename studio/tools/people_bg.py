@@ -10,6 +10,8 @@ D = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PHOTOS = {  # キー: (ファイル, ぼかし)。顔が近い写真ほど強く
     "play_bad": ("IMG_3754.jpg", 7), "play_gym": ("IMG_3560.jpg", 6), "play_bb": ("S__66338826_0.jpg", 7),
     "play_vb": ("vb_play.jpg", 10), "play_vb2": ("vb_sugamo_people.jpg", 8),
+    # 11/14 加藤さん「ボケはそんなに必要ない。顔が見えない形で」→ 顔だけモザイク（tools/anonymize.py・手で全員の頭を確認）・写真はくっきり
+    "b14_wide": ("anon_b1114_IMG_4801.jpg", 0), "b14_court": ("anon_b1114_IMG_4807.jpg", 0),
 }
 NOTE = "※写真は過去の開催時のものです"
 FONT = os.path.join(D, "fonts", "NotoSansCJK-Bold.ttc")
