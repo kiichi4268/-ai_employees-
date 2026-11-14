@@ -15,6 +15,9 @@
 | Abracadabrax AI Background Music Generator（プラグイン） | BGM を作る | vidIQ で足りれば不要。別にクレジット購入が要る |
 | instagram（プラグイン） | コメント・DM を読む・返信の下書き | コメントが増えてから検討（返信は加藤さん） |
 | Social Media Skills（プラグイン） | SNS の作り方の知識集 | 任意。今の決まりと重なる所が多い |
+| design:design-critique（入っているスキル） | 見た目の仕上げのチェック（文字の大きさ・色・そろい） | **使う**（11/14）。確かめる担当がリール・カルーセルの完成前に1回かける |
+| anthropic-skills:skill-creator（入っているスキル） | スキル（ig-daily-pdca など）をテストして直す | **使う**（11/14）。日曜の週次PDCAで、うまく動かなかったスキルだけ直す |
+| Superpowers・Browser Use・HyperFrames・Discord（動画で紹介の道具） | 計画・サイト巡回・HTML動画・スマホに通知 | **入れない**。今ある仕組み（右腕の4ルール・ウェブ検索/Playwright・HTML→動画・ChatWork）と同じ役目 |
 | Posty・Ayrshare（投稿予約） | 他のサービスから投稿 | **入れない**（Merge を通らずに投稿できてしまうため） |
 
 ## 作った曲（studio/assets/music・著作権フリー）
