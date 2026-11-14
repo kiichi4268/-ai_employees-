@@ -91,6 +91,31 @@ def as_video(b, src):
     return dict(src=src, h1=kw["title"], h2="", lines=[h for h, _ in kw["items"]][:3], blur=2 if src in ("court", "floor", "ceiling") else 4.6)
 
 
+# ---- v2 の見た目（11/14 加藤さん「背景が貧相。他のスポーツイベントを参考に」）----
+from tools.story_v2 import full_bleed, collage, montage
+def FB(key, kicker, lines, chips, accent=None, mark=None, seed=1):
+    return (full_bleed, dict(key=key, kicker=kicker, lines=lines, chips=chips, mark=mark, seed=seed, **({"accent": accent} if accent else {})))
+def CL(keys, kicker, lines, chips, seed=2):
+    return (collage, dict(keys=keys, kicker=kicker, lines=lines, chips=chips, seed=seed))
+def MV(keys, title, lines):
+    return ("montage", dict(keys=keys, title=title, lines=lines))
+# DAILY[日付][時刻] = (①, ②, ③の一言)。毎晩のPDCAで翌日分を書く。8:00・12:00 が取り下げで空いた日もここで埋める
+EXP_NOTE = {"1115": "実験:D-1115 左上の名前を指す「タップで日程一覧」の札（プロフィールアクセス↑）"}
+DAILY = {
+ # 11/15(日)：11/15 バドは定員オーバーで 8:00・12:00 を取り下げ → 4枠とも DAILY で作る。来週末 11/21〜23 の告知（11/15 の開催には触れない）
+ "1115": {
+  "0800": (FB("play_vb", "来週末 11/21〜23", ["土・日・祝、", "3日つづけて"], ["11/21 バレー 中野", "11/22 野球 芝公園", "11/23 バレー・卓球", "参加費1,500円（当日）"], mark="3日", seed=151),
+           MV(["play_vb", "play_bb", "play_vb2"], "来週末は3連続", ["土 バレー・日 野球", "祝日 バレー・卓球"]), "来週末の予約・参加費1,500円（当日）"),
+  "1000": (FB("play_vb2", "11/21(土) 11:45-13:45", ["「久しぶりの", "バレー、いける？」"], ["中野区中部スポーツ・コミュニティプラザ", "新中野駅4番出口 徒歩9分", "参加費1,500円（当日）"], mark="バレー", seed=152),
+           MV(["play_vb2", "play_vb", "play_vb2"], "11/21 バレー", ["初心者7割・経験者3割くらい", "新中野駅4番出口 徒歩9分"]), "カレンダーから予約・参加費1,500円（当日）"),
+  "1200": (CL(["b14_wide", "b14_court", "play_vb"], "1人で行っていい？", ["ほとんどが", "1人参加です"], ["初心者7割・経験者3割くらい", "バド・卓球はラケット貸出あり", "参加費1,500円（当日）"], seed=153),
+           MV(["b14_court", "b14_wide", "play_vb2"], "1人参加が多い", ["初心者7割・経験者3割くらい", "まだ参加枠あります"]), "1人でもLINEから予約・参加費1,500円（当日）"),
+  "1900": (FB("play_bb", "11/22(日) 17:00-19:00", ["「日曜の夕方、", "野球しない？」"], ["芝公園野球場", "都営三田線 芝公園駅 徒歩約2分", "参加費1,500円（当日）"], mark="野球", seed=154),
+           MV(["play_bb", "play_vb", "play_bb"], "11/22 野球", ["都営三田線 芝公園駅 徒歩約2分", "祝日11/23はバレー・卓球も"]), "日曜の夜にLINEで予約・参加費1,500円（当日）"),
+ },
+}
+
+
 WEEK = [
  # 11/14(土)：毎日制作の1日目（--daily のみ。8:00・12:00 は週2の予約済み）。実験:D-1114＝①の1行目を「」の心の声にする（STORY_MODEL 3-1）
  ("1114", None, None, None,
@@ -183,11 +208,12 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     mode = "daily" if "--daily" in args else "base" if "--base" in args else "all"
     only = [a for a in args if not a.startswith("--")]
-    for day, img8, vid8, l8, i10a, i10b, img12, vid12, l12, i19a, i19b in WEEK:
+    _extra = [(d,) + (None,) * 10 for d in DAILY if d not in [w[0] for w in WEEK]]
+    for day, img8, vid8, l8, i10a, i10b, img12, vid12, l12, i19a, i19b in WEEK + _extra:
         if only and day not in only: continue
         dd = os.path.join(OUT, day); os.makedirs(dd, exist_ok=True)
         files = []
-        for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" else ()):
+        for tm, img, vid, line in ((("0800", img8, vid8, l8), ("1200", img12, vid12, l12)) if mode != "daily" and img8 is not None else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{n}.{e}") for n, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             if day in BASE_BG:  # 人がプレーしている実写に差し替え（②は写真をゆっくり寄る動画に）
                 k = BASE_BG[day][0 if tm == "0800" else 1]
@@ -198,15 +224,26 @@ if __name__ == "__main__":
             qr_line(*line, p3)
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         # 10:00・19:00 も3本セット（画像→動画→画像・11/13 加藤さん）。①＝a の画像、②＝b の文で動画、③＝QR と ID
-        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "カレンダーから予約・参加費1,500円（当日）"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約・参加費1,500円（当日）")) if mode != "base" else ()):
+        for n, (tm, (a, b), sub) in enumerate((("1000", (i10a, i10b), "カレンダーから予約・参加費1,500円（当日）"), ("1900", (i19a, i19b), "仕事帰りにLINEで予約・参加費1,500円（当日）")) if mode != "base" and i10a is not None and day not in DAILY else ()):
             p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
             a[0](**a[1]).save(p1, quality=93)
             make_video(as_video(b, VSRC[day][n] if day in VSRC else ("court", "floor", "ceiling")[(int(day) + n) % 3]), p2)
             add_music(p2, music_for(tm, day)[0], start=music_for(tm, day)[1])
             qr_line("予約は", "公式LINEから", sub, p3, bg=("floor", "court")[n])
             files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
+        if day in DAILY and mode == "daily":
+            files = []
+            for tm, (a, b, sub) in DAILY[day].items():
+                p1, p2, p3 = (os.path.join(dd, f"{day}_{tm}_{k}.{e}") for k, e in ((1, "jpg"), (2, "mp4"), (3, "jpg")))
+                a[0](**a[1]).save(p1, quality=93)
+                if b[0] == "montage": montage(path=p2, **b[1])
+                else: make_video(as_video(b, "court"), p2)
+                _n, _s = music_for(tm, day); add_music(p2, _n, start=_s)
+                qr_line("予約は", "公式LINEから", sub, p3, bg="floor")
+                files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         for tm, k, p in files:
             name = f"2026-11-{day[2:]}_story_{tm}_{k}" + os.path.splitext(p)[1]
             shutil.copy(p, os.path.join(MEDIA, name))
-            post(day, tm, k, name, f"3週目ストーリー {day[:2]}/{day[2:]} {tm[:2]}:{tm[2:]} の{k}本目。studio/make_week3.py（③はQR・ID、10時・19時は editorial）。改善:K-003")
+            post(day, tm, k, name, f"3週目ストーリー {day[:2]}/{day[2:]} {tm[:2]}:{tm[2:]} の{k}本目。studio/make_week3.py（③はQR・ID、10時・19時は editorial）。改善:K-003"
+                 if day not in DAILY else f"3週目ストーリー {day[:2]}/{day[2:]} {tm[:2]}:{tm[2:]} の{k}本目。studio/make_week3.py（③はQR・ID、見た目 v2・毎晩作成）。改善:K-003 {EXP_NOTE.get(day, '')}")
         print("done", day, len(files), flush=True)
