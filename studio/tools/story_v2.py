@@ -44,9 +44,12 @@ def chip(text, bg=WHITE, fg=INK, size=40, pad=(26, 14)):
 
 
 def _brand(c):
+    """11/14 夜の改善 D-1115（調べる担当）：上 約250px はアプリの表示で隠れるのでロゴはやめ、
+    左上のアカウント名を指す矢印と「タップで日程」の札を安全地帯（y≈270）に置く。プロフィールアクセスを上げる。"""
     d = ImageDraw.Draw(c)
-    d.text((64, 70), "MACACHETTE SPORTS", font=F(BOLD, 30), fill=(255, 255, 255, 230))
-    d.line((64, 116, 360, 116), fill=YEL, width=5)
+    d.line((92, 262, 92, 196), fill=YEL, width=7); d.polygon([(92, 176), (74, 206), (110, 206)], fill=YEL)
+    k = chip("@macachette_sports をタップで 日程一覧", bg=WHITE, fg=INK, size=34)
+    c.alpha_composite(k, (64, 270))
 
 
 def _note(c, y=1838):
@@ -60,8 +63,10 @@ def full_bleed(key, kicker, lines, chips, accent=YEL, mark=None, seed=1, note=Tr
     _brand(c)
     y = 1010
     k = chip(kicker, bg=accent, fg=INK, size=38); c.alpha_composite(tilt(k, -2), (58, y)); y += k.height + 34
+    sz = 116
+    while sz > 80 and max(text_img(ln, F(BLACK, sz), WHITE).width for ln in lines) > W - 150: sz -= 4  # 端にかからないように縮める（11/14 夜）
     for ln in lines:
-        t = text_img(ln, F(BLACK, 116), WHITE)
+        t = text_img(ln, F(BLACK, sz), WHITE)
         if mark and mark in ln:  # 強調の言葉の下に黄色の帯
             band = Image.new("RGBA", (t.width + 20, int(t.height * 0.36)), YEL + (230,))
             c.alpha_composite(band, (54, y + int(t.height * 0.62)))
@@ -80,10 +85,10 @@ def collage(keys, kicker, lines, chips, accent=YEL, seed=2, note=True):
     bg = _cover(w1.SRC[keys[0]]).filter(ImageFilter.GaussianBlur(18))
     c = Image.blend(bg, Image.new("RGB", (W, H), NAVY), 0.55).convert("RGBA")
     _brand(c)
-    y = 170
-    k = chip(kicker, bg=accent, fg=INK, size=38); c.alpha_composite(tilt(k, -2), (58, y)); y += k.height + 26
+    y = 360  # 上の「タップで日程一覧」の札の下から（11/14 夜）
+    k = chip(kicker, bg=accent, fg=INK, size=36); c.alpha_composite(tilt(k, -2), (58, y)); y += k.height + 18
     for ln in lines:
-        t = text_img(ln, F(BLACK, 100), WHITE); c.alpha_composite(t, (64, y)); y += t.height + 4
+        t = text_img(ln, F(BLACK, 88), WHITE); c.alpha_composite(t, (64, y)); y += t.height + 2
     spots = [(70, 700, -6), (330, 880, 5), (110, 1120, -3)]
     for key, (x, yy, ang) in zip(keys, spots):
         ph = _cover(w1.SRC[key], 680, 460)
