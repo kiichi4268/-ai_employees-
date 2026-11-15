@@ -33,3 +33,9 @@
 - 夜の制作（23:55・月水21:00など）のときに Claude が自動で読み取れるよう、Drive のフォルダを「リンクを知っている全員が閲覧可」にし、Claude の作業環境から Drive のファイル置き場（drive.usercontent.google.com）に入れるようにする。
 - 取り込んだら顔だけモザイク（tools/anonymize.py）→ 確かめる担当が二重チェック → 背景に使う。ぼかす前のものは GitHub に入れない。
 - 11/14 共有の設定と作業環境の通信許可が済み、Drive から直接取り込めることを確認（tools/drive_fetch.py）。
+
+## muse.ai との使い方（11/15 加藤さん。無料のまま・Claude から muse.ai は直接触らない）
+- **見本のリサーチ（案1）**：加藤さんが良いと思った他の投稿を muse.ai（**非公開**）に入れ、出てきた文字起こし・画面の文字を Drive「muse_見本（文字起こし）」`1HdFypK71415h3i-YTXUKxASw2UJEcvGz` に貼る（1本＝1ファイル。元の投稿のURLか名前を1行目に）。
+  - Claude は毎晩の日次PDCA（調べる担当の仕事）でこのフォルダの新しいファイルを読み、**作り方の型だけ** STORY_MODEL・REELS_CAROUSEL_MODEL に足す。言葉・画像はまねない。読んだファイルは学びログに1行。
+- **投稿以外の物（案2）**：Claude Code が作った物（投稿以外）を Drive「muse_アップロード用（Claudeが作った物）」`1mH0eqSaCwmrRVuolzs5EtodsPIdZLTAd` に入れる → 加藤さんが muse.ai に入れる。それ以外に muse.ai は使わない。
+  - 入れるのは顔の処理が済んだ完成品だけ（ぼかす前の写真・動画は入れない）。
