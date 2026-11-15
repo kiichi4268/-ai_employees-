@@ -36,6 +36,6 @@
 
 ## muse.ai（11/15 加藤さん）
 - 見本のリサーチには使わない（Claude から muse.ai を自動で使えないため不要）。
-- **Instagram 以外のSNS**（⭐100 になってから始める）：投稿の前まで（画像・動画・文）は Claude Code が作る → Drive「他のSNS用（Claudeが作った画像・動画・文→Museで投稿）」`1mH0eqSaCwmrRVuolzs5EtodsPIdZLTAd` に入れる → 加藤さんがそのファイルの共有リンク（リンクを知っている全員・閲覧）を Muse のチャットに貼る → Muse が取り込み、整形・投稿前確認・投稿（Facebook・Threads など）。入れるのは顔の処理が済んだ完成品だけ。
+- **Instagram 以外のSNS**（⭐100 になってから始める）：投稿の前まで（画像・動画・文）は Claude Code が作る → Drive「他のSNS用（Claudeが作った画像・動画・文→Museで投稿）」`1mH0eqSaCwmrRVuolzs5EtodsPIdZLTAd` に入れる → 加藤さんがそのファイルの共有リンク（リンクを知っている全員・閲覧）を Muse のチャットに貼る → Muse が取り込み、整形・投稿前確認・投稿。Muse で出すのは X・TikTok・YouTube・Threads・Pinterest（11/15 加藤さん）。投稿前の中身（画像・動画・文）は全部 Claude Code が作る。入れるのは顔の処理が済んだ完成品だけ。
   - 11/15 Muse の回答：API で Muse のアカウントに入れる・SNS に投稿するのは不可（API は文章生成用・従量課金）。公開リンクをチャットに貼れば Muse が取り込める（ログインが要るリンクは不可）。添付なら動画 約100MB・その他 約25MB まで。入れたファイルは初めは非公開。
   - Instagram は今までどおり GitHub → 自動投稿（Muse は使わない）。
