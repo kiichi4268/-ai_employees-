@@ -4,6 +4,10 @@
 使い方: cd studio && python3 make_c1116.py"""
 import os, shutil, json
 from make_c1105 import *
+import make_week1 as _w1
+from tools import people_bg
+people_bg.register(_w1)  # 11/15：11/14 当日の写真（顔だけモザイク・くっきり）を使う
+DAY14 = "※写真は11/14の開催時のものです（顔は隠しています）"
 
 OUT3 = os.path.join(D, "out", "c1116"); os.makedirs(OUT3, exist_ok=True)
 MEDIA = os.path.join(D, "..", "content", "instagram", "media")
@@ -22,18 +26,18 @@ def note(c, text, y=1190):
 
 
 # 1 表紙
-c = bg("bad", blur=6, dark=0.40)
+c = bg("b14_wide", blur=0, dark=0.45)
 put(c, fit(shadowed(pill([text_img("11/14(土)・11/15(日)", F(BLACK, 60), NAVY)], h=104))), W / 2, 230)
 put(c, fit(shadowed(headline("バドミントン", "2日連続 開催しました", seed=3, size=110))), W / 2, 400)
 put(c, fit(shadowed(yellow_band("ご参加ありがとう！", size=130, seed=7))), W / 2, 690)
 put(c, fit(shadowed(pill([text_img("今週末は3連続開催 →", F(BLACK, 48), WHITE)], h=100, bg=TEAL))), W / 2, 930)
-note(c, PAST); save3(c, 1)
+note(c, DAY14); save3(c, 1)
 
 # 2 会場
-c = bg("gym"); head(c, "2つの会場で", "開催しました", seed=4)
+c = bg("b14_court", blur=0, dark=0.55); head(c, "2つの会場で", "開催しました", seed=4)
 put(c, card(["11/14(土) 15:00-17:00", "まもりやまテラス", "新代田駅から徒歩約5分"], title="1日目", color=GRN, fs=46), W / 2, 280)
 put(c, card(["11/15(日) 13:00-15:00", "代々木の杜", "JR代々木駅から徒歩5分"], title="2日目", color=GRN, fs=46), W / 2, 740)
-note(c, PAST, 1180); save3(c, 2)
+note(c, DAY14, 1180); save3(c, 2)
 
 # 3 当日の流れ（例）
 c = bg("bad"); head(c, "バドの日は", "こんな流れ（例）", seed=5)
