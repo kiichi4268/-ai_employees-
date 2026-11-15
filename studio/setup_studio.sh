@@ -20,6 +20,8 @@ fi
 python3 -c "import PIL, numpy, cv2" 2>/dev/null || pip install -q -r ../requirements.txt
 command -v ffmpeg >/dev/null || echo "✗ ffmpeg がありません（apt-get install -y ffmpeg）"
 # 3) 実写素材（顔が写っているので、公開リポジトリには絶対に入れない）
+python3 -c "import pillow_heif" 2>/dev/null || pip install -q pillow-heif
+python3 ../tools/fetch_materials.py || true  # 11/15：Drive から足りない実写を取り込む（毎回新しい会話の予約でも素材がそろう）
 need="clips/96bd7101d80345dea32585cc72954439.MOV clips/29da73e9795845e4aea114b14fb8c95c.MOV clips/IMG_4049.JPG clips/IMG_4093.MOV clips/IMG_4096.MOV photos/IMG_3560.jpg photos/IMG_3750.jpg photos/IMG_3754.jpg inputs/d2c9044b-Macachette_LINE___45s_SE__.mp4"
 miss=0; for f in $need; do [ -f "$f" ] || { echo "✗ 素材なし: studio/$f"; miss=1; }; done
 for w in Black Bold Medium; do [ -f fonts/NotoSansCJK-$w.ttc ] || { echo "✗ フォントなし: NotoSansCJK-$w.ttc"; miss=1; }; done
