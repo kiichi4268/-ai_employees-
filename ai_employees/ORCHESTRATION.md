@@ -45,6 +45,7 @@
 
 ### 4-1. 3つの担当は33人の指示書を全部使う（11/14 加藤さん）
 - 各担当（Agent）を動かすときは、その担当に入る社員の指示書を**全部読ませてから**仕事をさせる。
+- **読むのは `ai_employees/teams/〇〇担当.md`（11/15 加藤さん：使う量を減らす・質は落とさない）**。33人の指示書は9割が同じ文なので、共通の決まりを1回だけ載せ、社員ごとの「役割と専門性」から下は全部そのまま入れたまとめ。中身は元の指示書と同じで、読む量は約6分の1。元の指示書を直したら `python3 tools/build_team_briefs.py` で作り直す。
   - 調べる担当：01_research/ の5人＋06_operations_analytics/comment_analyzer・numeric_analyst・improvement_proposal＋07_management/contrarian_ideas
   - 作る担当：02_planning/ の4人＋03_content_creation/ の4人＋05_visual_production/ の7人（music_composer を含む）
   - 確かめる担当：04_review_quality/ の4人＋06_operations_analytics/posting_manager・progress_manager＋07_management/management_metrics・supervisor・posting_doctor
