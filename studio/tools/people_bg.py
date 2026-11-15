@@ -17,12 +17,25 @@ NOTE = "※写真は過去の開催時のものです"
 FONT = os.path.join(D, "fonts", "NotoSansCJK-Bold.ttc")
 
 
+BG = os.path.join(os.path.dirname(D), "content", "instagram", "media", "bg")  # 顔の処理済み（ぼかし・顔だけモザイク）。新しい作業場でも使える（11/15）
+
+
+def processed(key):
+    """元の写真が作業場に無いとき（毎回新しい会話の予約）は、処理済みの content/instagram/media/bg/{key}.jpg を使う。"""
+    p = os.path.join(BG, key + ".jpg")
+    return ImageOps.exif_transpose(Image.open(p)).convert("RGB") if os.path.exists(p) else None
+
+
 def register(w1):
     for key, (fn, r) in PHOTOS.items():
         p = os.path.join(D, "photos", fn)
-        if not os.path.exists(p): continue
-        im = ImageOps.exif_transpose(Image.open(p)).convert("RGB")
-        im = w1.cover(im).filter(ImageFilter.GaussianBlur(r))
+        if os.path.exists(p):
+            im = ImageOps.exif_transpose(Image.open(p)).convert("RGB")
+            im = w1.cover(im).filter(ImageFilter.GaussianBlur(r))
+        else:
+            im = processed(key)
+            if im is None: continue
+            im = w1.cover(im)
         w1.SRC[key] = im; w1.CLEAR_BG.add(key)
 
 

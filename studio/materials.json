@@ -1,0 +1,21 @@
+{
+  "_説明": "新しい作業場（毎回新しい会話の予約）で、制作に要る実写を Drive から取り込む一覧。python3 tools/fetch_materials.py で足りない物だけ取る。顔の処理前の写真なので GitHub には入れない（studio/photos・clips は .gitignore 済み）。Drive に無い写真の背景は content/instagram/media/bg/（処理済み）を使う。",
+  "photos/IMG_3560.jpg": "11jTBB1-4DzIlWYWQLmxt_pJ3oW2NG58Z",
+  "photos/IMG_3750.jpg": "1yZXMLIF4ea0oRvvHJCzXv4RtYZ9YVqwH",
+  "photos/IMG_3754.jpg": "1ReGgLVM_rSENUg8H84VJ_cqBRF2sOx4q",
+  "photos/IMG_3764.jpg": "11oALI9oXfC25_0xb_b44FyYbNrMXb0-J",
+  "photos/b1114_IMG_4801.jpg": "1nlMQvjTvIv5HEZjm75twa60947uiq6F6",
+  "photos/b1114_IMG_4802.jpg": "11ouDWocvHfbeoulQm6kduNYYc65XQ3N3",
+  "photos/b1114_IMG_4807.jpg": "1EByNZ2bg3DHY3mmh9xBnPzOZZDkZLJQZ",
+  "clips/IMG_4049.JPG": "1AZlFROpW1PRGT41DdrI5eTna01F4PUhV",
+  "clips/IMG_4058.JPG": "1qKV1Z7sUNLSKCDRP91dpKojCOluHsvbn",
+  "clips/29da73e9795845e4aea114b14fb8c95c.MOV": "1RNu9lZMEOM8q3RK7WqgqbxQ83Qw5u6UP",
+  "clips/96bd7101d80345dea32585cc72954439.MOV": "1J05VeMrVtB0BXsc2eyGx8JWlcVu-IZMn",
+  "clips/IMG_3757.MOV": "1DCxKECLLFSNVfDyPnjgF5GMLX9aww20f",
+  "clips/IMG_4093.MOV": "1F31xKdfRlAZKcWj8M49srXcszMdZOpgJ",
+  "clips/IMG_4096.MOV": "1UvEpJgf55BC8FDOOGe3bR2bFy2Rjkbx3",
+  "clips/b1114_IMG_4806.MOV": "1QTohj6TjK9HaHovxagfVbDny8VufFvev",
+  "clips/b1114_IMG_4809.MOV": "1Cw7IqMytWrbzVzAlESa63fMUt8628qY0",
+  "clips/tt_story.mp4": "1xFpJOvsBiz3M6MrRDozF-zG5-210Dkwh",
+  "inputs/d2c9044b-Macachette_LINE___45s_SE__.mp4": "14vDrzIB0hI-oNcaHuw0muVweYOPMEmoS"
+}

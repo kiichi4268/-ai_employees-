@@ -46,6 +46,10 @@ def qr_line(head1, head2, sub, path, bg="ceiling"):
 from PIL import ImageOps, ImageFilter
 def _play(p, r=6):
     if isinstance(p, tuple): p, r = p
+    if not os.path.exists(os.path.join(D, "photos", p)):  # 新しい作業場：処理済みの背景を使う（11/15）
+        k = next((k for k, v in PLAY.items() if (v[0] if isinstance(v, tuple) else v) == p), None)
+        im = people_bg.processed(k) if k else None
+        if im is not None: im.thumbnail((1080, 1440)); return im
     im = ImageOps.exif_transpose(Image.open(os.path.join(D, "photos", p))).convert("RGB"); im.thumbnail((1080, 1440))
     return im.filter(ImageFilter.GaussianBlur(r))
 PLAY = {"play_bad": "IMG_3754.jpg", "play_gym": "IMG_3560.jpg", "play_bb": "S__66338826_0.jpg",
