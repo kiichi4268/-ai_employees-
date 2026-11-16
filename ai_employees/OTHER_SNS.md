@@ -29,3 +29,10 @@
 - Instagram 以外（YouTube・note など。公式LINE は除く）の進み具合・振り返り・ネタは、スプレッドシートに入れない。
 - Drive「他のSNS用」の中の「Obsidian_他のSNS（週1まとめ）」`1Qca9kju8Sox26oWYQ5jVv4qnQ3ksdv5f` に、毎週日曜の週次PDCAで markdown を1枚足す（`週_YYYY-MM-DD.md`）。目次は `00_目次.md`、ネタは `01_ネタのストック.md`。Obsidian で開けるように [[リンク]] でつなぐ。
 - 毎日は書かない。Instagram のシートと学びログはそのまま（学びログの「note候補」の印だけは毎晩）。
+
+## 置き場所の分け方（11/16 加藤さん「1で行う」）と、被らないための決まり
+- Instagram＝Google（スプレッドシート・Drive）、他のSNS＝Obsidian（Drive のフォルダ経由・週1）。完成した画像・動画は GitHub（Drive は増やさない）。
+- 決まりの元は CLAUDE.md と「加藤からの修正・決定」だけ。日程の元は「イベント状況」だけ。Obsidian には書き写さない。
+- ネタは「学びログの note候補 → 日曜に Obsidian のネタのストックへ移す」の一方通行。
+- Muse への受け渡しは Google ドキュメント「Muse投稿リスト」だけ。
+- Drive は 15GB 中 2.7GB（11/16）。加藤さんの写真・動画は Claude が消さない。Claude が作って要らなくなった物だけ消す。
