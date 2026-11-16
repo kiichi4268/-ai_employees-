@@ -22,7 +22,7 @@
 - **TikTok**：動画60秒以内・説明100〜150字・ハッシュタグ3〜5個。
 - **YouTube Shorts**：動画60秒以内・タイトル100字以内。
 - **Threads**：本文500字以内・画像／動画OK・ハッシュタグ1つ。
-- **Pinterest**：画像は縦 2:3（1000×1500）・タイトル100字以内・説明450字くらい。リンク先URLは公式LINE https://lin.ee/WIbLPFV（11/15 加藤さん）。リンク欄だけに入れ、本文にはURLを書かない。
+- **Pinterest**：画像は縦 2:3（1000×1500）・タイトル100字以内・説明450字くらい。リンク先URLは公式LINE https://lin.ee/T93OXDF（11/15 加藤さん）。リンク欄だけに入れ、本文にはURLを書かない。
 - Muse は中身を変えない（見た目と文字数の調整だけ）。投稿前に必ず加藤さんが最終確認。
 
 ## データの置き場所（11/16 加藤さん：Obsidian に週1でまとめる）
@@ -45,4 +45,4 @@
 ## Muse の返事（11/16）
 - 担当は YouTube と note の投稿だけ。Obsidian は読むだけ。note は下書き保存→加藤さんの最終確認→公開。note の予約投稿は不明（初回に確認）。
 - YouTube Shorts は Instagram の翌日 19:00 に予約公開でそろえる。投稿リストには素材フォルダへのリンクも書く。
-- 公式LINE のリンクが2つある（CLAUDE.md は https://lin.ee/WIbLPFV、Muse の登録は https://lin.ee/oowueEx）→ 加藤さんに確認中。
+- 公式LINE の正しいリンクは https://lin.ee/T93OXDF（11/16 加藤さん。LINE公式アカウントの管理画面「友だち追加URL」で確認）。前の WIbLPFV・Muse の oowueEx は使わない。
