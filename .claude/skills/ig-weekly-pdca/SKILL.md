@@ -24,3 +24,9 @@ description: Instagram の週次PDCA（リサーチ・コメント数・改善�
 - 残すもの：型の「形」と「うちでの使い方」、CLAUDE.md の絶対ルールに関わる注意、まだ試していない新しい型。
 - 消した中身は git の履歴に残るので、報告に「整理：◯行 → ◯行（消した物）」を1行。別のAIは使わない（自分で行う）。
 - Obsidian（週1・第二の脳）：その週の学びを「学び_◯◯.md」（タグ 記憶）で足し、関係するノートに [[リンク]] を張る。YouTube・note のその週の結果を、Drive「Obsidian_他のSNS（週1まとめ）」`1Qca9kju8Sox26oWYQ5jVv4qnQ3ksdv5f` に `週_YYYY-MM-DD.md` として1枚足す（形は 00_目次.md のとおり。取れない数字は「不明」）。新しいネタは 01_ネタのストック.md に足す。
+
+## 週1回のまとめ準備（11/16 加藤さん：日曜のこの回で3つそろえる）
+1. **Obsidian（グラフビュー）**：保管庫「Obsidian_他のSNS（週1まとめ）」`1Qca9kju8Sox26oWYQ5jVv4qnQ3ksdv5f` に、その週の学び（学び_◯◯.md・タグ 記憶）と `週_YYYY-MM-DD.md` を足し、関係するノートへ [[リンク]] を張る。タグは 中心・ルール・型・リサーチ・インサイト・スキル・記憶・他のSNS・ネタ の中から（色分けは .obsidian/graph.json）。同じ名前のノートは作らない。
+2. **Google Drive**：Drive「Instagram」の写真・素材の新しい物を確かめ（MATERIALS.md）、使える物を一覧に足す。加藤さんの写真・動画は消さない。
+3. **Muse の投稿内容**：その週の note 記事（あれば）と、まだ書いていない YouTube Shorts を「Muse投稿リスト」`1uAwrlnVr6JI5aHyah4s10VGs7xtJSIwJ8qY29y0LM6k` の【未投稿】に書き足す。
+報告に「Obsidian ◯枚追加／Muse投稿リスト ◯件追加」と1行。
