@@ -97,7 +97,7 @@
 ## 🔗 【実運用リンク（CTAで必ず使うURL）】
 | 名称 | URL | 使いどころ |
 |---|---|---|
-| 公式LINE登録 | https://lin.ee/WIbLPFV | クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り） |
+| 公式LINE登録 | https://lin.ee/T93OXDF | クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り） |
 | 予約フォーム | https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform | 販売（申込）。LINE配信・イベント告知・リマインドで「日程が決まっている人」に出す |
 | note（オープン教育） | https://note.com/gifted_canna4865 | 初参加の流れ・参加者の声など、長文で不安を解消したい人向け |
 | Instagram（本陣） | https://www.instagram.com/macachette_sports | フロント拡散（X / Threads / TikTok / Shorts）から「雰囲気を見てね」で送る先 |
@@ -116,7 +116,7 @@
 **CTAのルール**
 - CTAに入れるURLは上の表のものだけ。URLを作ったり、短縮したり、別のURLに置き換えたりしない。
 - **X / Threads / 公式LINE配信 / note**：本文にURLをそのまま書く（タップできる）。
-- **Instagram / TikTok**：キャプション内のURLはタップできないため、「プロフィールのリンクから」と書き、プロフィールに公式LINE（https://lin.ee/WIbLPFV）を置く前提で案内する。
+- **Instagram / TikTok**：キャプション内のURLはタップできないため、「プロフィールのリンクから」と書き、プロフィールに公式LINE（https://lin.ee/T93OXDF）を置く前提で案内する。
 - いまは Instagram だけを運用中（ほかのSNSは保留）。CTA は公式LINE1つ。申込は「プロフィールのリンク → 公式LINE → イベントカレンダーから予約 → 参加フォーム → 合言葉をLINEに送る → 参加受付証」。予約フォームのURLは本文に書かない。
 
 ## 📆 【今月のイベントスケジュール（2026年11月）】

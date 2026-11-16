@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent / "ai_employees"
 # ---------------------------------------------------------------------------
 LINKS = [
     # (キー, 名称, URL, ファネル上の役割・使いどころ)
-    ("line", "公式LINE登録", "https://lin.ee/WIbLPFV",
+    ("line", "公式LINE登録", "https://lin.ee/T93OXDF",
      "クローズド教育の入口。すべての投稿の最終CTA（初参加ガイド・先行案内の受け取り）"),
     ("form", "予約フォーム", "https://docs.google.com/forms/d/e/1FAIpQLSfXFehVXHLflywFL5NLtyz55OS_n9y50wC4itvNUK2fXKr7kQ/viewform",
      "販売（申込）。LINE配信・イベント告知・リマインドで「日程が決まっている人」に出す"),
