@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:NB;src:url("../fonts/NotoSansCJK-Black.ttc")}
+@font-face{font-family:NM;src:url("../fonts/NotoSansCJK-Bold.ttc")}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#142a5c}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:NM,sans-serif;color:#142a5c}
+#bg{position:absolute;inset:-40px;background:url("bg.jpg") center/cover}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,24,52,.55),rgba(12,24,52,.35) 40%,rgba(12,24,52,.7))}
+.abs{position:absolute;will-change:transform,opacity}
+#band{left:0;top:250px;width:1080px;height:150px;background:#142a5c;display:flex;align-items:center;justify-content:center;font-family:NB;font-size:78px;color:#fff;letter-spacing:2px}
+#band b{color:#ffec1e;font-size:96px;margin-left:10px}
+#hook{left:70px;top:520px;font-family:NB;color:#fff;font-size:104px;line-height:1.15;text-shadow:0 6px 0 rgba(0,0,0,.35)}
+#hook em{font-style:normal;color:#ffec1e}
+#grid{left:90px;top:860px;width:900px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.mini{background:rgba(251,250,246,.96);border-radius:14px;padding:22px 24px;font-family:NB;font-size:40px;display:flex;align-items:center;gap:16px}
+.mini i{font-style:normal;background:#18a0b2;color:#fff;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;flex:none}
+#done{right:90px;top:1420px;background:#e23c3c;color:#fff;font-family:NB;font-size:52px;padding:10px 28px;border-radius:10px;transform-origin:center}
+.item{left:70px;top:560px;width:940px}
+.item .no{display:inline-flex;align-items:center;gap:18px;background:#ffec1e;color:#142a5c;font-family:NB;font-size:52px;padding:10px 30px 10px 14px;border-radius:60px}
+.item .no i{font-style:normal;background:#142a5c;color:#ffec1e;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px}
+.item .q{font-family:NB;color:#fff;font-size:86px;margin-top:34px;line-height:1.15;text-shadow:0 5px 0 rgba(0,0,0,.35)}
+.item .card{margin-top:44px;background:#fbfaf6;border-radius:16px;padding:40px 46px;box-shadow:10px 12px 0 rgba(0,0,0,.3)}
+.item .card .a{font-family:NB;font-size:66px;line-height:1.25}
+.item .card .a em{font-style:normal;color:#e8710a}
+.item .card .s{font-size:40px;margin-top:14px;color:#4a5b7c}
+#cta{left:70px;top:560px;width:940px;font-family:NB;color:#fff}
+#cta .l1{font-size:70px}
+#cta .l2{font-size:104px;color:#ffec1e;line-height:1.15;margin-top:10px}
+#cta .l3{font-size:46px;margin-top:40px;font-family:NM;background:#142a5c;display:inline-block;padding:14px 26px}
+#cta .l4{font-size:44px;margin-top:26px;font-family:NM;line-height:1.5}
+.handle{left:60px;top:1500px;color:#fff;font-size:34px;font-family:NM;opacity:.9}
+.note{left:60px;top:1552px;color:#fff;font-size:28px;opacity:.85}
+svg{position:absolute;left:0;top:0;overflow:visible}
+</style></head>
+<body><div id="stage">
+<div id="bg"></div><div class="shade"></div>
+<div class="abs" id="band">初参加の不安<b>5</b>選</div>
+<div class="abs" id="hook">初参加の不安、<br><em>5つ</em>答えます。</div>
+<div class="abs" id="grid">
+ <div class="mini"><i>1</i>1人で浮かない？</div><div class="mini"><i>2</i>初心者でも？</div>
+ <div class="mini"><i>3</i>道具がない</div><div class="mini"><i>4</i>当日どうする？</div>
+ <div class="mini"><i>5</i>いくら？</div>
+</div>
+<div class="abs" id="done">5/5 答えあり</div>
+<div class="abs item" id="i1"><div class="no"><i>1</i>1人で行って浮かない？</div><div class="card"><div class="a">来る人の<em>ほとんどが<br>1人参加</em>です。</div><div class="s">1人で申し込んでOK</div></div></div>
+<div class="abs item" id="i2"><div class="no"><i>2</i>初心者でも大丈夫？</div><div class="card"><div class="a"><em>初心者7割・<br>経験者3割</em>くらい。</div><div class="s">久しぶりの人も来ています</div></div></div>
+<div class="abs item" id="i3"><div class="no"><i>3</i>道具を持っていない</div><div class="card"><div class="a">バド・卓球は<br><em>ラケット貸出あり</em>。</div><div class="s">持ち物は 着替え・体育館シューズ・飲み物</div></div></div>
+<div class="abs item" id="i4"><div class="no"><i>4</i>当日どうすればいい？</div><div class="card"><div class="a">受付で<em>参加受付証</em>を<br>見せるだけ。</div><div class="s">流れ（例）：受付 → ストレッチ → 試合 → 片付け</div></div></div>
+<div class="abs item" id="i5"><div class="no"><i>5</i>参加費はいくら？</div><div class="card"><div class="a">参加費<em>1,500円</em>。</div><div class="s">当日、現金またはPayPay</div></div></div>
+<div class="abs" id="cta"><div class="l1">予約は</div><div class="l2">プロフィールの<br>リンクから<br>公式LINEへ</div><div class="l3">LINEで @827lnqaq を検索でもOK</div><div class="l4">次は 11/21(土) バレー・11/22(日) 野球<br>11/23(月祝) バレー・卓球</div></div>
+<svg width="1080" height="1920"><path id="arrow" d="M990 1440 C 1010 1100, 1010 800, 990 470 M950 530 L990 470 L1030 530" stroke="#ffec1e" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="abs handle">@macachette_sports</div>
+<div class="abs note">※写真は過去の開催時のものです（顔は隠しています）</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const ease=x=>x<0?0:x>1?1:1-Math.pow(1-x,3);
+const io=x=>x<0?0:x>1?1:(x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2);
+const seg=(t,a,b)=>(t-a)/(b-a);
+function draw(p,v){const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L*(1-Math.max(0,Math.min(1,v)));}
+function show(el,o,x=0,y=0,s=1){el.style.opacity=o;el.style.transform=`translate(${x}px,${y}px) scale(${s})`;}
+const T=[2.6,5.0,7.4,9.8,12.2,14.6];  // 各場面の始まり（1〜5番・CTA）
+window.render=function(t){
+  $('bg').style.transform=`scale(${1.08-0.05*t/18})`;
+  show($('band'),ease(seg(t,0,.4)));
+  const hOut=io(seg(t,2.3,2.6));
+  show($('hook'),ease(seg(t,.1,.6))*(1-hOut),-50*(1-ease(seg(t,.1,.6))));
+  show($('grid'),ease(seg(t,.6,1.1))*(1-hOut),0,40*(1-ease(seg(t,.6,1.1))));
+  const d=ease(seg(t,1.3,1.6)); show($('done'),d*(1-hOut),0,0,0.6+0.4*d);
+  for(let k=1;k<=5;k++){const a=T[k-1],b=T[k];const i=ease(seg(t,a,a+.35)),o=io(seg(t,b-.3,b));
+    show($('i'+k),i*(1-o),-80*(1-i),-60*o);}
+  const c=ease(seg(t,T[5],T[5]+.5)); show($('cta'),c,0,40*(1-c));
+  draw($('arrow'),seg(t,T[5]+.4,T[5]+1.4)); $('arrow').style.opacity=c;
+};
+window.render(0);
+</script></body></html>

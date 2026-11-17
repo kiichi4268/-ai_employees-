@@ -23,9 +23,16 @@ def main():
             continue
         head = open(tmp, "rb").read(16)
         if b"ftypheic" in head or b"ftypmif1" in head or b"ftypheix" in head:  # HEIC → JPG
-            import pillow_heif; pillow_heif.register_heif_opener()
-            from PIL import Image, ImageOps
-            ImageOps.exif_transpose(Image.open(tmp)).convert("RGB").save(dest, quality=92); os.remove(tmp)
+            try:
+                import pillow_heif; pillow_heif.register_heif_opener()
+                from PIL import Image, ImageOps
+                ImageOps.exif_transpose(Image.open(tmp)).convert("RGB").save(dest, quality=92)
+            except ImportError:
+                # pillow_heif が無い作業場：ffmpeg でタイルを読んで並べる tools/heic2jpg.py（11/18）
+                if subprocess.run([sys.executable, os.path.join(ROOT, "tools", "heic2jpg.py"), tmp, dest]).returncode:
+                    print("HEIC を変換できない（処理済みの背景 content/instagram/media/bg を使う）:", rel); miss += 1
+                    os.remove(tmp); continue
+            os.remove(tmp)
         else:
             os.replace(tmp, dest)
         got += 1
