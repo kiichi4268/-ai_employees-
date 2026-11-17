@@ -16,6 +16,19 @@ if ! ls fonts/NotoSansCJK-Black.ttc >/dev/null 2>&1; then
   (sudo apt-get install -y fonts-noto-cjk || apt-get install -y fonts-noto-cjk) >/dev/null 2>&1
   for w in Black Bold Medium; do cp /usr/share/fonts/opentype/noto/NotoSansCJK-$w.ttc fonts/ 2>/dev/null; done
 fi
+if ! ls fonts/NotoSansCJK-Black.ttc >/dev/null 2>&1; then
+  # 11/18：apt が使えない作業場では Google Fonts から Noto Sans JP（中身は同じ字形）を取って同じ名前で置く
+  echo "Google Fonts から Noto Sans JP を取ります"
+  css=$(curl -s -m 30 -A "curl/8" "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Noto+Serif+JP:wght@700;900")
+  echo "$css" | awk '/font-family/{fam=$0} /font-weight/{w=$2} /src:/{match($0,/https:[^)]*/);print fam" "w" "substr($0,RSTART,RLENGTH)}' | tr -d ";'" | \
+  while read -r _ fam1 fam2 fam3 w url; do
+    n="$fam2$fam3"; [ "$fam2" = "Serif" ] && n="Serif$fam3"
+    case "$w" in 500) ww=Medium;; 700) ww=Bold;; 900) ww=Black;; esac
+    curl -s -m 120 -o "fonts/Noto${n}-$ww.ttf" "$url"
+  done
+  for w in Black Bold Medium; do [ -f fonts/NotoSansJP-$w.ttf ] && cp fonts/NotoSansJP-$w.ttf fonts/NotoSansCJK-$w.ttc; done
+  mkdir -p ~/.fonts && cp fonts/Noto*JP-*.ttf ~/.fonts/ 2>/dev/null && fc-cache -f >/dev/null 2>&1
+fi
 # 2) Python と ffmpeg
 python3 -c "import PIL, numpy, cv2" 2>/dev/null || pip install -q -r ../requirements.txt
 command -v ffmpeg >/dev/null || echo "✗ ffmpeg がありません（apt-get install -y ffmpeg）"
