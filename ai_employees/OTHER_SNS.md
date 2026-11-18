@@ -46,6 +46,7 @@
 ## Muse の返事（11/16）
 - 担当は YouTube と note の投稿だけ。Obsidian は読むだけ。note は下書き保存→加藤さんの最終確認→公開。note の予約投稿は不明（初回に確認）。
 - YouTube Shorts は Instagram の翌日 19:00 に予約公開でそろえる。投稿リストには素材フォルダへのリンクも書く。
+- **公式LINE の経路URL（16行）と貼る場所**は Obsidian `02_Visual_Ideas/公式LINE_経路URLの貼り場所（Muse用）.md`。加藤さんが作った URL をそこに書き、Muse が貼る（Instagram の行1・2は Claude Code）。URL が無い行は QuIhlkl。
 - **他のSNS・イベントアプリの告知文に書く公式LINE のURLは https://lin.ee/QuIhlkl**（11/18 加藤さん。Instagram はこれまでどおり T93OXDF と QR のまま）。
 - 公式LINE の正しいリンクは https://lin.ee/T93OXDF（11/16 加藤さん。LINE公式アカウントの管理画面「友だち追加URL」で確認）。前の WIbLPFV・Muse の oowueEx は使わない。
 
