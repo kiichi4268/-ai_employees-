@@ -57,6 +57,7 @@
 
 ## 3. 場所
 
+- Instagram 以外（他のSNS・イベントアプリの告知文・Muse が貼る所）の公式LINE URL は **https://lin.ee/QuIhlkl**（11/18 加藤さん）。Instagram は下のとおり変えない。
 - Instagram @macachette_sports ／ 公式LINE https://lin.ee/T93OXDF（LINE ID **@827lnqaq**、QR は studio/assets/line_qr.png。11/12 からストーリー③に QR と ID を入れる）／ リンク一覧 https://fanme.link/@0966712221a41fa899c2
 - 設計書（claude.ai）：https://claude.ai/artifact/B2tHqPS45h9HtCVAHMJZXh
   - 控えは `docs/handover/設計書_*.md`。中身は「設計書／11月 投稿表／投稿企画（型とテーマ案）／ストーリー 11/2〜11/8／12月 告知デザイン・動画プロンプト」
