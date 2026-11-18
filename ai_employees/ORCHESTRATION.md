@@ -45,7 +45,8 @@
 
 ### 4-1. 3つの担当は33人の指示書を全部使う（11/14 加藤さん）
 - 各担当（Agent）を動かすときは、その担当に入る社員の指示書を**全部読ませてから**仕事をさせる。
-- **読むのは `ai_employees/teams/〇〇担当.md`（11/15 加藤さん：使う量を減らす・質は落とさない）**。33人の指示書は9割が同じ文なので、共通の決まりを1回だけ載せ、社員ごとの「役割と専門性」から下は全部そのまま入れたまとめ。中身は元の指示書と同じで、読む量は約6分の1。元の指示書を直したら `python3 tools/build_team_briefs.py` で作り直す。
+- **読むのは仕事ごとの作業カード `ai_employees/tasks/{仕事}_{担当}.md`（11/18 加藤さん：社員1人・作業1つに分け、その回に要る分だけ）**。仕事は「日次ストーリー」（23:55）・「リール・カルーセル制作」（月水21:00）・「週次PDCA」（日曜21:00）。その仕事に関わる社員だけ、中身のある所（役割・作業手順・3点セット・投稿運用・NG→OK・身につけた型）だけを入れたもので、読む量は teams/ の約3割。元の指示書を直したら `python3 tools/build_task_briefs.py` で作り直す（写しを Obsidian `04_Dev_Automation/` にも置く）。足りない時だけ元の指示書を開く。
+- （前の形）`ai_employees/teams/〇〇担当.md`（11/15 加藤さん：使う量を減らす・質は落とさない）は、上の作業カードに無い仕事のときだけ使う。33人の指示書は9割が同じ文なので、共通の決まりを1回だけ載せ、社員ごとの「役割と専門性」から下は全部そのまま入れたまとめ。中身は元の指示書と同じで、読む量は約6分の1。元の指示書を直したら `python3 tools/build_team_briefs.py` で作り直す。
   - 調べる担当：01_research/ の5人＋06_operations_analytics/comment_analyzer・numeric_analyst・improvement_proposal＋07_management/contrarian_ideas
   - 作る担当：02_planning/ の4人＋03_content_creation/ の4人＋05_visual_production/ の7人（music_composer を含む）
   - 確かめる担当：04_review_quality/ の4人＋06_operations_analytics/posting_manager・progress_manager＋07_management/management_metrics・supervisor・posting_doctor
@@ -55,7 +56,7 @@
 - **11/18 加藤さん：** 軽量化の相談（①〜⑥を1つずつ聞く）は止める。加藤さんのルール構築・軽量化の検討が終わるまで、今まで通りの流れで回す。加藤さんへの質問は、答えが必要な時だけにする。
 - **省エネの作法5つ（11/18 加藤さん「指示書兼スリム化プロンプト」。質・精度は落とさない）**
   1. **大きいファイルは読まない**：画像・動画・フォント・素材・書き出し（content/instagram/media・studio/clips・photos・inputs・out・fonts・assets など）は `.claude/settings.json` の deny で読み込み禁止。見た目の確認は scratchpad に縮小のまとめ画像1枚を作って見る。
-  2. **過去の経緯を抱えない**：経緯・決定の歴史は Obsidian（Drive「Obsidian_他のSNS」の `04_Dev_Automation/`）と git の履歴に置き、作業では「その回に必要なファイルと最新の指示」だけ読む。迷ったら CLAUDE.md → 担当の指示書（teams/）→ 対象ファイル1つの順。
+  2. **過去の経緯を抱えない**：経緯・決定の歴史は Obsidian（Drive「Obsidian_他のSNS」の `04_Dev_Automation/`）と git の履歴に置き、作業では「その回に必要なファイルと最新の指示」だけ読む。迷ったら CLAUDE.md → 作業カード（tasks/）→ 対象ファイル1つの順。
   3. **小さく区切る**：「全体を直して」でも広く探さず、ファイル1つ・関数1つの単位に分けて進める。grep で場所を決めてから、その行の前後だけ読む。
   4. **成果物はファイルに**：長いコードや文章はチャットに書かず、ファイル（リポジトリ・Drive「他のSNS用」・Obsidian の アウトプット_ClaudeCode）に直接書く。報告は短く（何を・どこに）。
   5. **区切りで持ち越さない**：1つの仕事（例：Instagram の調整・他SNSの原版）が終わったら、次の回に要らない話を引きずらない。決まったことはシート・ファイルに書いて終わる（会話の記憶に頼らない）。
