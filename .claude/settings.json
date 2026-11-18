@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./content/instagram/media/**)",
+      "Read(./studio/clips/**)",
+      "Read(./studio/photos/**)",
+      "Read(./studio/inputs/**)",
+      "Read(./studio/out/**)",
+      "Read(./studio/fonts/**)",
+      "Read(./studio/assets/**)",
+      "Read(./studio/cal/**)",
+      "Read(./studio/mat/**)",
+      "Read(./studio/models/**)",
+      "Read(./**/*.mp4)",
+      "Read(./**/*.MOV)",
+      "Read(./**/*.mov)",
+      "Read(./**/*.ttc)",
+      "Read(./**/*.ttf)",
+      "Read(./**/*.zip)"
+    ]
+  }
+}

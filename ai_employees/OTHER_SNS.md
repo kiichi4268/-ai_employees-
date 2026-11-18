@@ -4,6 +4,7 @@
 - 投稿前の中身（画像・動画・文）＝**全部 Claude Code**。
 - Instagram＝Claude Code が自動投稿（Muse は触らない）。
 - X・TikTok・YouTube・Threads・Pinterest＝**Muse** が投稿。
+- Facebook など Instagram 以外の媒体も、Claude Code は投稿の前（原版：画像・動画・文・顔の処理）までを作り、Drive「他のSNS用」に入れる（11/18 加藤さん）。
 - 受け渡し：Claude Code → Drive「他のSNS用（Claudeが作った画像・動画・文→Museで投稿）」`1mH0eqSaCwmrRVuolzs5EtodsPIdZLTAd` → 加藤さんが共有リンクを Muse のチャットに貼る → Muse が受け取り確認・最終確認（加藤さん）・投稿。
 - 始める時期：Instagram運用会社が⭐100になってから（11/15 決定）。Muse の各SNSのログインは 11/22 ごろに完了予定。
 
