@@ -69,7 +69,7 @@ def two(day, tm, a, b):
 
 
 def S(top, kicker, lines, foot, accent=ORANGE, seed=1):
-    if top in PLAY:  # 過去の写真には注記を入れる（CLAUDE.md「事実」）
+    if top in PLAY and False:  # 11/19 加藤さん：過去写真の注記はいらない（AI 画像の「※画像はイメージです」は残す）
         def mk(**kw):
             from PIL import ImageDraw
             c = split_story(**kw); d = ImageDraw.Draw(c)
