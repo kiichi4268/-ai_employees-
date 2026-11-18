@@ -43,10 +43,10 @@ svg{position:absolute;left:0;top:0;overflow:visible}
  <div class="mini"><i>5</i>いくら？</div>
 </div>
 <div class="abs" id="done">5/5 答えあり</div>
-<div class="abs item" id="i1"><div class="no"><i>1</i>1人で行って浮かない？</div><div class="card"><div class="a">来る人の<em>ほとんどが<br>1人参加</em>です。</div><div class="s">1人で申し込んでOK</div></div></div>
+<div class="abs item" id="i1"><div class="no"><i>1</i>1人で行って浮かない？</div><div class="card"><div class="a">来る人の<em>ほとんどが<br>1人参加</em>です。</div><div class="s">「同じように1人の参加の方がいて」<br><span style="font-size:30px">（つなげーとのレビューより）</span><br>1人で申し込んでOK</div></div></div>
 <div class="abs item" id="i2"><div class="no"><i>2</i>初心者でも大丈夫？</div><div class="card"><div class="a"><em>初心者7割・<br>経験者3割</em>くらい。</div><div class="s">久しぶりの人も来ています</div></div></div>
 <div class="abs item" id="i3"><div class="no"><i>3</i>道具を持っていない</div><div class="card"><div class="a">バド・卓球は<br><em>ラケット貸出あり</em>。</div><div class="s">持ち物は 着替え・体育館シューズ・飲み物</div></div></div>
-<div class="abs item" id="i4"><div class="no"><i>4</i>当日どうすればいい？</div><div class="card"><div class="a">受付で<em>参加受付証</em>を<br>見せるだけ。</div><div class="s">流れ（例）：受付 → ストレッチ → 試合 → 片付け</div></div></div>
+<div class="abs item" id="i4"><div class="no"><i>4</i>当日どうすればいい？</div><div class="card"><div class="a">受付で<em>参加受付証</em>を<br>見せるだけ。</div><div class="s">流れ（例）：受付 → ストレッチ・基礎練習<br>→ 試合 → 片付け → 解散</div></div></div>
 <div class="abs item" id="i5"><div class="no"><i>5</i>参加費はいくら？</div><div class="card"><div class="a">参加費<em>1,500円</em>。</div><div class="s">当日、現金またはPayPay</div></div></div>
 <div class="abs" id="cta"><div class="l1">予約は</div><div class="l2">プロフィールの<br>リンクから<br>公式LINEへ</div><div class="l3">LINEで @827lnqaq を検索でもOK</div><div class="l4">次は 11/21(土) バレー・11/22(日) 野球<br>11/23(月祝) バレー・卓球</div></div>
 <svg width="1080" height="1920"><path id="arrow" d="M990 1440 C 1010 1100, 1010 800, 990 470 M950 530 L990 470 L1030 530" stroke="#ffec1e" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -60,9 +60,9 @@ const io=x=>x<0?0:x>1?1:(x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2);
 const seg=(t,a,b)=>(t-a)/(b-a);
 function draw(p,v){const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L*(1-Math.max(0,Math.min(1,v)));}
 function show(el,o,x=0,y=0,s=1){el.style.opacity=o;el.style.transform=`translate(${x}px,${y}px) scale(${s})`;}
-const T=[2.6,5.0,7.4,9.8,12.2,14.6];  // 各場面の始まり（1〜5番・CTA）
+const T=[2.6,6.2,9.8,13.4,17.0,20.6];  // 各場面の始まり（1〜5番・CTA）
 window.render=function(t){
-  $('bg').style.transform=`scale(${1.08-0.05*t/18})`;
+  $('bg').style.transform=`scale(${1.08-0.05*t/25})`;
   show($('band'),ease(seg(t,0,.4)));
   const hOut=io(seg(t,2.3,2.6));
   show($('hook'),ease(seg(t,.1,.6))*(1-hOut),-50*(1-ease(seg(t,.1,.6))));

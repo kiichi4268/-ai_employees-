@@ -30,10 +30,12 @@ if ! ls fonts/NotoSansCJK-Black.ttc >/dev/null 2>&1; then
   mkdir -p ~/.fonts && cp fonts/Noto*JP-*.ttf ~/.fonts/ 2>/dev/null && fc-cache -f >/dev/null 2>&1
 fi
 # 2) Python と ffmpeg
-python3 -c "import PIL, numpy, cv2" 2>/dev/null || pip install -q -r ../requirements.txt
+PIPX="pip install -q ${HTTPS_PROXY:+--proxy $HTTPS_PROXY}"  # 11/18：この作業場の pip はプロキシを明示しないと届かない
+python3 -c "import PIL, numpy, cv2" 2>/dev/null || $PIPX -r ../requirements.txt
+python3 -c "import pyopenjtalk" 2>/dev/null || $PIPX pyopenjtalk-plus  # 読み上げ（辞書入り）
 command -v ffmpeg >/dev/null || echo "✗ ffmpeg がありません（apt-get install -y ffmpeg）"
 # 3) 実写素材（顔が写っているので、公開リポジトリには絶対に入れない）
-python3 -c "import pillow_heif" 2>/dev/null || pip install -q pillow-heif
+python3 -c "import pillow_heif" 2>/dev/null || $PIPX pillow-heif
 python3 ../tools/fetch_materials.py || true  # 11/15：Drive から足りない実写を取り込む（毎回新しい会話の予約でも素材がそろう）
 need="clips/96bd7101d80345dea32585cc72954439.MOV clips/29da73e9795845e4aea114b14fb8c95c.MOV clips/IMG_4049.JPG clips/IMG_4093.MOV clips/IMG_4096.MOV photos/IMG_3560.jpg photos/IMG_3750.jpg photos/IMG_3754.jpg inputs/d2c9044b-Macachette_LINE___45s_SE__.mp4"
 miss=0; for f in $need; do [ -f "$f" ] || { echo "✗ 素材なし: studio/$f"; miss=1; }; done
