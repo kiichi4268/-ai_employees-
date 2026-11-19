@@ -1,0 +1,130 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:NB;src:url("../fonts/NotoSansCJK-Black.ttc")}
+@font-face{font-family:NM;src:url("../fonts/NotoSansCJK-Bold.ttc")}
+html,body{margin:0;background:#0d0b24}
+canvas{display:block}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// AI社員の会社 — 夜の会議と1日の動き（ドット絵）。render(t) で t 秒の絵を描く
+const C=document.getElementById('c'),X=C.getContext('2d');X.imageSmoothingEnabled=false;
+const W=1080,H=1920;
+const TEAM={調べる:'#3cc4d6',作る:'#ffb02e',確かめる:'#b48cf0',監督:'#ff5a6e'};
+const ease=x=>x<0?0:x>1?1:1-Math.pow(1-x,3);
+const cl=(a,b,x)=>Math.max(a,Math.min(b,x));
+function seg(t,a,b){return cl(0,1,(t-a)/(b-a));}
+function rect(x,y,w,h,c){X.fillStyle=c;X.fillRect(Math.round(x),Math.round(y),w,h);}
+function txt(s,x,y,size,col,font='NB',align='center',stroke){X.font=`${size}px ${font}`;X.textAlign=align;X.textBaseline='middle';
+  if(stroke){X.lineWidth=stroke;X.strokeStyle='#0d0b24';X.strokeText(s,x,y);}X.fillStyle=col;X.fillText(s,x,y);}
+function round(x,y,w,h,r,c){X.fillStyle=c;X.beginPath();X.roundRect(x,y,w,h,r);X.fill();}
+// ドットの人（s=倍率）。walk=歩きのコマ、type=手を動かす
+function person(x,y,col,s=4,walk=0,type=0,face=1){
+  const p=(dx,dy,w,h,c)=>rect(x+dx*s,y+dy*s,w*s,h*s,c);
+  p(2,0,6,2,'#2a1d14');p(1,1,8,2,'#2a1d14');            // 髪
+  p(2,2,6,5,'#f2c9a0');p(1,3,1,2,'#2a1d14');p(8,3,1,2,'#2a1d14');
+  p(3+(face>0?1:0),4,1,1,'#222');p(6+(face>0?0:-1),4,1,1,'#222'); // 目
+  p(1,7,8,6,col);                                          // 服
+  const a=type?(Math.sin(type*20)>0?1:0):0;
+  p(0,8+a,1,4,col);p(9,8+(1-a),1,4,col);p(0,12+a,1,1,'#f2c9a0');p(9,12+(1-a),1,1,'#f2c9a0');
+  const l=walk?(Math.floor(walk*8)%2):0;
+  p(2,13,2,3+l,'#2c3557');p(6,13,2,4-l,'#2c3557');
+}
+function desk(x,y,col,t,on=1){
+  rect(x-6,y+52,120,14,'#6b4a2e');rect(x-2,y+66,8,30,'#4d341f');rect(x+98,y+66,8,30,'#4d341f');
+  rect(x+18,y+6,72,46,'#1b1f3a');                    // モニター
+  const blink=on?(0.55+0.45*Math.sin(t*6+x*.07+y*.03)):0.2;
+  X.globalAlpha=blink;rect(x+22,y+10,64,36,col);X.globalAlpha=1;
+  for(let i=0;i<3;i++)rect(x+28,y+16+i*9,(20+((x+i*13+Math.floor(t*4))%34)),4,'#0d0b24');
+  rect(x+48,y+52,12,4,'#999');
+}
+function room(x,y,w,h,label,col,n,t,typing){
+  round(x,y,w,h,18,'#1d1946');rect(x+10,y+70,w-20,h-80,'#2a2560');
+  // 窓（夜景）
+  for(let i=0;i<4;i++){rect(x+30+i*(w-60)/4,y+82,(w-60)/4-14,60,'#0f1638');
+    for(let k=0;k<5;k++)rect(x+40+i*(w-60)/4+k*22,y+112-((k*7+i*3)%20),12,30+((k*7+i*3)%20),'#17204a');}
+  round(x+w/2-150,y+14,300,50,25,'#0d0b24');txt(label,x+w/2,y+40,32,col);
+  const cols=Math.min(n,5),rows=Math.ceil(n/5);
+  for(let i=0;i<n;i++){const cx=x+40+(i%5)*((w-80)/5),cy=y+160+Math.floor(i/5)*150;
+    desk(cx,cy,col,t,1);person(cx+28,cy+8,col,5,0,typing?t+i:0);}
+}
+function bubble(x,y,w,s,col,tail=1){
+  X.font='46px NM';const lines=s.split('\n');const h=lines.length*64+40;
+  round(x,y,w,h,22,'#ffffff');X.fillStyle='#ffffff';X.beginPath();
+  if(tail){X.moveTo(x+40,y+h-2);X.lineTo(x+60,y+h+26);X.lineTo(x+86,y+h-2);}X.fill();
+  rect(x,y,12,h,col);
+  lines.forEach((l,i)=>txt(l,x+40,y+52+i*64,46,'#14183a','NM','left'));return h;
+}
+function star(x,y,r,c){X.fillStyle=c;X.beginPath();for(let i=0;i<10;i++){const a=Math.PI/5*i-Math.PI/2,rr=i%2?r*.45:r;X.lineTo(x+rr*Math.cos(a),y+rr*Math.sin(a));}X.fill();}
+function header(sub){
+  rect(0,0,W,250,'#0d0b24');
+  txt('AI社員だけのインスタ運用会社',W/2,82,58,'#ffffff','NB','center');
+  txt(sub,W/2,172,64,'#ffec1e','NB','center',10);
+}
+function footer(){txt('@macachette_sports',W/2,H-80,34,'#ffffffaa','NM');}
+
+const SPEAK=[ // 会議（例）：その晩の課題に関わる人＋持ち込み議題
+ ['27 数値分析','調べる','リンクタップ 0\nプロフィール 9回…'],
+ ['9 CTA・導線','作る','QRから来た人は\nタップに数えられない！'],
+ ['31 逆張り','調べる','見出しを\n「参加者の声」に変えたら？'],
+ ['26 コメント分析','調べる','レビューに\n「チャラい感じもなく安心」'],
+ ['33 音楽（持ち込み）','作る','19時は落ち着いた曲が\n合うと思います'],
+ ['30 監督','監督','決定：19時の見出しを\n参加者の声に！'],
+];
+window.render=function(t){
+  rect(0,0,W,H,'#0d0b24');
+  // 0-12：会社のようす
+  if(t<12.2){
+    header(t<3.5?'夜の会議と1日の動き':'33人が毎日はたらく');
+    const typing=1;
+    room(40,300,1000,470,'調べる担当（9人）',TEAM.調べる,9,t,typing);
+    room(40,800,1000,470,'作る担当（15人のうち10人）',TEAM.作る,10,t,typing);
+    room(40,1300,1000,470,'確かめる担当（9人）',TEAM.確かめる,9,t,typing);
+    // 23:55 の時計
+    const k=seg(t,8.2,9.0);
+    if(k>0){X.globalAlpha=k*0.85;rect(0,0,W,H,'#000');X.globalAlpha=1;
+      round(W/2-300,760,600,330,40,'#1d1946');txt('23:55',W/2,880,150,'#ffec1e','NB');
+      txt('AI社員会議の時間',W/2,1010,56,'#fff');
+      if(t>10.2){const b=seg(t,10.2,12.2);txt('関わる5〜7人が集まる',W/2,1150,44,'#3cc4d6','NM');}}
+    footer();return;
+  }
+  // 12.2-29：会議室
+  if(t<30){
+    header('23:55 AI社員会議');
+    round(40,290,1000,1500,30,'#1d1946');rect(60,380,960,1390,'#2a2560');
+    txt('会議室',W/2,335,36,'#ffec1e');
+    // テーブル
+    round(240,980,600,220,30,'#7a5634');rect(270,1000,540,180,'#8d6640');
+    const seats=[[150,760],[490,720],[830,760],[150,1250],[490,1310],[830,1250]];
+    SPEAK.forEach((sp,i)=>{
+      const [sx,sy]=seats[i];const arrive=seg(t,12.4+i*0.25,13.6+i*0.25);
+      const x=-120+(sx+120)*ease(arrive),y=sy;
+      const now=t>=14.2+i*2.5&&t<16.7+i*2.5;
+      if(now){X.globalAlpha=.35;round(x-26,y-26,152,222,24,'#ffec1e');X.globalAlpha=1;}
+      person(x,y,TEAM[sp[1]],10,arrive<1?t:0,now?t:0,sx<W/2?1:-1);
+      round(x-10,y+182,120,50,25,'#0d0b24');txt(sp[0].split(' ')[0],x+50,y+207,34,TEAM[sp[1]],'NB');
+    });
+    const i=Math.floor((t-14.2)/2.5);
+    if(t>=14.2&&i>=0&&i<6){const sp=SPEAK[i];const p=ease(seg(t,14.2+i*2.5,14.6+i*2.5));
+      X.globalAlpha=p;round(80,400,920,76,38,TEAM[sp[1]]);txt(sp[0],W/2,438,44,'#0d0b24');
+      bubble(80,490,920,sp[2],TEAM[sp[1]],0);X.globalAlpha=1;
+      if(i===5){star(930,560,44,'#ffec1e');}}
+    if(t>=29.2){}
+    txt('※会議の流れの例（毎晩、その日の数字で中身が変わります）',W/2,1720,26,'#ffffffaa','NM');
+    footer();return;
+  }
+  // 30-38：決まったことが投稿になるまで
+  header(t<34?'決めたことを、すぐ形に':'朝8:00 → 自動で投稿');
+  const steps=[['作る担当','明日の 10:00・19:00 を作る',TEAM.作る],['確かめる担当','顔・日時・参加費を二重チェック ✓',TEAM.確かめる],['朝 8:00','Merge → Instagram に投稿',TEAM.調べる],['公式LINE','友だちが増える → 日曜に答え合わせ','#4cd38a']];
+  steps.forEach((s,k)=>{const p=ease(seg(t,30.2+k*1.6,30.8+k*1.6));if(p<=0)return;
+    X.globalAlpha=p;const y=300+k*330;round(60,y,960,280,30,'#1d1946');
+    person(110,y+55,s[2],10,0,t+k,1);txt(s[0],620,y+90,60,s[2],'NB');txt(s[1],620,y+185,40,'#fff','NM');
+    if(k<3)txt('▼',W/2,y+305,40,'#ffffff66');X.globalAlpha=1;});
+  // 第二の脳が育つ
+  const g=seg(t,36.6,38);
+  if(g>0){X.globalAlpha=g;round(60,1630,960,170,30,'#2a2560');for(let k=0;k<5;k++)star(380+k*80,1680,26+6*Math.sin(t*4+k),'#ffec1e');
+    txt('第二の脳（Obsidian）が毎晩レベルアップ',W/2,1755,44,'#fff','NM');X.globalAlpha=1;}
+  footer();
+};
+window.render(0);
+</script></body></html>
