@@ -13,7 +13,7 @@ PHOTOS = {  # キー: (ファイル, ぼかし)。顔が近い写真ほど強く
     # 11/14 加藤さん「ボケはそんなに必要ない。顔が見えない形で」→ 顔だけモザイク（tools/anonymize.py・手で全員の頭を確認）・写真はくっきり
     "b14_wide": ("anon_b1114_IMG_4801.jpg", 0), "b14_court": ("anon_b1114_IMG_4807.jpg", 0),
 }
-NOTE = "※写真は過去の開催時のものです"
+NOTE = ""  # 11/19 加藤さん：過去写真の注記は入れない
 FONT = os.path.join(D, "fonts", "NotoSansCJK-Bold.ttc")
 
 
@@ -40,6 +40,7 @@ def register(w1):
 
 
 def add_note_img(path, y=1745):
+    if not NOTE: return
     from PIL import ImageFont
     im = Image.open(path).convert("RGB"); d = ImageDraw.Draw(im); f = ImageFont.truetype(FONT, 30)
     w = d.textlength(NOTE, font=f); d.text(((im.width - w) / 2, y), NOTE, font=f, fill=(255, 255, 255), stroke_width=3, stroke_fill=(20, 42, 92))
@@ -47,6 +48,7 @@ def add_note_img(path, y=1745):
 
 
 def add_note_video(path, y=1745):
+    if not NOTE: return
     tmp = path + ".note.mp4"
     vf = f"drawtext=fontfile={FONT}:text='{NOTE}':fontsize=30:fontcolor=white:borderw=3:bordercolor=0x142a5c:x=(w-text_w)/2:y={y}"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", path, "-vf", vf, "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",

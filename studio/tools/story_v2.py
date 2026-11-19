@@ -16,7 +16,7 @@ from tools.craft import finish, tilt
 
 W, H = 1080, 1920
 NAVY = (20, 42, 92); YEL = (255, 236, 30); WHITE = (255, 255, 255); INK = (18, 22, 34)
-NOTE = "※写真は過去の開催時のものです"
+NOTE = ""  # 11/19 加藤さん「※写真は過去の開催時のものです はいらない」
 
 
 def _cover(im, w=W, h=H, zoom=1.0, fx=0.5, fy=0.5):
@@ -53,6 +53,7 @@ def _brand(c):
 
 
 def _note(c, y=1838):
+    if not NOTE: return
     d = ImageDraw.Draw(c); f = F(BOLD, 28)
     d.text((64, y), NOTE, font=f, fill=(235, 235, 235), stroke_width=2, stroke_fill=(10, 16, 30))
 

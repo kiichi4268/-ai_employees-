@@ -188,6 +188,6 @@ def music_for(tm, day):
     """時刻と日付から曲と開始位置を決める（毎日少しずつ違う所から流す）。"""
     tm = str(tm)
     if tm.startswith("08"): name = "acoustic_morning"
-    elif tm.startswith("19"): name = "lofi_evening" if int(day) % 2 else "citypop_night"
+    elif tm.startswith("19"): name = "lofi_evening"  # 11/19 会議：19時は落ち着いた曲に固定（33 音楽の持ち込み議題・日曜に判定）
     else: name = "pop_bright"
     return name, (int(day) * 7) % 40
