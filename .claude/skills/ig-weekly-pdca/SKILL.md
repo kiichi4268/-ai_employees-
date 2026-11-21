@@ -32,6 +32,7 @@ description: Instagram の週次PDCA（リサーチ・コメント数・改善�
 **11/18 加藤さん（マスター指示書・Drive 99_System/マスター指示書_第二の脳.md）**：日曜のこの回で次の3つも行う（使う量を増やさないよう、その週に新しく使われた・リンクされたノートだけ見る）。
 - **level・rank の更新と 00_Inbox の振り分けは Dola（11/21 加藤さん）**。Claude Code はしない。Dola が渡すまとめ（`00_Inbox/Dola_ログ_日付_ClaudeCode宛.md`）と `Dola_質問_` だけ読み、質問には `03_AI_Chat_Logs/ClaudeCode_ログ_日付_回答_〇〇.md` で答える。
 - **作業カードの作り直し**：指示書を直した週は `python3 tools/build_task_briefs.py`（仕事ごとの作業カード ai_employees/tasks/。11/18 に分割済み）を動かし、変わったカードを Obsidian `04_Dev_Automation/作業カード/` に写す。新しい仕事が増えたら TASKS に足す。
+**週1回の全体会議（33人・11/21 加藤さん）**：ORCHESTRATION.md 4-2-5 のとおり、全員1行・30 監督が来週の重点3つ・会議録は Obsidian `03_AI_Chat_Logs/全体会議_YYYY-MM-DD.md`。
 **毎週の「インプット → アウトプット」（11/18 加藤さん。日曜21:00 のこの回で、上の3つと合わせて行う）**
 - **インプット（集める）**：①その週の数字（data/insights）と勝ち・負け（PATTERNS.md）②学びログ ③「加藤からの修正・決定」の新しい行（決定とその理由を「社長の判断基準」ノートに1行ずつ足す）④Muse投稿リストの結果・メモ ⑤**加藤さんが見つけた情報**（Obsidian 00_Inbox の「社長_」で始まるノート、チャットで送られたURL・スクショ・メモ）。（振り分け・リンクは Dola。Claude Code は Dola のまとめから読む）
 - **アウトプット（返す）**：①深い週ノート1枚（`週_YYYY-MM-DD.md`：今週良くなったこと3つ・弱かったこと1つ・来週の改善1つ）②勝った型を作業カード・STORY_MODEL・REELS_CAROUSEL_MODEL へ（`python3 tools/build_task_briefs.py` → Obsidian の作業カードを差し替え）③来週の Muse投稿リスト ④レベルの更新（下の点数表）。
