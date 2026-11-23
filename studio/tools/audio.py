@@ -189,5 +189,6 @@ def music_for(tm, day):
     tm = str(tm)
     if tm.startswith("08"): name = "acoustic_morning"
     elif tm.startswith("19"): name = "lofi_evening"  # 11/19 会議：19時は落ち着いた曲に固定（33 音楽の持ち込み議題・日曜に判定）
+    elif tm.startswith("15"): name = "acoustic_morning"  # 11/23 15時（休憩明け・やわらかめ）
     else: name = "pop_bright"
     return name, (int(day) * 7) % 40
