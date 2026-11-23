@@ -44,7 +44,7 @@
 - 毎週日曜の週次PDCAで：その週の学び（学び_◯◯）・週まとめを足し、関係するノートへ [[リンク]] を張る（グラフの点と線が増える）。
 
 ## Muse の返事（11/16）
-- 担当は YouTube と note の投稿だけ。Obsidian は読むだけ。note は下書き保存→加藤さんの最終確認→公開。note の予約投稿は不明（初回に確認）。
+- （11/16 時点）担当は YouTube と note の投稿だけ → 11/18 から Instagram 以外の全媒体を Muse が投稿。Obsidian は読むだけ。note は下書き保存→加藤さんの最終確認→公開。note の予約投稿は不明（初回に確認）。
 - YouTube Shorts は Instagram の翌日 19:00 に予約公開でそろえる。投稿リストには素材フォルダへのリンクも書く。
 - **公式LINE の経路URL（17件・11/18 取得済み）は ai_employees/LINE_ROUTES.md**。YouTube の概要欄は TV1EhzG、note は sHUV4uy、Pinterest は VLwF9CC など、媒体ごとの URL を文に入れる。同じ表が Obsidian `02_Visual_Ideas/公式LINE_経路URLの貼り場所（Muse用）.md`。加藤さんが作った URL をそこに書き、Muse が貼る（Instagram の行1・2は Claude Code）。URL が無い行は QuIhlkl。
 - **他のSNS・イベントアプリの告知文に書く公式LINE のURLは https://lin.ee/QuIhlkl**（11/18 加藤さん。Instagram はこれまでどおり T93OXDF と QR のまま）。
@@ -84,7 +84,7 @@
 
 - **Muse が投稿文を考えるとき**（イベントアプリの告知・レビューへの返信など）：Obsidian `01_Strategy_Projects/つなげーと_レビュー（生の声）.md`（Claude Code 側は ai_employees/VOICES.md）の声・勝ちパターン・返信文の型を使う（11/18 加藤さん）。
 - **作る順番**：Instagram の制作の回（月・水21:00）で、その週の元から他の媒体の分も一緒に書き、「Muse投稿リスト」タブに1件1行で足す（Muse の準備ができていない媒体は書かない）。
-- **数字の見方**：Muse がタブの「投稿URL・メモ」に結果と気づきを書く → 日曜に Claude Code が Obsidian の 00_Inbox → 02_Visual_Ideas・04_Dev_Automation へ振り分け、勝った型は Instagram にも入れる（逆も同じ）。
+- **数字の見方**：Muse がタブの「投稿URL・メモ」に結果と気づきを書く → 毎日 Dola が Obsidian に振り分け → **日曜21:00 に Claude Code も一緒に考える**（その週に入ったノートだけ見て、振り分けの直し・まとめる案・Instagram に使う型を `00_Inbox/ClaudeCode_ログ_日付_振り分けの見直し.md` に書く → Dola が反映）。勝った型は Instagram にも入れる（逆も同じ）。
 - **やめる基準**：4週続けて、その媒体から公式LINE の友だちが増えた形跡がなければ、頻度を半分にする（日曜の週次PDCAで判断し、加藤さんに報告）。
 
 ## note と Muse の連携（11/22 加藤さん：note の投稿は Muse）
