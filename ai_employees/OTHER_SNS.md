@@ -174,3 +174,4 @@
 | Pinterest | 週3本 | 保存狙いの画像（縦 2:3）。リンク先はバーの HP、lin.ee は使わない | 月・水21:00 | Muse |
 | X・Threads・Facebook | ログイン・連携が解けてから開始 | ― | ― | Muse |
 - 2つの note は中身だけ違い、流れ（無料毎日→有料週2・時間になったら Muse が投稿）は同じ。メインから AI 用へのリンクは貼らない。AI 用は鍵・社内URL・UTAGE の情報・参加者の個人情報を書かない。
+- **Muse を2人に分ける（11/24 加藤さん）**：スポーツ用 Muse（メインの note・YouTube・TikTok・Pinterest など Instagram 以外の全部）／AI 用 Muse（AI 用 note だけ）。受け渡しのタブも分ける：スポーツ用＝「Muse投稿リスト」、AI 用＝「Muse投稿リスト_AI」。数字のファイル名は AI 用が `Muse_AI_数字_YYYY-MM-DD_note.md`。（どちらの Google アカウントかはシートの「加藤からの修正・決定」に記録。公開リポジトリにはメールアドレスを書かない）
