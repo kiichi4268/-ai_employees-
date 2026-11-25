@@ -58,12 +58,13 @@ def _note(c, y=1838):
     d.text((64, y), NOTE, font=f, fill=(235, 235, 235), stroke_width=2, stroke_fill=(10, 16, 30))
 
 
-def full_bleed(key, kicker, lines, chips, accent=YEL, mark=None, seed=1, note=True, fx=0.5):
-    """写真を画面いっぱいに。下に太い大きな見出し（mark の言葉だけ黄色の帯）、その下に情報の札。"""
+def full_bleed(key, kicker, lines, chips, accent=YEL, mark=None, seed=1, note=True, fx=0.5, brand=True):
+    """写真を画面いっぱいに。下に太い大きな見出し（mark の言葉だけ黄色の帯）、その下に情報の札。
+    brand=False・kicker=None で 11/25 の新しい並べ方（上の札と矢印なし・見出し＋1行＋値段の3つまで）。"""
     c = _shade(_cover(w1.SRC[key], fx=fx))
-    _brand(c)
-    y = 1010
-    k = chip(kicker, bg=accent, fg=INK, size=38); c.alpha_composite(tilt(k, -2), (58, y)); y += k.height + 34
+    if brand: _brand(c)
+    y = 1010 if kicker else 1120
+    if kicker: k = chip(kicker, bg=accent, fg=INK, size=38); c.alpha_composite(tilt(k, -2), (58, y)); y += k.height + 34
     sz = 116
     while sz > 80 and max(text_img(ln, F(BLACK, sz), WHITE).width for ln in lines) > W - 150: sz -= 4  # 端にかからないように縮める（11/14 夜）
     for ln in lines:
