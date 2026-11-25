@@ -91,7 +91,27 @@ DAILY = {
            MV(["b14_court", "play_bad", "b14_wide"], "明日は、仕事帰りにバド。", ["18:00 まもりやまテラス", "ほとんどが1人参加"]), "明日の予約はLINEから・参加費1,500円（当日）"),
  },
 }
+# 11/25 の夜から：新しい並べ方（上の札と矢印なし・見出し＋1行＋値段の3つまで）と K7（QR は 8:00・19:00 だけ。ほかの③は質問の答えか次の開催）
+QR_SLOTS = ("0800", "1900")
+def FB3(key, lines, line, mark=None, seed=1):
+    return (full_bleed, dict(key=key, kicker=None, lines=lines, chips=[line, FEE], mark=mark, seed=seed, brand=False))
+DAILY["1126"] = {
+  "1000": (FB3("play_bad", ["今日18時、", "バドどうですか？"], "まもりやまテラス 新代田駅 徒歩約5分", mark="今日", seed=261),
+           MV(["play_bad", "b14_court", "play_bad"], "今日18時、バド。", ["新代田駅 徒歩約5分", "まだ参加枠あります"]),
+           FB3("floor", ["1人で行っても", "大丈夫？"], "ほとんどが1人参加です", mark="1人", seed=264)),
+  "1500": (FB3("b14_wide", ["仕事終わりに、", "体動かしません？"], "今日18:00 着替え・シューズ・飲み物だけ", mark="体", seed=262),
+           MV(["b14_wide", "play_bad", "b14_court"], "仕事終わりに、バド。", ["ラケット貸出あり", "初心者7割・経験者3割くらい"]),
+           FB3("ceiling", ["週末も、", "バド2回。"], "土13:00 初台・日18:00 巣鴨", mark="週末", seed=265)),
+  "1900": (FB3("b14_court", ["疲れたら、", "休んで大丈夫。"], "次は 11/28(土) 13:00 初台駅 徒歩約13分", mark="休んで", seed=263),
+           MV(["b14_court", "play_bad", "b14_wide"], "週末は、バド2回。", ["土 13:00 初台", "日 18:00 巣鴨"]), "週末の予約はLINEから・参加費1,500円（当日）"),
+}
+# 12:00 の③（金曜に QR で作った分）を 11/26〜29 は QR なしに作り直す（K7）
+NOON3 = {"1126": FB3("floor", ["今日の夜、", "1人でもどうぞ。"], "18:00 まもりやまテラス", mark="1人", seed=266),
+         "1127": FB3("ceiling", ["週末の流れは", "こんな感じ（例）"], "受付→基礎練習→試合→片付け", mark="流れ", seed=267),
+         "1128": FB3("ceiling", ["明日の夜も", "バドあります。"], "日18:00 巣鴨駅・大塚駅 徒歩約10分", mark="明日", seed=268),
+         "1129": FB3("floor", ["日曜の夜、", "1人でもどうぞ。"], "初心者7割・経験者3割くらい", mark="1人", seed=269)}
 EXP_NOTE = {"1125": "実験:D-1125（改善2個・5日周期の2日目）①15:00 は質問の見出しを続ける（持ち物）②19:00 で参加者の声の見出しを3晩ぶりに戻して、11/22〜24 の普通の見出しと比べる", "1124": "実験:D-1124（改善1個・5日周期の1日目）①15:00 の枠を新しく出す（休憩明け向け・1人参加の不安に答える）。10:00・19:00 は前の日の型（短い見出し・①②の言葉をそろえる）のまま", "1123": "実験:D-1123（改善5個）①見出し1行8文字前後を続ける ②①と②の動画の1行目を同じ言葉に（style.md・K1）③19時は次の開催（木曜バド）を仕事帰り向けに ④19時の声の見出しはもう1晩休んで比べる ⑤ラケット貸出をチップに"}
+EXP_NOTE["1126"] = "実験:D-1126（改善3個・5日周期の3日目）①新しい並べ方（上の札・矢印なし、見出し＋1行＋値段）②話しかける見出し（加藤さんの言葉「疲れたら休んで大丈夫」）③K7：QR は 19:00 だけ、10:00・15:00 の③は質問の答え・次の開催"
 
 
 def post(day, tm, k, name, note):
@@ -104,6 +124,12 @@ def post(day, tm, k, name, note):
 if __name__ == "__main__":
     args = sys.argv[1:]
     mode = "daily" if "--daily" in args else "base"
+    if "--noon" in args:  # 12:00 の③だけ QR なしに作り直す（K7）
+        for day in [a for a in args if not a.startswith("--")]:
+            dd = os.path.join(OUT, day); os.makedirs(dd, exist_ok=True); p3 = os.path.join(dd, f"{day}_1200_3.jpg")
+            NOON3[day][0](**NOON3[day][1]).save(p3, quality=93)
+            shutil.copy(p3, os.path.join(MEDIA, f"2026-11-{day[2:]}_story_1200_3.jpg")); print("noon3", day)
+        sys.exit(0)
     only = [a for a in args if not a.startswith("--")]
     days = [w[0] for w in WEEK]
     for day in (only or days):
@@ -124,7 +150,8 @@ if __name__ == "__main__":
                 if b[0] == "montage": montage(path=p2, **b[1])
                 else: make_video(as_video(b, "court"), p2)
                 _n, _s = music_for(tm, day); add_music(p2, _n, start=_s)
-                qr_line("予約は", "公式LINEから", sub, p3, bg="floor")
+                if isinstance(sub, tuple): sub[0](**sub[1]).save(p3, quality=93)  # K7：QR なしの③
+                else: qr_line("予約は", "公式LINEから", sub, p3, bg="floor")
                 files += [(tm, 1, p1), (tm, 2, p2), (tm, 3, p3)]
         for tm, k, p in files:
             name = f"2026-11-{day[2:]}_story_{tm}_{k}" + os.path.splitext(p)[1]
