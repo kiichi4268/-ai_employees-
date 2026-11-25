@@ -5,7 +5,7 @@
 html,body{margin:0;background:#0f1730}canvas{display:block}
 </style></head><body><canvas id="c" width="1080" height="1920"></canvas>
 <script>
-// 4つの道具（Claude Code・Muse×2・Dola・Obsidian）の使い方の説明動画。render(t)
+// 土台（Claude Code・Muse×2・シート）＋追加（Dola・Obsidian）の説明動画。render(t)
 const C=document.getElementById('c'),X=C.getContext('2d');const W=1080,H=1920;
 const COL={cc:'#ff8a3d',ms:'#3cc4d6',ma:'#b48cf0',dola:'#4cd38a',obs:'#ffec1e',ka:'#ff5a6e'};
 const ease=x=>x<0?0:x>1?1:1-Math.pow(1-x,3);const seg=(t,a,b)=>Math.max(0,Math.min(1,(t-a)/(b-a)));
@@ -21,31 +21,34 @@ function card(y,col,name,items,a){X.globalAlpha=a;rr(60,y,960,140+items.length*7
 window.render=function(t){
  X.fillStyle='#0f1730';X.fillRect(0,0,W,H);
  if(t<6){ // 1 タイトル
-  const a=ease(seg(t,0,.8));X.globalAlpha=a;tx('4つの道具で',W/2,560,90,'#fff');tx('会社を回す',W/2,680,110,'#ffec1e');X.globalAlpha=1;
-  [['Claude Code','作る・自動投稿',COL.cc],['Muse ×2','Instagram以外に投稿',COL.ms],['Dola','Obsidianを整理',COL.dola],['Obsidian','いつでも引き出す倉庫',COL.obs]].forEach((b,i)=>{
-   const p=ease(seg(t,1.2+i*.6,1.8+i*.6));box(90+(i%2)*470,900+Math.floor(i/2)*300,430,250,b[2],b[0],b[1],p);});
+  const a=ease(seg(t,0,.8));X.globalAlpha=a;tx('土台は3つで回す',W/2,500,84,'#fff');tx('Dola は「あれば＋」',W/2,620,80,'#ffec1e');X.globalAlpha=1;
+  [['Claude Code','作る・自動投稿',COL.cc],['Muse ×2','ほかのSNSに投稿',COL.ms],['シート','投稿リスト・数字',COL.obs]].forEach((b,i)=>{
+   const p=ease(seg(t,1.2+i*.5,1.8+i*.5));box(60+i*330,820,300,250,b[2],b[0],b[1],p);});
+  const q=ease(seg(t,3,3.6));X.globalAlpha=q;X.setLineDash([18,14]);X.strokeStyle=COL.dola;X.lineWidth=6;X.beginPath();X.roundRect(160,1180,760,220,28);X.stroke();X.setLineDash([]);
+  tx('＋ Dola・Obsidian',W/2,1260,50,COL.dola);tx('なくても止まらない。あると速くなる',W/2,1335,36,'#dfe6ff','NM');X.globalAlpha=1;
   foot();return;}
- if(t<16){ // 2 全体の流れ
-  head('全体の流れ','加藤さんが決める → AIが回す');
+ if(t<16){ // 2 全体の流れ（Dolaなし）
+  head('全体の流れ','Dola がいなくても1周できる');
   const n=[[W/2-210,300,420,150,COL.ka,'加藤さん','決める・確認'],[60,560,440,170,COL.cc,'Claude Code','作る・Instagram'],[580,560,440,170,COL.ms,'Muse ×2','ほかのSNSに投稿'],
-   [W/2-260,860,520,170,COL.obs,'シート・Obsidian','受け渡しの場所'],[W/2-210,1160,420,170,COL.dola,'Dola','整理・つなぐ']];
+   [W/2-280,860,560,170,COL.obs,'シート','投稿リスト・数字']];
   n.forEach((b,i)=>box(b[0],b[1],b[2],b[3],b[4],b[5],b[6],ease(seg(t,6+i*.5,6.6+i*.5))));
-  arrow(W/2-100,455,280,555,seg(t,8.6,9.3),'#ffffff88');arrow(W/2+100,455,800,555,seg(t,8.9,9.6),'#ffffff88');
-  arrow(280,735,W/2-150,855,seg(t,9.8,10.5),COL.cc);arrow(800,735,W/2+150,855,seg(t,10.1,10.8),COL.ms);
-  arrow(W/2,1035,W/2,1155,seg(t,11,11.6),COL.dola);
-  const g=ease(seg(t,12.5,13.3));X.globalAlpha=g;rr(80,1420,920,250,30,'#1b2650');lines(['完成品を置く → 投稿する → 数字が戻る','→ Dola が整理 → 次の投稿が良くなる'],W/2,1500,42,'#fff',80,'NM','center');X.globalAlpha=1;
+  arrow(W/2-100,455,280,555,seg(t,8.4,9.1),'#ffffff88');arrow(W/2+100,455,800,555,seg(t,8.7,9.4),'#ffffff88');
+  arrow(280,735,W/2-150,855,seg(t,9.6,10.3),COL.cc);arrow(800,735,W/2+150,855,seg(t,9.9,10.6),COL.ms);
+  arrow(W/2-280,945,130,740,seg(t,10.8,11.5),COL.obs);
+  const d=ease(seg(t,11.6,12.2));X.globalAlpha=d;X.setLineDash([16,12]);X.strokeStyle=COL.dola;X.lineWidth=5;X.beginPath();X.roundRect(W/2-260,1110,520,150,24);X.stroke();X.setLineDash([]);
+  tx('＋ Dola（あれば）',W/2,1160,42,COL.dola);tx('整理して探しやすくする',W/2,1215,32,'#dfe6ff','NM');X.globalAlpha=1;
+  const g=ease(seg(t,12.5,13.3));X.globalAlpha=g;rr(80,1420,920,250,30,'#1b2650');lines(['完成品を置く → 投稿する → 数字をシートへ','→ Claude Code が読んで次を良くする'],W/2,1500,42,'#fff',80,'NM','center');X.globalAlpha=1;
   foot();return;}
  if(t<23){head('Claude Code の使い方','作る・自動で出す・毎晩考える');
-  card(300,COL.cc,'Claude Code（作る）',['Instagram を全部作って自動で出す','毎晩23:55 会議 → 明日を良くする','note・他のSNSの原稿を作る','Muse への指示書を書く','月1回 Obsidian を一周'],ease(seg(t,16.2,17)));
+  card(300,COL.cc,'Claude Code（作る）',['Instagram を全部作って自動で出す','毎晩23:55 会議 → 明日を良くする','note・他のSNSの原稿を作る','他のSNSの数字も日曜に読む','月1回 Obsidian を一周'],ease(seg(t,16.2,17)));
   const a=ease(seg(t,18.5,19.3));X.globalAlpha=a;rr(60,1120,960,330,30,'#1b2650');tx('決まった時間だけ動く',W/2,1190,48,COL.cc);lines(['8:00 数字と公開　23:55 振り返り','月・水 21:00 リール・カルーセル','金 21:30 ストーリー　日 21:00 週のまとめ'],W/2,1280,38,'#fff',62,'NM','center');X.globalAlpha=1;foot();return;}
  if(t<31){head('Muse の使い方','2人で分けて投稿する');
-  card(290,COL.ms,'スポーツ用 Muse',['note（スポーツの主催の裏側）','YouTube・TikTok・Pinterest','イベントアプリ・口コミの返信','公式LINE の確認・毎日の見回り'],ease(seg(t,23.2,24)));
-  card(910,COL.ma,'AI 用 Muse',['note（AI の仕組み）','人気の曲集め（名前と雰囲気）'],ease(seg(t,25,25.8)));
-  const a=ease(seg(t,27,27.8));X.globalAlpha=a;rr(60,1330,960,260,30,'#1b2650');lines(['時間になったら投稿（1日4回見る）','中身は変えない・長い相談はしない','上限が来たら翌日つづきから'],W/2,1400,40,'#fff',70,'NM','center');X.globalAlpha=1;foot();return;}
- if(t<39){head('Dola と Obsidian','整理する人と、倉庫');
-  card(290,COL.dola,'Dola（24時間・整理役）',['00_Inbox を受け取って振り分け','ノートをつなぐ・level を付ける','長い記録は 80_保管 へ移す'],ease(seg(t,31.2,32)));
-  const f=[['00_Inbox','入り口（Muse 2人・Claude Code が置く）',COL.obs],['01〜04','よく使う知識',COL.dola],['80_保管','必要な時だけ開く',COL.ms],['90_Archive','使わない（消さない）','#8892b0']];
-  f.forEach((r,i)=>{const a=ease(seg(t,33.2+i*.6,33.8+i*.6));X.globalAlpha=a;rr(60,840+i*170,960,140,24,'#1b2650');rr(60,840+i*170,240,140,24,r[2]);tx(r[0],180,910+i*170,38,'#0f1730');tx(r[1],660,910+i*170,36,'#fff','NM');X.globalAlpha=1;});
+  card(290,COL.ms,'スポーツ用 Muse',['note（スポーツの主催の裏側）','YouTube・TikTok・Pinterest','イベントアプリ・口コミの返信','公式LINE の確認・毎日の見回り','日曜に数字をシートへ'],ease(seg(t,23.2,24)));
+  card(980,COL.ma,'AI 用 Muse',['note（AI の仕組み）','人気の曲集め（名前と雰囲気）'],ease(seg(t,25,25.8)));
+  const a=ease(seg(t,27,27.8));X.globalAlpha=a;rr(60,1400,960,260,30,'#1b2650');lines(['時間になったら投稿（1日4回見る）','中身は変えない・長い相談はしない','上限が来たら翌日つづきから'],W/2,1470,40,'#fff',70,'NM','center');X.globalAlpha=1;foot();return;}
+ if(t<39){head('Obsidian と Dola','Dola がいない日も止まらない');
+  card(290,COL.obs,'Dola なし（土台）',['00_Inbox に日付つきで置くだけ','日曜に Claude Code がその週分だけ読む','月1回の一周も Claude Code'],ease(seg(t,31.2,32)));
+  card(900,COL.dola,'Dola あり（＋）',['振り分け・ノートをつなぐ・level','長い記録を 80_保管 へ移す','探すのが速くなる・読む量が減る'],ease(seg(t,33.5,34.3)));
   foot();return;}
  head('加藤さんがすること','決める・見る・撮る');
  const a=ease(seg(t,39.2,40));X.globalAlpha=a;

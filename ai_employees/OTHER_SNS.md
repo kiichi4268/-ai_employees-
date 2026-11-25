@@ -36,6 +36,9 @@
 - **Pinterest**：画像は縦 2:3（1000×1500）・タイトル100字以内・説明450字くらい。リンク先URLは HP https://barmacachette.com/index.html#shopinfo（11/23 加藤さん。lin.ee はスパム判定になったため）。リンク欄だけに入れ、本文にはURLを書かない。
 - Muse は中身を変えない（見た目と文字数の調整だけ）。投稿前に必ず加藤さんが最終確認。
 
+## 数字の集計（11/25 最新）
+- Muse 2人が日曜18:30 にシートのタブ「他SNS結果」へ媒体ごと1行。Claude Code が日曜21:00 の週次PDCAで読み、媒体ごとに「伸びた・落ちた・次の1つ」を決める。Dola がいなくても回る（Obsidian へのまとめは追加）。
+
 ## データの置き場所（11/16 加藤さん：Obsidian に週1でまとめる）
 - Instagram 以外（YouTube・note など。公式LINE は除く）の進み具合・振り返り・ネタは、スプレッドシートに入れない。
 - Drive「他のSNS用」の中の「Obsidian_他のSNS（週1まとめ）」`1Qca9kju8Sox26oWYQ5jVv4qnQ3ksdv5f` に、毎週日曜の週次PDCAで markdown を1枚足す（`週_YYYY-MM-DD.md`）。目次は `00_目次.md`、ネタは `01_ネタのストック.md`。Obsidian で開けるように [[リンク]] でつなぐ。
