@@ -1,0 +1,11 @@
+# 11/25 加藤さん：Claude Code が勝手に開かない・スキャンしない所（重い素材・出力）
+# ※Claude Code がこのファイルを自動で読む仕組みはないため、決まりとして守る（CLAUDE.md 1章）
+studio/clips/
+studio/photos/
+studio/inputs/
+studio/out/
+studio/fonts/
+content/instagram/media/
+docs/handover/*.zip
+data/insights/media.csv
+# Obsidian の 80_保管（必要な時だけ）：ふだん開かない（Drive 上・11/25）
