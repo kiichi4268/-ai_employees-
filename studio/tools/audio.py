@@ -187,8 +187,9 @@ def add_music(video, track, out=None, level=0.55, start=0.0, fade=0.6):
 def music_for(tm, day):
     """時刻と日付から曲と開始位置を決める（毎日少しずつ違う所から流す）。"""
     tm = str(tm)
-    if tm.startswith("08"): name = "acoustic_morning"
-    elif tm.startswith("19"): name = "lofi_evening"  # 11/19 会議：19時は落ち着いた曲に固定（33 音楽の持ち込み議題・日曜に判定）
-    elif tm.startswith("15"): name = "acoustic_morning"  # 11/23 15時（休憩明け・やわらかめ）
-    else: name = "pop_bright"
+    # 11/26 加藤さん「曲をもっと増やそう」（K11）：時間帯ごとに候補を持ち、日替わりで回す（同じ曲が続かない）。曲が増えたら候補に足す
+    ROT = {"08": ["acoustic_morning", "pop_bright"], "15": ["acoustic_morning", "lofi_evening"],
+           "19": ["lofi_evening", "citypop_night"], "else": ["pop_bright", "citypop_night", "acoustic_morning"]}
+    cand = ROT.get(tm[:2], ROT["else"])
+    name = cand[int(day) % len(cand)]
     return name, (int(day) * 7) % 40
