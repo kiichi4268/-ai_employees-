@@ -12,6 +12,8 @@ PHOTOS = {  # キー: (ファイル, ぼかし)。顔が近い写真ほど強く
     "play_vb": ("vb_play.jpg", 10), "play_vb2": ("vb_sugamo_people.jpg", 8),
     # 11/14 加藤さん「ボケはそんなに必要ない。顔が見えない形で」→ 顔だけモザイク（tools/anonymize.py・手で全員の頭を確認）・写真はくっきり
     "b14_wide": ("anon_b1114_IMG_4801.jpg", 0), "b14_court": ("anon_b1114_IMG_4807.jpg", 0),
+    # 11/26 加藤さんの写真（まもりやまテラスのバド）。顔だけモザイクの道具が OpenCV 5 で動かないため全体ぼかし7（人は遠く小さい・目で確認済み）
+    "b26_rackets": ("b26_4867.jpg", 7), "b26_wide": ("b26_4868.jpg", 7), "b26_net": ("b26_4869.jpg", 7), "b26_shuttle": ("b26_4870.jpg", 7), "b26_court": ("b26_4871.jpg", 7),
 }
 NOTE = ""  # 11/19 加藤さん：過去写真の注記は入れない
 FONT = os.path.join(D, "fonts", "NotoSansCJK-Bold.ttc")
