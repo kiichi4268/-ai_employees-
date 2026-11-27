@@ -40,3 +40,9 @@
   - 11/15 Muse の回答：API で Muse のアカウントに入れる・SNS に投稿するのは不可（API は文章生成用・従量課金）。公開リンクをチャットに貼れば Muse が取り込める（ログインが要るリンクは不可）。添付なら動画 約100MB・その他 約25MB まで。入れたファイルは初めは非公開。
   - Instagram は今までどおり GitHub → 自動投稿（Muse は使わない）。
   - SNSごとの形・できること：ai_employees/OTHER_SNS.md
+
+## 食事の写真（11/27 加藤さん「食事系の写真はどう分ける？」）
+- 元の写真：Drive「Macachette食事素材」（アカウント1）`1ZNexX-E4stbG6vMUb_USOgf5cKazVuUl`／「00_共通素材（店内・料理・道具）」`1c2hWDtRnnPWAO75QElKmR_UGfd_wC8aJ`／「2026-12」`1k7kRg7nceiRB2daHfGXNuJd4B70amGqz`（会ごとに「日付_会の名前」）
+- スポーツの元の写真は今までどおり Drive「Macachette素材」（アカウント2）。混ぜない
+- 完成品：食事と @kkbirthday0129 用＝Drive「他のSNS用/食事（kkbirthday0129用）」`1jg_NLkPpzF6x8r-PBNLAjPqOooNtAaqy`（名前の頭 F_＝食事・S_＝スポーツ）。@macachette_sports は今までどおり content/instagram/media
+- 顔のルールは同じ（顔が分からない形にしてから使う）
