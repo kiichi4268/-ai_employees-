@@ -19,41 +19,35 @@ function head(s,sub){rr(0,0,W,230,0,'#0b1228');tx(s,W/2,90,62,'#fff');if(sub)tx(
 function foot(){tx('マカシェット AI社員の会社',W/2,H-70,32,'#ffffff88','NM');}
 function card(y,col,name,items,a){X.globalAlpha=a;rr(60,y,960,140+items.length*70,30,'#1b2650');rr(60,y,960,96,30,col);tx(name,W/2,y+50,50,'#0f1730');lines(items.map(s=>'・'+s),110,y+150,40,'#fff',70);X.globalAlpha=1;}
 window.render=function(t){
- X.fillStyle='#0f1730';X.fillRect(0,0,W,H);
- if(t<6){ // 1 タイトル
-  const a=ease(seg(t,0,.8));X.globalAlpha=a;tx('土台は3つで回す',W/2,500,84,'#fff');tx('Dola は「あれば＋」',W/2,620,80,'#ffec1e');X.globalAlpha=1;
-  [['Claude Code','作る・自動投稿',COL.cc],['Muse ×2','ほかのSNSに投稿',COL.ms],['シート','投稿リスト・数字',COL.obs]].forEach((b,i)=>{
-   const p=ease(seg(t,1.2+i*.5,1.8+i*.5));box(60+i*330,820,300,250,b[2],b[0],b[1],p);});
-  const q=ease(seg(t,3,3.6));X.globalAlpha=q;X.setLineDash([18,14]);X.strokeStyle=COL.dola;X.lineWidth=6;X.beginPath();X.roundRect(160,1180,760,220,28);X.stroke();X.setLineDash([]);
-  tx('＋ Dola・Obsidian',W/2,1260,50,COL.dola);tx('なくても止まらない。あると速くなる',W/2,1335,36,'#dfe6ff','NM');X.globalAlpha=1;
-  foot();return;}
- if(t<16){ // 2 全体の流れ（Dolaなし）
-  head('全体の流れ','Dola がいなくても1周できる');
-  const n=[[W/2-210,300,420,150,COL.ka,'加藤さん','決める・確認'],[60,560,440,170,COL.cc,'Claude Code','作る・Instagram'],[580,560,440,170,COL.ms,'Muse ×2','ほかのSNSに投稿'],
-   [W/2-280,860,560,170,COL.obs,'シート','投稿リスト・数字']];
-  n.forEach((b,i)=>box(b[0],b[1],b[2],b[3],b[4],b[5],b[6],ease(seg(t,6+i*.5,6.6+i*.5))));
-  arrow(W/2-100,455,280,555,seg(t,8.4,9.1),'#ffffff88');arrow(W/2+100,455,800,555,seg(t,8.7,9.4),'#ffffff88');
-  arrow(280,735,W/2-150,855,seg(t,9.6,10.3),COL.cc);arrow(800,735,W/2+150,855,seg(t,9.9,10.6),COL.ms);
-  arrow(W/2-280,945,130,740,seg(t,10.8,11.5),COL.obs);
-  const d=ease(seg(t,11.6,12.2));X.globalAlpha=d;X.setLineDash([16,12]);X.strokeStyle=COL.dola;X.lineWidth=5;X.beginPath();X.roundRect(W/2-260,1110,520,150,24);X.stroke();X.setLineDash([]);
-  tx('＋ Dola（あれば）',W/2,1160,42,COL.dola);tx('整理して探しやすくする',W/2,1215,32,'#dfe6ff','NM');X.globalAlpha=1;
-  const g=ease(seg(t,12.5,13.3));X.globalAlpha=g;rr(80,1420,920,250,30,'#1b2650');lines(['完成品を置く → 投稿する → 数字をシートへ','→ Claude Code が読んで次を良くする'],W/2,1500,42,'#fff',80,'NM','center');X.globalAlpha=1;
-  foot();return;}
- if(t<23){head('Claude Code の使い方','作る・自動で出す・毎晩考える');
-  card(300,COL.cc,'Claude Code（作る）',['Instagram を全部作って自動で出す','毎晩23:55 会議 → 明日を良くする','note・他のSNSの原稿を作る','他のSNSの数字も日曜に読む','月1回 Obsidian を一周'],ease(seg(t,16.2,17)));
-  const a=ease(seg(t,18.5,19.3));X.globalAlpha=a;rr(60,1120,960,330,30,'#1b2650');tx('決まった時間だけ動く',W/2,1190,48,COL.cc);lines(['8:00 数字と公開　23:55 振り返り','月・水 21:00 リール・カルーセル','金 21:30 ストーリー　日 21:00 週のまとめ'],W/2,1280,38,'#fff',62,'NM','center');X.globalAlpha=1;foot();return;}
- if(t<31){head('Muse の使い方','2人で分けて投稿する');
-  card(290,COL.ms,'スポーツ用 Muse',['note（スポーツの主催の裏側）','YouTube・TikTok・Pinterest','イベントアプリ・口コミの返信','公式LINE の確認・毎日の見回り','日曜に数字をシートへ'],ease(seg(t,23.2,24)));
-  card(980,COL.ma,'AI 用 Muse',['note（AI の仕組み）','人気の曲集め（名前と雰囲気）'],ease(seg(t,25,25.8)));
-  const a=ease(seg(t,27,27.8));X.globalAlpha=a;rr(60,1400,960,260,30,'#1b2650');lines(['時間になったら投稿（1日4回見る）','中身は変えない・長い相談はしない','上限が来たら翌日つづきから'],W/2,1470,40,'#fff',70,'NM','center');X.globalAlpha=1;foot();return;}
- if(t<39){head('Obsidian と Dola','Dola がいない日も止まらない');
-  card(290,COL.obs,'Dola なし（土台）',['00_Inbox に日付つきで置くだけ','日曜に Claude Code がその週分だけ読む','月1回の一周も Claude Code'],ease(seg(t,31.2,32)));
-  card(900,COL.dola,'Dola あり（＋）',['振り分け・ノートをつなぐ・level','長い記録を 80_保管 へ移す','探すのが速くなる・読む量が減る'],ease(seg(t,33.5,34.3)));
-  foot();return;}
- head('加藤さんがすること','決める・見る・撮る');
- const a=ease(seg(t,39.2,40));X.globalAlpha=a;
- [['決める','方針・やめること・値段',COL.ka],['見る','出た投稿と数字を見て「直して」',COL.cc],['撮る','開催の日の写真（顔はこちらで処理）',COL.ms]].forEach((r,i)=>{rr(60,320+i*260,960,220,30,'#1b2650');rr(60,320+i*260,20,220,10,r[2]);tx(r[0],W/2,390+i*260,60,r[2]);tx(r[1],W/2,470+i*260,40,'#fff','NM');});
- X.globalAlpha=ease(seg(t,41,42));rr(60,1150,960,300,30,'#2a3570');tx('軽く回す決まり',W/2,1220,50,'#ffec1e');lines(['1件1ファイル・30行まで','ふだん読まない物は 80_保管へ'],W/2,1310,42,'#fff',70,'NM','center');X.globalAlpha=1;foot();
+ X.fillStyle='#0f1730';X.fillRect(0,0,W,H);const A1='#ff7a4a',A2='#4a9bff';
+ if(t<6){const a=ease(seg(t,0,.8));X.globalAlpha=a;tx('AI社員の会社の地図',W/2,520,84,'#fff');tx('アカウント2つ・33人で全部考える',W/2,640,48,'#ffec1e','NM');X.globalAlpha=1;
+  box(80,820,440,260,A1,'アカウント1','食事＋AI',ease(seg(t,1.5,2.2)));box(560,820,440,260,A2,'アカウント2','スポーツ',ease(seg(t,2,2.7)));
+  const q=ease(seg(t,3,3.6));X.globalAlpha=q;tx('はじめての人へ・60秒',W/2,1250,44,'#dfe6ff','NM');X.globalAlpha=1;foot();return;}
+ if(t<14){head('会社の形','誰が何をするか');
+  card(300,A1,'アカウント1（食事＋AI）',['Instagram @kkbirthday0129（Muse 1）','note AI・ココナラ・クラウドワークス','食事の告知・公式LINE（食事）'],ease(seg(t,6.2,7)));
+  card(820,A2,'アカウント2（スポーツ）',['Instagram @macachette_sports（自動）','note メイン・YouTube・TikTok','LINE スタンプ・イベントアプリ'],ease(seg(t,8,8.8)));
+  const a=ease(seg(t,10,10.8));X.globalAlpha=a;rr(60,1360,960,200,30,'#1b2650');lines(['作る＝Claude Code（33人の会議）','出す＝Muse 1・2　整理＝Dola 1・2'],W/2,1430,42,'#fff',70,'NM','center');X.globalAlpha=1;foot();return;}
+ if(t<24){head('1日の流れ','朝に数字・昼は自動・夜に1つ直す');
+  const R=[['8:00','Claude Code','数字を読む・Merge・今日のタスク',COL.cc],['8〜19時','自動','Instagram ストーリー15本など',COL.ms],['1日4回','Muse 1・2','各SNS・イベントアプリに出す',COL.ms],['22:30','Muse','その日の数字の速報',COL.ma],['23:30','Dola 2','お金と数字を1枚に',COL.dola],['23:55','Claude Code','会議→明日の改善1つ・明日の分を作る',COL.cc]];
+  R.forEach((r,i)=>{const a=ease(seg(t,14.3+i*1.2,15+i*1.2));X.globalAlpha=a;rr(60,290+i*215,960,185,26,'#1b2650');rr(60,290+i*215,16,185,8,r[3]);tx(r[0],210,345+i*215,48,r[3]);tx(r[1],210,415+i*215,32,'#dfe6ff','NM');tx(r[2],640,380+i*215,36,'#fff','NM');X.globalAlpha=1;});foot();return;}
+ if(t<32){head('週と月の流れ','決まった回だけ動く');
+  card(300,COL.cc,'毎週',['月・水 21:00 リール・カルーセル','金 21:30 翌週のストーリー','日 18:30 Muse が週の数字','日 21:00 週の振り返り・判定'],ease(seg(t,24.2,25)));
+  card(1000,COL.dola,'毎月',['第1日曜 月の目標と比べて短縮策を1つ','Obsidian を一周して軽くする'],ease(seg(t,27,27.8)));foot();return;}
+ if(t<41){head('全媒体の振り分け','どこに・誰が出すか');
+  const R=[['Instagram ×2','自動／Muse 1'],['公式LINE ×2','加藤さん／Muse 1'],['YouTube・TikTok','Muse 2・Muse 1'],['X など','Muse 1・2（ログイン後）'],['note ×2','Muse 2・Muse 1'],['イベントアプリ ×2','Muse 2・Muse 1'],['ココナラ・CW','Muse 1（注文は全部受ける）'],['スタンプ・アフィ','Muse 2・Muse 1']];
+  R.forEach((r,i)=>{const a=ease(seg(t,32.2+i*.6,32.8+i*.6));X.globalAlpha=a;rr(60,290+i*160,960,135,22,'#1b2650');tx(r[0],320,357+i*160,40,'#ffec1e');tx(r[1],760,357+i*160,34,'#fff','NM');X.globalAlpha=1;});
+  const q=ease(seg(t,38,38.6));X.globalAlpha=q;tx('止めている物：HP・WordPress・Google ビジネス',W/2,1640,34,'#ffb3a0','NM');X.globalAlpha=1;foot();return;}
+ if(t<49){head('お金の道筋','月30万＝イベント5万（数えない）＋25万');
+  const B=[['① 運用代行',12.8,COL.ms],['② note',7.8,A2],['③ 単発の制作',3.6,A1],['④ アフィ・タイアップ',1,COL.dola],['⑤ LINE スタンプ',0.75,COL.ma]];
+  B.forEach((b,i)=>{const p=ease(seg(t,41.3+i*.6,42.2+i*.6));tx(b[0],80,330+i*180,40,'#fff','NM','left');rr(80,365+i*180,Math.max(8,760*(b[1]/12.8)*p),60,14,b[2]);tx(b[1]+'万',900,395+i*180,40,'#ffec1e');});
+  const q=ease(seg(t,45,45.7));X.globalAlpha=q;rr(60,1270,960,260,30,'#1b2650');lines(['12月1万 → 1月4万 → 2月8万','3月13万 → 4月19万 → 5月25万'],W/2,1350,40,'#fff',80,'NM','center');X.globalAlpha=1;foot();return;}
+ if(t<55){head('写真の置き場','食事とスポーツは混ぜない');
+  card(300,A1,'食事 → Drive「Macachette食事素材」',['00_共通素材（店内・料理・道具）','月ごと →「日付_会の名前」'],ease(seg(t,49.2,50)));
+  card(850,A2,'スポーツ → Drive「Macachette素材」',['月ごと →「日付_種目_会場」','開催の日の夜に入れる'],ease(seg(t,50.5,51.3)));
+  const q=ease(seg(t,52,52.6));X.globalAlpha=q;tx('顔はこちらで隠してから使う',W/2,1400,44,'#ffec1e');X.globalAlpha=1;foot();return;}
+ head('加藤さんがすること','毎朝のタスクを上からやるだけ');
+ [['決める','GO・大きなルール・注文の判断',COL.ka],['見る','出た投稿と数字に「直して」',COL.cc],['撮る','開催・食事の会の写真をDriveへ',COL.ms]].forEach((r,i)=>{const a=ease(seg(t,55.2+i*.5,55.8+i*.5));X.globalAlpha=a;rr(60,320+i*260,960,220,30,'#1b2650');rr(60,320+i*260,20,220,10,r[2]);tx(r[0],W/2,390+i*260,60,r[2]);tx(r[1],W/2,470+i*260,38,'#fff','NM');X.globalAlpha=1;});
+ X.globalAlpha=ease(seg(t,57,57.8));rr(60,1150,960,240,30,'#2a3570');tx('完成度1 → 1億',W/2,1220,50,'#ffec1e');tx('数字で毎日1つずつ上げていく',W/2,1310,40,'#fff','NM');X.globalAlpha=1;foot();
 };
 window.render(0);
 </script></body></html>
