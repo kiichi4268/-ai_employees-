@@ -188,8 +188,9 @@ def music_for(tm, day):
     """時刻と日付から曲と開始位置を決める（毎日少しずつ違う所から流す）。"""
     tm = str(tm)
     # 11/26 加藤さん「曲をもっと増やそう」（K11）：時間帯ごとに候補を持ち、日替わりで回す（同じ曲が続かない）。曲が増えたら候補に足す
-    ROT = {"08": ["acoustic_morning", "pop_bright"], "15": ["acoustic_morning", "lofi_evening"],
-           "19": ["lofi_evening", "citypop_night"], "else": ["pop_bright", "citypop_night", "acoustic_morning"]}
+    # 11/27 加藤さん「曲は無料の方法で」：bgm()（その場で作曲・無料・権利はこちら）で作った bgm_* を候補に足す
+    ROT = {"08": ["acoustic_morning", "pop_bright", "bgm_fresh_a"], "15": ["acoustic_morning", "lofi_evening", "bgm_gentle_a"],
+           "19": ["lofi_evening", "citypop_night", "bgm_lofi_a"], "else": ["pop_bright", "citypop_night", "acoustic_morning", "bgm_happy_a", "bgm_happy_b", "bgm_indie_a"]}
     cand = ROT.get(tm[:2], ROT["else"])
     name = cand[int(day) % len(cand)]
     return name, (int(day) * 7) % 40
