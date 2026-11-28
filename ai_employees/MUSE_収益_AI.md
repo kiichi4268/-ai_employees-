@@ -1,3 +1,4 @@
+> **旧（11/28）：今の指示文は ai_employees/kousei/prompts/（Muse1.md・Muse2.md・Dola1.md・Dola2.md）。これは記録として残すだけ。**
 # AI 用 Muse に貼る文（収益：ココナラ・クラウドワークス）11/26 加藤さん
 ```
 【AI 用 Muse へ：収益の担当（11/26 加藤さん決定）】
