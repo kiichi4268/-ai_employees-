@@ -1,3 +1,4 @@
+> **旧（11/28）：今の指示文は ai_employees/kousei/prompts/（Muse1.md・Muse2.md・Dola1.md・Dola2.md）。これは記録として残すだけ。**
 # MUSE_INSTRUCTIONS.md — Muse 2人への指示書（11/25 版・そのまま貼れる）
 公開リポジトリなのでメールアドレスは書かない（どちらのアカウントかはシート「加藤からの修正・決定」）。
 - **AI 用 Muse**（AI 収益側のアカウント）

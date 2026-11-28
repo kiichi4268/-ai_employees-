@@ -47,3 +47,4 @@ description: Instagram の週次PDCA（リサーチ・コメント数・改善�
 - 書く物は1枚だけ：`00_Inbox/ClaudeCode_ログ_YYYY-MM-DD_Obsidian一周.md`（Dola への見直し依頼）。動かす・名前を変える・level は Dola。
 - 他SNS：タブ「他SNS結果」（Muse が日曜18:30 に入力）を読み、媒体ごとに伸びた・落ちた・次の1つを書く（11/25）。
 - 収益（11/25 加藤さん・イベントは数えない）：他SNS結果の売上・代行の件数で ai_employees/income/01 の表を書き直し、どのシナリオに近いかを1行。03 の今日の行を実行し、表が空きそうなら次の2週間分を足す。
+- 会議の動画・紐づけ（11/28 加藤さん）：kousei/13 の2アカウント集計と3つの問い → kousei/14 の台本 json → make_meeting_video.py で動画 → Drive「他のSNS用」→ 加藤さんに URL1行。kousei/12 紐づけチェックの表を「最後に届いた日」で更新。台帳で7日使っていない良い写真を来週に回す。
