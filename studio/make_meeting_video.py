@@ -11,9 +11,9 @@ from make_1101 import BLACK, BOLD
 W, H, SEC = 1080, 1920, 7.0
 TEAL, YEL, NAVY = (24, 160, 178), (255, 236, 30), (20, 42, 92)
 
-def slide(sc, i, n):
+def slide(sc, i, n, head="会議のまとめ"):
     im = Image.new("RGB", (W, H), NAVY); d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, W, 260], fill=TEAL); d.text((60, 90), f"会議のまとめ {i}/{n}", font=ImageFont.truetype(BOLD, 56), fill="white")
+    d.rectangle([0, 0, W, 260], fill=TEAL); d.text((60, 90), f"{head} {i}/{n}", font=ImageFont.truetype(BOLD, 56), fill="white")
     d.text((60, 340), sc["title"], font=ImageFont.truetype(BLACK, 84), fill=YEL)
     y = 520
     for ln in sc.get("lines", [])[:5]:
@@ -30,9 +30,15 @@ def main(path):
     m = json.load(open(path, encoding="utf-8")); sc = m["scenes"]; os.makedirs("studio/out", exist_ok=True)
     out = f"studio/out/meeting_{m['date'].replace('/', '')}.mp4"
     with tempfile.TemporaryDirectory() as t:
-        for i, s in enumerate(sc): slide(s, i + 1, len(sc)).save(f"{t}/{i:02d}.png")
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", f"1/{SEC}", "-i", f"{t}/%02d.png", "-vf", "fps=15,format=yuv420p", "-c:v", "libx264", out], check=True)
-    lines = [(i * SEC + 0.3, s["say"]) for i, s in enumerate(sc) if s.get("say")]
+        lst = open(f"{t}/l.txt", "w")
+        for i, s in enumerate(sc):
+            slide(s, i + 1, len(sc), m.get("head", "会議のまとめ")).save(f"{t}/{i:02d}.png")
+            lst.write(f"file '{t}/{i:02d}.png'\nduration {s.get('sec', SEC)}\n")
+        lst.write(f"file '{t}/{len(sc)-1:02d}.png'\n"); lst.close()
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", f"{t}/l.txt", "-vf", "fps=15,format=yuv420p", "-c:v", "libx264", out], check=True)
+    starts, t0 = [], 0.0
+    for s in sc: starts.append(t0); t0 += s.get("sec", SEC)
+    lines = [(starts[i] + 0.3, s["say"]) for i, s in enumerate(sc) if s.get("say")]
     print(add_voice_and_bgm(out, lines, mood="gentle", seed=len(sc)))
 
 if __name__ == "__main__":
