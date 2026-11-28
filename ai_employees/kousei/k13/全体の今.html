@@ -1,0 +1,208 @@
+<title>マカシェット運用の全体図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* 縦1列の「運用盤」：上から結論→お金→体制→つながり→流れ→予定。紺・青緑・黄（studio の色）だけ */
+:root{
+  --bg:#f6f8fb; --panel:#ffffff; --ink:#142a5c; --sub:#55648a; --line:#d6deea;
+  --teal:#18a0b2; --teal-soft:#e3f4f6; --yel:#ffec1e; --on-yel:#142a5c;
+  --ok:#1b8a5a; --warn:#b7791f; --ng:#c0392b;
+  --display:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  --body:"Noto Sans JP","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1630; --panel:#132143; --ink:#e7edfb; --sub:#a7b4d4; --line:#273a66;
+  --teal:#3cc3d3; --teal-soft:#123a4a; --ok:#4cc38a; --warn:#e0a84a; --ng:#ef7a6c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1630; --panel:#132143; --ink:#e7edfb; --sub:#a7b4d4; --line:#273a66;
+  --teal:#3cc3d3; --teal-soft:#123a4a; --ok:#4cc38a; --warn:#e0a84a; --ng:#ef7a6c; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
+.wrap{max-width:980px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(24px,4.2vw,34px);font-weight:900;line-height:1.35}
+h2{font-size:20px;font-weight:900;display:flex;align-items:baseline;gap:10px}
+h2 small{font-family:var(--body);font-size:12px;font-weight:500;color:var(--sub);letter-spacing:.04em}
+.lead{color:var(--sub);margin:6px 0 0}
+.mark{background:var(--yel);color:var(--on-yel);padding:0 6px;border-radius:3px}
+section{display:grid;gap:12px;min-width:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--sub);font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 9px;border-radius:999px;white-space:nowrap;border:1.5px solid currentColor}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.ng{color:var(--ng)}
+.money{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:48px 1fr 56px;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.bar i{display:block;height:14px;background:var(--teal);border-radius:3px}
+.bar b{font-weight:700;text-align:right}
+.acc h3{font-family:var(--display);font-size:17px;margin:0 0 6px}
+.acc ul{margin:0;padding-left:1.1em}
+.tag{font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.06em}
+svg text{font-family:var(--body)}
+.flow{display:grid;gap:0;border-left:3px solid var(--teal);margin-left:6px}
+.flow div{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:6px 0 6px 14px;position:relative;font-variant-numeric:tabular-nums}
+.flow div::before{content:"";position:absolute;left:-7.5px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--panel);border:3px solid var(--teal)}
+.flow b{font-weight:700}
+.next{background:var(--teal);color:#fff;border-radius:10px;padding:18px}
+.next h2{color:#fff}.next ol{margin:8px 0 0;padding-left:1.3em}
+.next a{color:#fff}
+a{color:var(--teal)}
+.foot{color:var(--sub);font-size:12px}
+@media (max-width:520px){.flow div{grid-template-columns:52px 1fr}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="tag">11/28 時点・完成度1</div>
+  <h1>全部の AI は、<span class="mark">シートと Obsidian</span> を通って行き来する</h1>
+  <p class="lead">月30万（イベント5万は達成・除外、残り25万）に向けて、アカウント1・2と11の AI・道具がどうつながり、今どこまで動いているかを1枚にまとめました。</p>
+</header>
+
+<section>
+  <h2>お金のゴール <small>残り25万を5月まで（イベント5万は別）</small></h2>
+  <div class="grid">
+    <div class="panel money" aria-label="月ごとの目標">
+      <div class="bar"><span>12月</span><i style="width:4%"></i><b>1万</b></div>
+      <div class="bar"><span>1月</span><i style="width:16%"></i><b>4万</b></div>
+      <div class="bar"><span>2月</span><i style="width:32%"></i><b>8万</b></div>
+      <div class="bar"><span>3月</span><i style="width:52%"></i><b>13万</b></div>
+      <div class="bar"><span>4月</span><i style="width:76%"></i><b>19万</b></div>
+      <div class="bar"><span>5月</span><i style="width:100%"></i><b>25万</b></div>
+    </div>
+    <div class="panel scroll">
+      <table>
+        <tr><th>柱</th><th>月の目安</th><th>値段</th></tr>
+        <tr><td>① 運用代行</td><td>12.8万</td><td>お試し1万/週・月4万・月8万</td></tr>
+        <tr><td>② note 有料</td><td>7.8万</td><td>メイン・AI の2つ</td></tr>
+        <tr><td>③ 単発</td><td>3.6万</td><td>6,000円〜／AI の仕組み5万＋見守り月1万</td></tr>
+        <tr><td>④ アフィ・タイアップ</td><td>1万</td><td>PR 必須</td></tr>
+        <tr><td>⑤ LINE スタンプ</td><td>0.5〜1万</td><td>マカスポくん</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>アカウント1・2 <small>メールアドレスはここには書かない</small></h2>
+  <div class="grid">
+    <div class="panel acc"><div class="tag">アカウント1</div><h3>食事・AI</h3>
+      <ul><li>Muse 1・Dola 1</li><li>Instagram @kkbirthday0129（食事がメイン・スポーツと交互。投稿は Muse 1、中身は Claude Code）</li><li>note AI・ココナラ・クラウドワークス</li><li>HP・WordPress・Google ビジネスは設計だけ（GO 待ち）</li></ul></div>
+    <div class="panel acc"><div class="tag">アカウント2</div><h3>スポーツイベント</h3>
+      <ul><li>Muse 2・Dola 2</li><li>Instagram @macachette_sports（Claude Code だけが設定・自動投稿）</li><li>note メイン・イベントアプリ・LINE スタンプ</li><li>公式LINE（スポーツ）＝一番大事な数字</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>つながり方 <small>AI どうしは直接つながず、真ん中に置く・読む</small></h2>
+  <div class="panel scroll">
+    <svg viewBox="0 0 760 420" width="100%" role="img" aria-label="真ん中のシート・Obsidianと、Claude Code、Muse、Dola、Grok、Grok Bot、加藤さんが双方向でつながる図。点線はまだ直接つながっていない所">
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink)"/></marker></defs>
+      <g style="stroke:var(--ink);stroke-width:2.2" marker-start="url(#a)" marker-end="url(#a)">
+        <line x1="380" y1="92" x2="380" y2="160" marker-start="url(#a)" marker-end="url(#a)"/>
+        <line x1="205" y1="150" x2="285" y2="190" marker-start="url(#a)" marker-end="url(#a)"/>
+        <line x1="555" y1="150" x2="475" y2="190" marker-start="url(#a)" marker-end="url(#a)"/>
+        <line x1="205" y1="300" x2="285" y2="250" stroke-dasharray="6 5" marker-start="url(#a)" marker-end="url(#a)"/>
+        <line x1="555" y1="300" x2="475" y2="250" stroke-dasharray="6 5" marker-start="url(#a)" marker-end="url(#a)"/>
+        <line x1="380" y1="328" x2="380" y2="268" marker-start="url(#a)" marker-end="url(#a)"/>
+      </g>
+      <rect x="285" y="162" width="190" height="104" rx="12" style="fill:var(--teal)"/>
+      <text x="380" y="205" text-anchor="middle" style="fill:#fff;font-size:19px;font-weight:700">シート・Obsidian</text>
+      <text x="380" y="232" text-anchor="middle" style="fill:#fff;font-size:13px">数字は行／文は 00_Inbox</text>
+      <g style="fill:var(--panel);stroke:var(--teal);stroke-width:2.5">
+        <rect x="290" y="16" width="180" height="74" rx="10"/><rect x="20" y="110" width="185" height="74" rx="10"/><rect x="555" y="110" width="185" height="74" rx="10"/>
+        <rect x="20" y="266" width="185" height="74" rx="10"/><rect x="555" y="266" width="185" height="74" rx="10"/><rect x="290" y="330" width="180" height="74" rx="10"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">
+        <text x="380" y="48">Claude Code（33人）</text><text x="112" y="142">Muse 1・2</text><text x="647" y="142">Dola 1・2</text>
+        <text x="112" y="298">Grok</text><text x="647" y="298">Grok Bot</text><text x="380" y="362">加藤さん</text>
+      </g>
+      <g text-anchor="middle" style="fill:var(--sub);font-size:12px">
+        <text x="380" y="72">正本・集計・Instagram</text><text x="112" y="166">1 はまだリンクで</text><text x="647" y="166">1 はまだリンクで</text>
+        <text x="112" y="322">リンクで読む・箱に貼る</text><text x="647" y="322">リンクで読む・箱に貼る</text><text x="380" y="386">写真を入れる・GO</text>
+      </g>
+    </svg>
+  </div>
+  <div class="panel scroll">
+    <table>
+      <tr><th>AI・道具</th><th>担当</th><th>状態</th><th>今の入り方</th></tr>
+      <tr><td>Claude Code（33人）</td><td>全体・Instagram・原稿・会議</td><td><span class="pill ok">つながっている</span></td><td>シートと Obsidian を直接</td></tr>
+      <tr><td>Muse 2</td><td>スポーツの他SNS・note メイン・アプリ</td><td><span class="pill ok">つながっている</span></td><td>22:30 の速報が届く</td></tr>
+      <tr><td>Muse 1</td><td>食事・AI の他SNS・ココナラ</td><td><span class="pill ng">まだ</span></td><td>今日の1枚を読む → 受け取り箱</td></tr>
+      <tr><td>Dola 1</td><td>Obsidian の整理</td><td><span class="pill ng">まだ</span></td><td>振り分け案を出す → Claude Code が動かす</td></tr>
+      <tr><td>Dola 2</td><td>お金と数字の1枚 23:30</td><td><span class="pill warn">文を貼る前</span></td><td>指示文を貼る</td></tr>
+      <tr><td>Grok</td><td>X の型を調べる 9:00</td><td><span class="pill ng">まだ（今日から稼働）</span></td><td>今日の1枚を読む → 受け取り箱</td></tr>
+      <tr><td>Grok Bot</td><td>X の下書き</td><td><span class="pill ng">まだ（今日から稼働）</span></td><td>今日の X 原稿を読む → 受け取り箱</td></tr>
+      <tr><td>Claude（無料）</td><td>加藤さんのスマホ相談</td><td><span class="pill warn">文を貼る前</span></td><td>社長_ のノート</td></tr>
+      <tr><td>vidIQ</td><td>見るだけの調べ物 週2</td><td><span class="pill ok">つながっている</span></td><td>曲は作らない</td></tr>
+      <tr><td>Obsidian</td><td>知見の倉庫</td><td><span class="pill ok">つながっている</span></td><td>アカウント1・2 とも書ける</td></tr>
+      <tr><td>共通シート</td><td>数字と決定</td><td><span class="pill warn">アカウント1 に共有が要る</span></td><td>加藤さんが共有</td></tr>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>1日の流れ <small>受け取る → する → 返す</small></h2>
+  <div class="grid">
+    <div class="panel"><div class="flow">
+      <div><b>8:00</b><span>Claude Code：数字・写真の仕分け・受け取り箱・今日の1枚・push・加藤さんタスク</span></div>
+      <div><b>9:00</b><span>Grok：X で伸びている型を1行</span></div>
+      <div><b>8〜19時</b><span>ストーリー自動投稿（8・10・12・15・19時）</span></div>
+      <div><b>12:30</b><span>Muse 1・2：他SNS・note・アプリ・ココナラ</span></div>
+      <div><b>22:30</b><span>Muse 1・2：速報（申込・閲覧・反応）</span></div>
+      <div><b>23:30</b><span>Dola 2：お金と数字の1枚</span></div>
+      <div><b>23:55</b><span>Claude Code：会議（1と2の表・やり方を疑う）・明日のストーリー・note 2本</span></div>
+    </div></div>
+    <div class="panel"><div class="flow">
+      <div><b>月・水</b><span>21:00 リール・カルーセル</span></div>
+      <div><b>金</b><span>21:30 翌週のストーリー</span></div>
+      <div><b>日</b><span>18:30 Muse の週の数字 → 21:00 週の会議と<span class="mark">まとめ動画</span></span></div>
+      <div><b>開催日</b><span>朝に撮影リスト → 夜に写真を投入口へ</span></div>
+      <div><b>第1日曜</b><span>月の会議・Obsidian を一周</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section>
+  <h2>写真・note・音楽 <small>11/28 に決まった形</small></h2>
+  <div class="grid">
+    <div class="panel acc"><div class="tag">写真</div><h3>入れるだけ</h3><ul><li>投入口2つ（スポーツ／食事・AI）</li><li>名前だけで台帳 → 使い所は Claude Code</li><li>同じ写真は7日あける・顔は隠す</li></ul></div>
+    <div class="panel acc"><div class="tag">note</div><h3>目次と画像つき</h3><ul><li>トップ画像 → 導入3行 → 目次</li><li>文300字ごとに画像か動画</li><li>見本2本で Muse に登録</li></ul></div>
+    <div class="panel acc"><div class="tag">音楽</div><h3>無料の組み合わせ</h3><ul><li>自作の bgm が主役・ジングルも自作</li><li>今ある10曲は時間帯で回す</li><li>Grok・Muse は雰囲気の言葉だけ</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>全部行う予定と今の状態</h2>
+  <div class="panel scroll">
+    <table>
+      <tr><th>予定</th><th>状態</th></tr>
+      <tr><td>月30万（残り25万）・アカウント1と2・33人</td><td><span class="pill ok">動いている</span></td></tr>
+      <tr><td>Instagram の実験（全時間帯に曲・本数の比べ・見本寄せ）</td><td><span class="pill ok">動いている</span></td></tr>
+      <tr><td>3つの思考（タイトル・図解・進行管理）</td><td><span class="pill ok">動いている</span></td></tr>
+      <tr><td>写真の投入口と台帳</td><td><span class="pill ok">動いている</span></td></tr>
+      <tr><td>会議の2アカウント集計とまとめ動画</td><td><span class="pill ok">動いている</span></td></tr>
+      <tr><td>note の型と見本を Muse へ</td><td><span class="pill warn">明日の朝に貼る</span></td></tr>
+      <tr><td>音源の言葉集め（1・2 で各20曲が目安）</td><td><span class="pill warn">準備中</span></td></tr>
+      <tr><td>X・Threads・Facebook・TikTok</td><td><span class="pill warn">ログイン待ち</span></td></tr>
+      <tr><td>Muse 1・Dola 1・Grok・Grok Bot の直接のつながり</td><td><span class="pill ng">まだ（リンクで代わり）</span></td></tr>
+      <tr><td>HP・WordPress・Google ビジネス</td><td><span class="pill warn">GO 待ち</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="next">
+  <h2>加藤さんの次の一歩</h2>
+  <ol>
+    <li>共通シートをアカウント1にも「編集者」で共有する</li>
+    <li>Muse 1・Dola 1 の設定に「Google ドライブ連携」があるか見る（あればアカウント1でつなぐ）</li>
+    <li>Grok・Grok Bot・Muse 1・Dola 1 に「つなぎ方」の文を貼る</li>
+    <li>4つの AI の答えは「AI_受け取り箱」に貼るだけ</li>
+    <li>写真は投入口に入れるだけ</li>
+  </ol>
+</section>
+
+<p class="foot">元のファイル：ai_employees/kousei/（00_目次から）。数字は 11/27 の物。毎週日曜に作り直します。</p>
+</div>
